@@ -1,0 +1,57 @@
+.notification{
+    position : absolute;
+    right : 20px;
+    top : 10px;
+    z-index: 99999;
+    width: 200px;
+
+    .crouton {
+        color : #fff;
+        border-radius: 2px;
+        width: 100%;
+        text-align: center;
+        margin: 0 auto 10px auto;
+
+        .info {
+            padding: 10px;
+            background-color: #1F8DD6;
+        }
+        .success {
+            padding: 10px;
+            background-color: #50CD84;
+        }
+        .warning {
+            padding: 10px;
+            background-color: #FF8859;
+        }
+        .error {
+            padding: 10px;
+            background-color: #FF5F5F;
+        }
+        span {
+            display: block;
+            margin-bottom: 0;
+        }
+
+        .buttons {
+            margin-top: 10px;
+            text-align: right;
+            button {
+                background: transparent;
+                color:#fff;
+                &.btn,
+                &.retry,
+                &.close,
+                &.cancel,
+                &.ignore {
+                    border: 1px #fff solid;
+                }
+
+                &:hover {
+                    opacity: .75;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
