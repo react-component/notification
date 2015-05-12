@@ -1,49 +1,41 @@
-.notification{
-    position : absolute;
-    right : 20px;
-    top : 10px;
+@noticePrefixClass : rc-notice;
+
+.rc-notification {
     z-index: 99999;
     width: 200px;
 
-    .crouton {
-        color : #fff;
+    .rc-notice {
+        background-color: #1F8DD6;
+        color: #fff;
         border-radius: 2px;
         width: 100%;
         text-align: center;
         margin: 0 auto 10px auto;
 
-        .info {
+        &.@{noticePrefixClass}-info {
             padding: 10px;
             background-color: #1F8DD6;
         }
-        .success {
+        &.@{noticePrefixClass}-success {
             padding: 10px;
             background-color: #50CD84;
         }
-        .warning {
+        &.@{noticePrefixClass}-warning {
             padding: 10px;
             background-color: #FF8859;
         }
-        .error {
+        &.@{noticePrefixClass}-error {
             padding: 10px;
             background-color: #FF5F5F;
         }
-        span {
-            display: block;
-            margin-bottom: 0;
-        }
 
-        .buttons {
+        .@{noticePrefixClass}-buttons {
             margin-top: 10px;
             text-align: right;
             button {
                 background: transparent;
-                color:#fff;
-                &.btn,
-                &.retry,
-                &.close,
-                &.cancel,
-                &.ignore {
+                color: #fff;
+                &.@{noticePrefixClass}-button-close{
                     border: 1px #fff solid;
                 }
 
@@ -54,4 +46,24 @@
             }
         }
     }
+}
+
+.@{noticePrefixClass}-anim-enter {
+    opacity: 0.01;
+    transition: opacity 1s ease-in;
+    -webkit-transition: opacity 1s ease-in;
+}
+
+.@{noticePrefixClass}-anim-enter.@{noticePrefixClass}-anim-enter-active {
+    opacity: 1;
+}
+
+.@{noticePrefixClass}-anim-leave {
+    opacity: 1;
+    transition: opacity 1s ease-in;
+    -webkit-transition: opacity 1s ease-in;
+}
+
+.@{noticePrefixClass}-anim-leave.@{noticePrefixClass}-anim-leave-active {
+    opacity: 0.01;
 }

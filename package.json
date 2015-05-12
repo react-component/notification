@@ -51,5 +51,10 @@
   "precommit": [
     "lint",
     "less"
-  ]
+  ],
+  "dependencies": {
+    "clone": "~1.0.2",
+    "dom-align": "~1.0.5",
+    "rc-css-transition-group": "~1.0.2"
+  }
 }

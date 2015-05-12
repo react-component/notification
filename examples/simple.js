@@ -1,22 +1,18 @@
 /** @jsx React.DOM */
 // use jsx to render html, do not modify simple.html
 require('rc-notification/assets/index.css');
-var Notification = require('rc-notification');
+var notification = require('rc-notification');
+var notice = notification.notice;
+var Notice = notification.Notice;
 var React = require('react');
 
-var messages =  [{
-  message:"a test message",
-  type:"info",
-},{
-  message:"a test message 2",
-  type:"error",
-  autoMiss: false,
-  buttons: [{
-    name: 'close',
-    listener: function() {
-      alert("you clicked close")
-    }
-  }]
-}];
 
-React.render(<Notification messages={messages}/>, document.getElementById('__react-content'));
+
+notice("this is a simple string notice");
+notice("this is a simple string notice",{type:"success"});
+notice("this is a simple string notice",{type:"error"});
+notice("this is a simple string notice",{type:"warning"});
+var noticeDom = (<div>this is a virtual dom content with link<a href="http://github.com">github.com</a></div>);
+notice(noticeDom,{autoDismiss:false,onEnd:function(){alert("you clicked close")}});
+
+notice("this is a simple string notice",{points:["lt","rt"]}, true);
