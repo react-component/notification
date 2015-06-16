@@ -173,9 +173,9 @@
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.0/es5-shim.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.0/es5-sham.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.js"></script>
     <![endif]-->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
 </head>
 <body>
 <div id="__react-content"></div>
@@ -183,24 +183,51 @@
 <script src="simple.js?nowrap"></script>
 <div class="highlight">
 <pre>
-<span class="hljs-comment">/** @jsx React.DOM */</span>
+<span class="hljs-string">'use strict'</span>;
+
 <span class="hljs-comment">// use jsx to render html, do not modify simple.html</span>
-require(<span class="hljs-symbol">'rc</span>-notification/assets/index.css');
-<span class="hljs-keyword">var</span> notification = require(<span class="hljs-symbol">'rc</span>-notification');
-<span class="hljs-keyword">var</span> notice = notification.notice;
-<span class="hljs-keyword">var</span> <span class="hljs-type">Notice</span> = notification.<span class="hljs-type">Notice</span>;
-<span class="hljs-keyword">var</span> <span class="hljs-type">React</span> = require(<span class="hljs-symbol">'reac</span>t');
+<span class="hljs-keyword">require</span>(<span class="hljs-string">'rc-notification/assets/index.css'</span>);
+<span class="hljs-keyword">var</span> Notification = <span class="hljs-keyword">require</span>(<span class="hljs-string">'rc-notification'</span>);
+<span class="hljs-keyword">var</span> notification = Notification.newInstance({});
+<span class="hljs-keyword">var</span> pkg = <span class="hljs-keyword">require</span>(<span class="hljs-string">'../package.json'</span>);
+<span class="hljs-keyword">var</span> React = <span class="hljs-keyword">require</span>(<span class="hljs-string">'react'</span>);
 
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">simpleFn</span><span class="hljs-params">()</span> </span>{
+  notification.notice({
+    key: <span class="hljs-string">'simple'</span>,
+    content: &lt;span&gt;simple show&lt;/span&gt;,
+    onClose() {
+      console.log(<span class="hljs-string">'simple close'</span>);
+    }
+  })
+}
 
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">durationFn</span><span class="hljs-params">()</span> </span>{
+  notification.notice({
+    content: &lt;span&gt;can not close...&lt;/span&gt;,
+    duration: <span class="hljs-keyword">null</span>
+  })
+}
 
-notice(<span class="hljs-string">"this is a simple string notice"</span>);
-notice(<span class="hljs-string">"this is a simple string notice"</span>,{<span class="hljs-class"><span class="hljs-keyword">type</span>:</span><span class="hljs-string">"success"</span>});
-notice(<span class="hljs-string">"this is a simple string notice"</span>,{<span class="hljs-class"><span class="hljs-keyword">type</span>:</span><span class="hljs-string">"error"</span>});
-notice(<span class="hljs-string">"this is a simple string notice"</span>,{<span class="hljs-class"><span class="hljs-keyword">type</span>:</span><span class="hljs-string">"warning"</span>});
-<span class="hljs-keyword">var</span> noticeDom = (&lt;div&gt;<span class="hljs-keyword">this</span> is a virtual dom content <span class="hljs-keyword">with</span> link&lt;a href=<span class="hljs-string">"http://github.com"</span>&gt;github.com&lt;/a&gt;&lt;/div&gt;);
-notice(noticeDom,{autoDismiss:<span class="hljs-literal">false</span>,onEnd:function(){alert(<span class="hljs-string">"you clicked close"</span>)}});
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">closableFn</span><span class="hljs-params">()</span> </span>{
+  notification.notice({
+    content: &lt;span&gt;closable&lt;/span&gt;,
+    duration: <span class="hljs-keyword">null</span>,
+    onClose() {
+      console.log(<span class="hljs-string">'closable close'</span>);
+    },
+    closable: <span class="hljs-keyword">true</span>
+  })
+}
 
-notice(<span class="hljs-string">"this is a simple string notice"</span>,{points:[<span class="hljs-string">"lt"</span>,<span class="hljs-string">"rt"</span>]}, <span class="hljs-literal">true</span>);
+React.render(&lt;div&gt;
+  &lt;h1&gt;{pkg.name}@{pkg.version}&lt;/h1&gt;
+  &lt;div&gt;
+    &lt;button onClick={simpleFn}&gt;simple show&lt;/button&gt;
+    &lt;button onClick={durationFn}&gt;duration=<span class="hljs-number">0</span>&lt;/button&gt;
+    &lt;button onClick={closableFn}&gt;closable&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;, document.getElementById(<span class="hljs-string">'__react-content'</span>));
 
 </pre>
 </div>
