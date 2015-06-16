@@ -1,10 +1,9 @@
 # rc-notification
 ---
 
-notification ui component for react
+notification ui component for react.
 
 [![NPM version][npm-image]][npm-url]
-[![SPM version](http://spmjs.io/badge/rc-notification)](http://spmjs.io/package/rc-notification)
 [![build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![gemnasium deps][gemnasium-image]][gemnasium-url]
@@ -27,10 +26,6 @@ notification ui component for react
 [download-image]: https://img.shields.io/npm/dm/rc-notification.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rc-notification
 
-## Screenshots
-
-<img src="http://gtms02.alicdn.com/tps/i2/TB1luFKHXXXXXb3XXXXl4OqLpXX-574-596.png" width="288"/>
-
 
 ## Development
 
@@ -43,15 +38,12 @@ npm start
 
 http://localhost:8000/examples/
 
-online example: http://react-component.github.io/notification/build/examples/
+online example: http://react-component.github.io/notification/examples/
 
 
 ## Feature
 
 * support ie8,ie8+,chrome,firefox,safari
-
-### Keyboard
-
 
 
 ## install
@@ -61,14 +53,18 @@ online example: http://react-component.github.io/notification/build/examples/
 ## Usage
 
 ```js
-var Rcnotification = require('rc-notification');
-var React = require('react');
-React.render(<Rcnotification />, container);
+var Notification = require('rc-notification');
+var notification = Notification.newInstance();
+notification.notice({
+  content: 'content'
+});
 ```
 
 ## API
 
-### props
+### Notification.newInstance(props)
+
+props details:
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -81,14 +77,77 @@ React.render(<Rcnotification />, container);
     </thead>
     <tbody>
         <tr>
-          <td>className</td>
+          <td>prefixCls</td>
           <td>String</td>
           <td></td>
-          <td>additional css class of root dom node</td>
+          <td>prefix class name for notification container</td>
+        </tr>
+        <tr>
+          <td>style</td>
+          <td>Object</td>
+          <td>{'top': 65, left: '50%'}</td>
+          <td>additional style for notification container.</td>
         </tr>
     </tbody>
 </table>
 
+### notification.notice(props)
+
+props details:
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">name</th>
+        <th style="width: 50px;">type</th>
+        <th style="width: 50px;">default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>content</td>
+          <td>React.Element</td>
+          <td></td>
+          <td>content of notice</td>
+        </tr>
+        <tr>
+          <td>key</td>
+          <td>String</td>
+          <td></td>
+          <td>id of this notice</td>
+        </tr>
+        <tr>
+          <td>closable</td>
+          <td>Boolean</td>
+          <td></td>
+          <td>whether show close button</td>
+        </tr>
+        <tr>
+          <td>onClose</td>
+          <td>Function</td>
+          <td></td>
+          <td>called when notice close</td>
+        </tr>
+        <tr>
+          <td>duration</td>
+          <td>number</td>
+          <td>1.5</td>
+          <td>after duration of time, this notice will disappear.(seconds)</td>
+        </tr>
+        <tr>
+          <td>style</td>
+          <td>Object</td>
+          <td>{right: '50%'}</td>
+          <td>additional style for single notice node.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+### notification.destroy()
+
+destroy current notification
 
 ## Test Case
 

@@ -1,1 +1,1 @@
-module.exports = require('./lib/Notification');
+module.exports = require('./src/');

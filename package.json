@@ -9,7 +9,10 @@
     "notification"
   ],
   "homepage": "http://github.com/react-component/notification",
-  "author": "",
+  "maintainers": [
+    "yiminghe@gmail.com",
+    "skyking_H@hotmail.com"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:react-component/notification.git"
@@ -18,43 +21,34 @@
     "url": "http://github.com/react-component/notification/issues"
   },
   "licenses": "MIT",
-  "spm": {
-    "dependencies": {
-      "react": "*"
-    }
-  },
+  "main":"lib/index",
   "config": {
     "port": 8000
   },
   "scripts": {
     "build": "rc-tools run build",
+    "precommit": "rc-tools run precommit",
     "less": "rc-tools run less",
     "gh-pages": "rc-tools run gh-pages",
     "history": "rc-tools run history",
-    "start": "node-dev --harmony node_modules/.bin/rc-server",
-    "publish": "spm publish && rc-tools run tag",
+    "start": "node --harmony node_modules/.bin/rc-server",
+    "publish": "rc-tools run tag",
     "lint": "rc-tools run lint",
-    "test": "",
-    "saucelabs": "rc-tools run saucelabs",
-    "browser-test": "rc-tools run browser-test",
-    "browser-test-cover": "rc-tools run browser-test-cover"
+    "saucelabs": "node --harmony node_modules/.bin/rc-tools run saucelabs",
+    "browser-test": "node --harmony node_modules/.bin/rc-tools run browser-test",
+    "browser-test-cover": "node --harmony node_modules/.bin/rc-tools run browser-test-cover"
   },
   "devDependencies": {
     "expect.js": "0.3.x",
-    "node-dev": "2.x",
     "precommit-hook": "1.x",
-    "rc-server": "2.x",
-    "rc-tools": "2.x",
-    "react": "~0.13.2",
-    "react-crouton": "~0.2.4"
+    "rc-server": "3.x",
+    "rc-tools": "3.x",
+    "react": "~0.13.2"
   },
   "precommit": [
-    "lint",
-    "less"
+    "precommit"
   ],
   "dependencies": {
-    "clone": "~1.0.2",
-    "dom-align": "~1.0.5",
-    "rc-css-transition-group": "~1.0.2"
+    "rc-css-transition-group": "~2.1.4"
   }
 }

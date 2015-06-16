@@ -1,18 +1,45 @@
-/** @jsx React.DOM */
+'use strict';
+
 // use jsx to render html, do not modify simple.html
 require('rc-notification/assets/index.css');
-var notification = require('rc-notification');
-var notice = notification.notice;
-var Notice = notification.Notice;
+var Notification = require('rc-notification');
+var notification = Notification.newInstance({});
+var pkg = require('../package.json');
 var React = require('react');
 
+function simpleFn() {
+  notification.notice({
+    key: 'simple',
+    content: <span>simple show</span>,
+    onClose() {
+      console.log('simple close');
+    }
+  })
+}
 
+function durationFn() {
+  notification.notice({
+    content: <span>can not close...</span>,
+    duration: null
+  })
+}
 
-notice("this is a simple string notice");
-notice("this is a simple string notice",{type:"success"});
-notice("this is a simple string notice",{type:"error"});
-notice("this is a simple string notice",{type:"warning"});
-var noticeDom = (<div>this is a virtual dom content with link<a href="http://github.com">github.com</a></div>);
-notice(noticeDom,{autoDismiss:false,onEnd:function(){alert("you clicked close")}});
+function closableFn() {
+  notification.notice({
+    content: <span>closable</span>,
+    duration: null,
+    onClose() {
+      console.log('closable close');
+    },
+    closable: true
+  })
+}
 
-notice("this is a simple string notice",{points:["lt","rt"]}, true);
+React.render(<div>
+  <h1>{pkg.name}@{pkg.version}</h1>
+  <div>
+    <button onClick={simpleFn}>simple show</button>
+    <button onClick={durationFn}>duration=0</button>
+    <button onClick={closableFn}>closable</button>
+  </div>
+</div>, document.getElementById('__react-content'));
