@@ -1,11 +1,10 @@
 'use strict';
 
 // use jsx to render html, do not modify simple.html
-require('rc-notification/assets/index.css');
-var Notification = require('rc-notification');
+import 'rc-notification/assets/index.css';
+import Notification from 'rc-notification';
+import React from 'react';
 var notification = Notification.newInstance({});
-var pkg = require('../package.json');
-var React = require('react');
 
 function simpleFn() {
   notification.notice({
@@ -52,8 +51,6 @@ function manualClose() {
 }
 
 React.render(<div>
-  <h1>{pkg.name}@{pkg.version}</h1>
-
   <div>
     <button onClick={simpleFn}>simple show</button>
     <button onClick={durationFn}>duration=0</button>

@@ -157,4 +157,4 @@ Notification.newInstance = function (props) {
   };
 };
 
-module.exports = Notification;
+export default Notification;
