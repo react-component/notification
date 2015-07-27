@@ -1,6 +1,6 @@
 {
   "name": "rc-notification",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "notification ui component for react",
   "keywords": [
     "react",
@@ -21,7 +21,7 @@
     "url": "http://github.com/react-component/notification/issues"
   },
   "licenses": "MIT",
-  "main":"lib/index",
+  "main": "lib/index",
   "config": {
     "port": 8000
   },
@@ -49,6 +49,7 @@
     "precommit"
   ],
   "dependencies": {
-    "rc-css-transition-group": "~2.1.4"
+    "rc-animate": "1.x",
+    "rc-util": "2.x"
   }
 }

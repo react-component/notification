@@ -35,11 +35,29 @@ function closableFn() {
   })
 }
 
+function close(key) {
+  notification.removeNotice(key);
+}
+
+function manualClose() {
+  var key = 'manual';
+  notification.notice({
+    content: <div>
+      <p>click below button to close</p>
+      <button onClick={close.bind(null,key)}>close</button>
+    </div>,
+    key: key,
+    duration: null
+  })
+}
+
 React.render(<div>
   <h1>{pkg.name}@{pkg.version}</h1>
+
   <div>
     <button onClick={simpleFn}>simple show</button>
     <button onClick={durationFn}>duration=0</button>
     <button onClick={closableFn}>closable</button>
+    <button onClick={manualClose}>controlled close</button>
   </div>
 </div>, document.getElementById('__react-content'));

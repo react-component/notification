@@ -16,7 +16,7 @@
     line-height: 1.5;
     vertical-align: middle;
     position: relative;
-    margin:10px 0;
+    margin: 10px 0;
 
     &-closable {
       padding-right: 20px;
@@ -36,6 +36,10 @@
       filter: alpha(opacity=20);
       opacity: .2;
       text-decoration: none;
+
+      &-x:after {
+        content: '×';
+      }
 
       &:hover {
         opacity: 1;

@@ -144,6 +144,9 @@ props details:
     </tbody>
 </table>
 
+### notification.removeNotice(key:string)
+
+remove single notice with specified key
 
 ### notification.destroy()
 

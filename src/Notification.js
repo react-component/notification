@@ -1,19 +1,8 @@
 'use strict';
 
-var React = require('react');
-var CSSTransitionGroup = require('rc-css-transition-group');
-
-function createChainedFunction() {
-  var args = arguments;
-
-  return function chainedFunction() {
-    for (var i = 0; i < args.length; i++) {
-      if (args[i] && args[i].apply) {
-        args[i].apply(this, arguments);
-      }
-    }
-  };
-}
+import React from 'react';
+import Animate from 'rc-animate';
+import {createChainedFunction, classSet} from 'rc-util';
 
 var Notice = React.createClass({
   getDefaultProps() {
@@ -26,15 +15,18 @@ var Notice = React.createClass({
       }
     };
   },
+
   clearCloseTimer() {
     if (this.closeTimer) {
       clearTimeout(this.closeTimer);
       this.closeTimer = null;
     }
   },
+
   componentDidUpdate() {
     this.componentDidMount();
   },
+
   componentDidMount() {
     this.clearCloseTimer();
     if (this.props.duration) {
@@ -43,31 +35,31 @@ var Notice = React.createClass({
       }, this.props.duration * 1000);
     }
   },
+
   componentWillUnmount() {
     this.clearCloseTimer();
   },
+
   close() {
     this.clearCloseTimer();
     this.props.onClose();
   },
+
   render() {
     var props = this.props;
-    var prefixCls = props.prefixCls;
-    var className = `${prefixCls}-notice`;
-    var componentClass = `${prefixCls}-notice`;
-    if (props.closable) {
-      className += ` ${componentClass}-closable`;
-    }
-    if (props.className) {
-      className += ' ' + props.className;
-    }
+    var componentClass = `${props.prefixCls}-notice`;
+    var className = {
+      [`${componentClass}`]: 1,
+      [`${componentClass}-closable`]: props.closable,
+      [props.className]: !!props.className
+    };
     return (
-      <div className={className} style={props.style}>
+      <div className={classSet(className)} style={props.style}>
         <div className={`${componentClass}-content`}>{this.props.children}</div>
-      {props.closable ?
-        <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
-          <span className={`${componentClass}-close-x`}>×</span>
-        </a> : null
+        {props.closable ?
+          <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
+            <span className={`${componentClass}-close-x`}></span>
+          </a> : null
         }
       </div>
     );
@@ -87,6 +79,7 @@ var Notification = React.createClass({
       notices: []
     };
   },
+
   getDefaultProps() {
     return {
       prefixCls: 'rc-notification',
@@ -97,34 +90,26 @@ var Notification = React.createClass({
       }
     };
   },
+
   remove(key) {
-    var notices = [];
-    this.state.notices.forEach((notice) => {
-      if (notice.key !== key) {
-        notices.push(notice);
-      }
+    var notices = this.state.notices.filter((notice) => {
+      return notice.key !== key;
     });
     this.setState({
       notices: notices
     });
   },
+
   add(notice) {
-    var find = false;
-    var notices = this.state.notices.concat();
-    for (var i = 0; i < notices.length; i++) {
-      var n = notices[i];
-      if (n.key !== undefined && n.key === notice.key) {
-        notices[i] = notice;
-        find = true;
-      }
+    var key = notice.key = notice.key || getUuid();
+    var notices = this.state.notices;
+    if (!notices.filter((v) =>  v.key === key).length) {
+      this.setState({
+        notices: notices.concat(notice)
+      });
     }
-    if (!find) {
-      notices.push(notice);
-    }
-    this.setState({
-      notices: notices
-    });
   },
+
   getTransitionName() {
     var props = this.props;
     var transitionName = props.transitionName;
@@ -133,22 +118,20 @@ var Notification = React.createClass({
     }
     return transitionName;
   },
+
   render() {
     var props = this.props;
     var noticeNodes = this.state.notices.map((notice)=> {
-      if (notice.key === undefined) {
-        notice.key = getUuid();
-      }
       var onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
       return (<Notice prefixCls={props.prefixCls} {...notice} onClose={onClose}>{notice.content}</Notice>);
     });
-    var className = props.prefixCls;
-    if (props.className) {
-      className += ' ' + props.className;
-    }
+    var className = {
+      [props.prefixCls]: 1,
+      [props.className]: !!props.className
+    };
     return (
-      <div className={className} style={props.style}>
-        <CSSTransitionGroup transitionName={this.getTransitionName()}>{noticeNodes}</CSSTransitionGroup>
+      <div className={classSet(className)} style={props.style}>
+        <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
       </div>
     );
   }
@@ -162,6 +145,9 @@ Notification.newInstance = function (props) {
   return {
     notice(noticeProps) {
       notification.add(noticeProps);
+    },
+    removeNotice(key) {
+      notification.remove(key);
     },
     component: notification,
     destroy() {
