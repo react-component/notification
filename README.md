@@ -9,9 +9,6 @@ notification ui component for react.
 [![gemnasium deps][gemnasium-image]][gemnasium-url]
 [![node version][node-image]][node-url]
 [![npm download][download-image]][download-url]
-[![Sauce Test Status](https://saucelabs.com/buildstatus/rc-notification)](https://saucelabs.com/u/rc-notification)
-
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/rc-notification.svg)](https://saucelabs.com/u/rc-notification)
 
 [npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-notification
