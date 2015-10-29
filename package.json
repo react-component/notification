@@ -42,14 +42,16 @@
     "expect.js": "0.3.x",
     "precommit-hook": "1.x",
     "rc-server": "3.x",
-    "rc-tools": "3.x",
-    "react": "~0.13.2"
+    "rc-tools": "~4.2.6",
+    "react": "~0.14.0",
+    "react-addons-test-utils": "~0.14.1",
+    "react-dom": "~0.14.0"
   },
   "precommit": [
-    "precommit"
+    "lint"
   ],
   "dependencies": {
-    "rc-animate": "1.x",
+    "rc-animate": "~2.0.0",
     "rc-util": "2.x"
   }
 }

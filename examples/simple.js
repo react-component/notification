@@ -1,9 +1,8 @@
-'use strict';
-
 // use jsx to render html, do not modify simple.html
 import 'rc-notification/assets/index.css';
 import Notification from 'rc-notification';
 import React from 'react';
+import ReactDOM from 'react-dom';
 var notification = Notification.newInstance({});
 
 function simpleFn() {
@@ -50,7 +49,7 @@ function manualClose() {
   })
 }
 
-React.render(<div>
+ReactDOM.render(<div>
   <div>
     <button onClick={simpleFn}>simple show</button>
     <button onClick={durationFn}>duration=0</button>

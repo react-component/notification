@@ -1,6 +1,6 @@
-var React = require('react');
 var Notification = require('../');
-var TestUtils = React.addons.TestUtils;
+var React = require('react');
+var TestUtils = require('react-addons-test-utils');
 var Simulate = TestUtils.Simulate;
 var expect = require('expect.js');
 require('../assets/index.css');
