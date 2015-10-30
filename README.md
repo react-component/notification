@@ -1,7 +1,7 @@
 # rc-notification
 ---
 
-notification ui component for react.
+React Notification UI Component
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
