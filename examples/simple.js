@@ -3,7 +3,7 @@ import 'rc-notification/assets/index.css';
 import Notification from 'rc-notification';
 import React from 'react';
 import ReactDOM from 'react-dom';
-var notification = Notification.newInstance({});
+const notification = Notification.newInstance({});
 
 function simpleFn() {
   notification.notice({
@@ -11,15 +11,15 @@ function simpleFn() {
     content: <span>simple show</span>,
     onClose() {
       console.log('simple close');
-    }
-  })
+    },
+  });
 }
 
 function durationFn() {
   notification.notice({
     content: <span>can not close...</span>,
-    duration: null
-  })
+    duration: null,
+  });
 }
 
 function closableFn() {
@@ -29,8 +29,8 @@ function closableFn() {
     onClose() {
       console.log('closable close');
     },
-    closable: true
-  })
+    closable: true,
+  });
 }
 
 function close(key) {
@@ -38,15 +38,15 @@ function close(key) {
 }
 
 function manualClose() {
-  var key = 'manual';
+  const key = 'manual';
   notification.notice({
     content: <div>
       <p>click below button to close</p>
-      <button onClick={close.bind(null,key)}>close</button>
+      <button onClick={close.bind(null, key)}>close</button>
     </div>,
     key: key,
-    duration: null
-  })
+    duration: null,
+  });
 }
 
 ReactDOM.render(<div>

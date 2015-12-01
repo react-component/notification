@@ -75,7 +75,7 @@ const Notification = React.createClass({
   },
 });
 
-Notification.newInstance = function(properties) {
+Notification.newInstance = function newNotificationInstance(properties) {
   const props = properties || {};
   const div = document.createElement('div');
   document.body.appendChild(div);
