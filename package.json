@@ -41,19 +41,20 @@
     "browser-test-cover": "rc-tools run browser-test-cover"
   },
   "devDependencies": {
-    "expect.js": "0.3.x",
-    "pre-commit": "1.x",
-    "rc-server": "3.x",
-    "rc-tools": "4.x",
-    "react": "~0.14.0",
-    "react-addons-test-utils": "~0.14.1",
-    "react-dom": "~0.14.0"
+    "expect.js": "~0.3.1",
+    "precommit-hook": "~3.0.0",
+    "rc-server": "~3.3.4",
+    "rc-tools": "~4.4.1",
+    "react": "~0.14.3",
+    "react-addons-test-utils": "^0.14.3",
+    "react-dom": "~0.14.3"
   },
-  "pre-commit": [
+  "precommit": [
     "lint"
   ],
   "dependencies": {
-    "rc-animate": "2.x",
-    "rc-util": "3.x"
+    "classnames": "~2.2.1",
+    "rc-animate": "~2.0.2",
+    "rc-util": "~3.1.2"
   }
 }

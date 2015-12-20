@@ -1,5 +1,5 @@
 import React from 'react';
-import {classSet} from 'rc-util';
+import classNames from 'classnames';
 
 const Notice = React.createClass({
   propTypes: {
@@ -57,7 +57,7 @@ const Notice = React.createClass({
       [props.className]: !!props.className,
     };
     return (
-      <div className={classSet(className)} style={props.style}>
+      <div className={classNames(className)} style={props.style}>
         <div className={`${componentClass}-content`}>{this.props.children}</div>
         {props.closable ?
           <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
