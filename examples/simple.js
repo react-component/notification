@@ -182,6 +182,10 @@ webpackJsonp([0,1],[
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
+	var _classnames = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"classnames\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
 	var _rcAnimate = __webpack_require__(164);
 	
 	var _rcAnimate2 = _interopRequireDefault(_rcAnimate);
@@ -265,7 +269,7 @@ webpackJsonp([0,1],[
 	    var className = (_className = {}, _defineProperty(_className, props.prefixCls, 1), _defineProperty(_className, props.className, !!props.className), _className);
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: (0, _rcUtil.classSet)(className), style: props.style },
+	      { className: (0, _classnames2['default'])(className), style: props.style },
 	      _react2['default'].createElement(
 	        _rcAnimate2['default'],
 	        { transitionName: this.getTransitionName() },
@@ -275,11 +279,11 @@ webpackJsonp([0,1],[
 	  }
 	});
 	
-	Notification.newInstance = function (properties) {
-	  var props = properties || {};
+	Notification.newInstance = function (props) {
+	  var notificationProps = props || {};
 	  var div = document.createElement('div');
 	  document.body.appendChild(div);
-	  var notification = _reactDom2['default'].render(_react2['default'].createElement(Notification, props), div);
+	  var notification = _reactDom2['default'].render(_react2['default'].createElement(Notification, notificationProps), div);
 	  return {
 	    notice: function notice(noticeProps) {
 	      notification.add(noticeProps);
@@ -289,7 +293,7 @@ webpackJsonp([0,1],[
 	    },
 	    component: notification,
 	    destroy: function destroy() {
-	      _reactDom2['default'].unmountComponentAtNode(div);
+	      _react2['default'].unmountComponentAtNode(div);
 	      document.body.removeChild(div);
 	    }
 	  };
@@ -21600,7 +21604,9 @@ webpackJsonp([0,1],[
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _rcUtil = __webpack_require__(172);
+	var _classnames = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"classnames\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
 	
 	var Notice = _react2['default'].createClass({
 	  displayName: 'Notice',
@@ -21660,7 +21666,7 @@ webpackJsonp([0,1],[
 	    var className = (_className = {}, _defineProperty(_className, '' + componentClass, 1), _defineProperty(_className, componentClass + '-closable', props.closable), _defineProperty(_className, props.className, !!props.className), _className);
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: (0, _rcUtil.classSet)(className), style: props.style },
+	      { className: (0, _classnames2['default'])(className), style: props.style },
 	      _react2['default'].createElement(
 	        'div',
 	        { className: componentClass + '-content' },
