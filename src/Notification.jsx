@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
-import {createChainedFunction, classSet} from 'rc-util';
+import {createChainedFunction} from 'rc-util';
+import classnames from 'classnames';
 import Notice from './Notice';
 
 let seed = 0;
@@ -68,7 +69,7 @@ const Notification = React.createClass({
       [props.className]: !!props.className,
     };
     return (
-      <div className={classSet(className)} style={props.style}>
+      <div className={classnames(className)} style={props.style}>
         <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
       </div>
     );
