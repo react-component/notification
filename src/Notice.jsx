@@ -27,10 +27,6 @@ const Notice = React.createClass({
     }
   },
 
-  componentDidUpdate() {
-    this.componentDidMount();
-  },
-
   componentWillUnmount() {
     this.clearCloseTimer();
   },
