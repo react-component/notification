@@ -41,12 +41,14 @@ const Notification = React.createClass({
 
   add(notice) {
     const key = notice.key = notice.key || getUuid();
-    const notices = this.state.notices;
-    if (!notices.filter((v) => v.key === key).length) {
-      this.setState({
-        notices: notices.concat(notice),
-      });
-    }
+    this.setState(previousState => {
+      const notices = previousState.notices;
+      if (!notices.filter(v => v.key === key).length) {
+        return {
+          notices: notices.concat(notice),
+        };
+      }
+    });
   },
 
   remove(key) {
