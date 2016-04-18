@@ -33,7 +33,6 @@ webpackJsonp([0,1],[
 	
 	function simpleFn() {
 	  notification.notice({
-	    key: 'simple',
 	    content: _react2["default"].createElement(
 	      'span',
 	      null,
@@ -77,7 +76,7 @@ webpackJsonp([0,1],[
 	}
 	
 	function manualClose() {
-	  var key = 'manual';
+	  var key = Date.now();
 	  notification.notice({
 	    content: _react2["default"].createElement(
 	      'div',
@@ -207,6 +206,14 @@ webpackJsonp([0,1],[
 	
 	var Notification = _react2["default"].createClass({
 	  displayName: 'Notification',
+	
+	  propTypes: {
+	    prefixCls: _react.PropTypes.string,
+	    transitionName: _react.PropTypes.string,
+	    animation: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.object]),
+	    style: _react.PropTypes.object
+	  },
+	
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      prefixCls: 'rc-notification',
@@ -23497,14 +23504,15 @@ webpackJsonp([0,1],[
 	  displayName: 'Notice',
 	
 	  propTypes: {
-	    duration: _react2["default"].PropTypes.number,
-	    onClose: _react2["default"].PropTypes.func,
-	    children: _react2["default"].PropTypes.any
+	    duration: _react.PropTypes.number,
+	    onClose: _react.PropTypes.func,
+	    children: _react.PropTypes.any
 	  },
 	
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      onEnd: function onEnd() {},
+	      onClose: function onClose() {},
 	
 	      duration: 1.5,
 	      style: {
@@ -23515,15 +23523,11 @@ webpackJsonp([0,1],[
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 	
-	    this.clearCloseTimer();
 	    if (this.props.duration) {
 	      this.closeTimer = setTimeout(function () {
 	        _this.close();
 	      }, this.props.duration * 1000);
 	    }
-	  },
-	  componentDidUpdate: function componentDidUpdate() {
-	    this.componentDidMount();
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.clearCloseTimer();
@@ -23550,7 +23554,7 @@ webpackJsonp([0,1],[
 	      _react2["default"].createElement(
 	        'div',
 	        { className: componentClass + '-content' },
-	        this.props.children
+	        props.children
 	      ),
 	      props.closable ? _react2["default"].createElement(
 	        'a',
