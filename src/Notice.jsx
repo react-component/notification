@@ -20,16 +20,11 @@ const Notice = React.createClass({
   },
 
   componentDidMount() {
-    this.clearCloseTimer();
     if (this.props.duration) {
       this.closeTimer = setTimeout(() => {
         this.close();
       }, this.props.duration * 1000);
     }
-  },
-
-  componentDidUpdate() {
-    this.componentDidMount();
   },
 
   componentWillUnmount() {
