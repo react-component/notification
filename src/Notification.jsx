@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import { createChainedFunction } from 'rc-util';
@@ -13,6 +13,13 @@ function getUuid() {
 }
 
 const Notification = React.createClass({
+  propTypes: {
+    prefixCls: PropTypes.string,
+    transitionName: PropTypes.string,
+    animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    style: PropTypes.object,
+  },
+
   getDefaultProps() {
     return {
       prefixCls: 'rc-notification',
@@ -87,7 +94,7 @@ Notification.newInstance = function newNotificationInstance(properties) {
   const props = properties || {};
   const div = document.createElement('div');
   document.body.appendChild(div);
-  const notification = ReactDOM.render(<Notification {...props}/>, div);
+  const notification = ReactDOM.render(<Notification {...props} />, div);
   return {
     notice(noticeProps) {
       notification.add(noticeProps);

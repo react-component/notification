@@ -7,7 +7,6 @@ const notification = Notification.newInstance({});
 
 function simpleFn() {
   notification.notice({
-    key: 'simple',
     content: <span>simple show</span>,
     onClose() {
       console.log('simple close');
@@ -38,7 +37,7 @@ function close(key) {
 }
 
 function manualClose() {
-  const key = 'manual';
+  const key = Date.now();
   notification.notice({
     content: <div>
       <p>click below button to close</p>

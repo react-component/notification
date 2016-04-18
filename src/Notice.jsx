@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 const Notice = React.createClass({
   propTypes: {
-    duration: React.PropTypes.number,
-    onClose: React.PropTypes.func,
-    children: React.PropTypes.any,
+    duration: PropTypes.number,
+    onClose: PropTypes.func,
+    children: PropTypes.any,
   },
 
   getDefaultProps() {
     return {
       onEnd() {
+      },
+      onClose() {
       },
       duration: 1.5,
       style: {
@@ -53,7 +55,7 @@ const Notice = React.createClass({
     };
     return (
       <div className={classNames(className)} style={props.style}>
-        <div className={`${componentClass}-content`}>{this.props.children}</div>
+        <div className={`${componentClass}-content`}>{props.children}</div>
         {props.closable ?
           <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
             <span className={`${componentClass}-close-x`}></span>
