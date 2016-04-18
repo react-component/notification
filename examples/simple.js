@@ -1,5 +1,5 @@
 // use jsx to render html, do not modify simple.html
-import 'rc-notification/assets/index.css';
+import 'rc-notification/assets/index.less';
 import Notification from 'rc-notification';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -44,7 +44,7 @@ function manualClose() {
       <p>click below button to close</p>
       <button onClick={close.bind(null, key)}>close</button>
     </div>,
-    key: key,
+    key,
     duration: null,
   });
 }

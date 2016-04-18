@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
-import {createChainedFunction} from 'rc-util';
+import { createChainedFunction } from 'rc-util';
 import classnames from 'classnames';
 import Notice from './Notice';
 
@@ -9,7 +9,7 @@ let seed = 0;
 const now = Date.now();
 
 function getUuid() {
-  return 'rcNotification_' + now + '_' + (seed++);
+  return `rcNotification_${now}_${seed++}`;
 }
 
 const Notification = React.createClass({
@@ -18,7 +18,7 @@ const Notification = React.createClass({
       prefixCls: 'rc-notification',
       animation: 'fade',
       style: {
-        'top': 65,
+        top: 65,
         left: '50%',
       },
     };
@@ -52,19 +52,24 @@ const Notification = React.createClass({
   },
 
   remove(key) {
-    const notices = this.state.notices.filter((notice) => {
-      return notice.key !== key;
-    });
-    this.setState({
-      notices: notices,
+    this.setState(previousState => {
+      return {
+        notices: previousState.notices.filter(notice => notice.key !== key),
+      };
     });
   },
 
   render() {
     const props = this.props;
-    const noticeNodes = this.state.notices.map((notice)=> {
+    const noticeNodes = this.state.notices.map((notice) => {
       const onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
-      return (<Notice prefixCls={props.prefixCls} {...notice} onClose={onClose}>{notice.content}</Notice>);
+      return (<Notice
+        prefixCls={props.prefixCls}
+        {...notice}
+        onClose={onClose}
+      >
+        {notice.content}
+      </Notice>);
     });
     const className = {
       [props.prefixCls]: 1,
