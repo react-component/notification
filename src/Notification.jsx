@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
-import { createChainedFunction } from 'rc-util';
+import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import classnames from 'classnames';
 import Notice from './Notice';
 
