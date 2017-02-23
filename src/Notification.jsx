@@ -14,6 +14,7 @@ function getUuid() {
 
 const Notification = React.createClass({
   propTypes: {
+    container: PropTypes.string,
     prefixCls: PropTypes.string,
     transitionName: PropTypes.string,
     animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -22,6 +23,7 @@ const Notification = React.createClass({
 
   getDefaultProps() {
     return {
+      container: '',
       prefixCls: 'rc-notification',
       animation: 'fade',
       style: {
@@ -92,8 +94,10 @@ const Notification = React.createClass({
 
 Notification.newInstance = function newNotificationInstance(properties) {
   const props = properties || {};
+  const { container } = props;
   const div = document.createElement('div');
-  document.body.appendChild(div);
+  const appendContainer = container ? document.querySelector(container) : document.body;
+  appendContainer.appendChild(div);
   const notification = ReactDOM.render(<Notification {...props} />, div);
   return {
     notice(noticeProps) {
