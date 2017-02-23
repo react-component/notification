@@ -23,7 +23,7 @@ const Notification = React.createClass({
 
   getDefaultProps() {
     return {
-      container: undefined,
+      container: '',
       prefixCls: 'rc-notification',
       animation: 'fade',
       style: {
