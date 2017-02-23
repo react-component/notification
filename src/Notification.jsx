@@ -91,9 +91,14 @@ const Notification = React.createClass({
 });
 
 Notification.newInstance = function newNotificationInstance(properties) {
-  const props = properties || {};
-  const div = document.createElement('div');
-  document.body.appendChild(div);
+  const { getContainer, ...props } = properties || {};
+  let div;
+  if (getContainer) {
+    div = getContainer();
+  } else {
+    div = document.createElement('div');
+    document.body.appendChild(div);
+  }
   const notification = ReactDOM.render(<Notification {...props} />, div);
   return {
     notice(noticeProps) {
