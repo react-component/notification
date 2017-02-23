@@ -85,6 +85,12 @@ props details:
           <td>{'top': 65, left: '50%'}</td>
           <td>additional style for notification container.</td>
         </tr>
+        <tr>
+          <td>getContainer</td>
+          <td>getContainer(): HTMLElement</td>
+          <td></td>
+          <td>function returning html node which will act as notification container</td>
+        </tr>
     </tbody>
 </table>
 
