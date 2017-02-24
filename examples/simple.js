@@ -196,6 +196,8 @@ webpackJsonp([0,1],[
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	var seed = 0;
@@ -291,9 +293,17 @@ webpackJsonp([0,1],[
 	});
 	
 	Notification.newInstance = function newNotificationInstance(properties) {
-	  var props = properties || {};
-	  var div = document.createElement('div');
-	  document.body.appendChild(div);
+	  var _ref = properties || {},
+	      getContainer = _ref.getContainer,
+	      props = _objectWithoutProperties(_ref, ['getContainer']);
+	
+	  var div = void 0;
+	  if (getContainer) {
+	    div = getContainer();
+	  } else {
+	    div = document.createElement('div');
+	    document.body.appendChild(div);
+	  }
 	  var notification = _reactDom2.default.render(_react2.default.createElement(Notification, props), div);
 	  return {
 	    notice: function notice(noticeProps) {
