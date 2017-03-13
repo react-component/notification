@@ -1,4 +1,4 @@
-// use jsx to render html, do not modify simple.html
+/* eslint-disable no-console */
 import 'rc-notification/assets/index.less';
 import Notification from 'rc-notification';
 import React from 'react';
