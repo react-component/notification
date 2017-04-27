@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
@@ -12,30 +13,26 @@ function getUuid() {
   return `rcNotification_${now}_${seed++}`;
 }
 
-const Notification = React.createClass({
-  propTypes: {
+class Notification extends Component {
+  static propTypes = {
     prefixCls: PropTypes.string,
     transitionName: PropTypes.string,
     animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     style: PropTypes.object,
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      prefixCls: 'rc-notification',
-      animation: 'fade',
-      style: {
-        top: 65,
-        left: '50%',
-      },
-    };
-  },
+  static defaultProps = {
+    prefixCls: 'rc-notification',
+    animation: 'fade',
+    style: {
+      top: 65,
+      left: '50%',
+    },
+  };
 
-  getInitialState() {
-    return {
-      notices: [],
-    };
-  },
+  state = {
+    notices: [],
+  };
 
   getTransitionName() {
     const props = this.props;
@@ -44,9 +41,9 @@ const Notification = React.createClass({
       transitionName = `${props.prefixCls}-${props.animation}`;
     }
     return transitionName;
-  },
+  }
 
-  add(notice) {
+  add = (notice) => {
     const key = notice.key = notice.key || getUuid();
     this.setState(previousState => {
       const notices = previousState.notices;
@@ -56,15 +53,15 @@ const Notification = React.createClass({
         };
       }
     });
-  },
+  }
 
-  remove(key) {
+  remove = (key) => {
     this.setState(previousState => {
       return {
         notices: previousState.notices.filter(notice => notice.key !== key),
       };
     });
-  },
+  }
 
   render() {
     const props = this.props;
@@ -87,8 +84,8 @@ const Notification = React.createClass({
         <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
       </div>
     );
-  },
-});
+  }
+}
 
 Notification.newInstance = function newNotificationInstance(properties) {
   const { getContainer, ...props } = properties || {};

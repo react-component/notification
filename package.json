@@ -46,7 +46,6 @@
     "pre-commit": "1.x",
     "rc-tools": "5.x",
     "react": "15.x",
-    "react-addons-test-utils": "15.x",
     "react-dom": "15.x"
   },
   "precommit": [
@@ -54,8 +53,9 @@
   ],
   "dependencies": {
     "classnames": "2.x",
+    "prop-types": "^15.5.8",
     "rc-animate": "2.x",
-    "rc-util": "4.0.2"
+    "rc-util": "4.x"
   },
   "pre-commit": [
     "lint"
