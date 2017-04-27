@@ -1,5 +1,5 @@
 const React = require('react');
-const TestUtils = require('react-addons-test-utils');
+const TestUtils = require('react-dom/test-utils');
 const expect = require('expect.js');
 const Notification = require('../');
 
