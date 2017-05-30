@@ -1,7 +1,8 @@
-const React = require('react');
-const TestUtils = require('react-dom/test-utils');
-const expect = require('expect.js');
-const Notification = require('../');
+import React from 'react';
+import TestUtils from 'react-dom/test-utils';
+import expect from 'expect.js';
+
+import Notification from '../';
 
 require('../assets/index.less');
 
@@ -20,6 +21,31 @@ describe('rc-notification', () => {
       notification.destroy();
       done();
     }, 1000);
+  });
+
+  it('works with multi instance', (done) => {
+    const notification = Notification.newInstance();
+    notification.notice({
+      content: <p className="test">1</p>,
+      duration: 0.1,
+    });
+    notification.notice({
+      content: <p className="test">2</p>,
+      duration: 0.5,
+    });
+    expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+      'test').length).to.be(2);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+        'test').length).to.be(1);
+      done();
+    }, 1000);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+        'test').length).to.be(0);
+      notification.destroy();
+      done();
+    }, 5000);
   });
 
   it('destroy works', () => {
