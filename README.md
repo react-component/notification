@@ -141,7 +141,7 @@ props details:
         <tr>
           <td>style</td>
           <td>Object</td>
-          <td>{right: '50%'}</td>
+          <td> { top: 65, left: '50%' } </td>
           <td>additional style for single notice node.</td>
         </tr>
     </tbody>
