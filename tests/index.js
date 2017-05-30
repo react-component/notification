@@ -23,6 +23,31 @@ describe('rc-notification', () => {
     }, 1000);
   });
 
+  it('works with multi instance', (done) => {
+    const notification = Notification.newInstance();
+    notification.notice({
+      content: <p className="test">1</p>,
+      duration: 0.1,
+    });
+    notification.notice({
+      content: <p className="test">2</p>,
+      duration: 0.5,
+    });
+    expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+      'test').length).to.be(2);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+        'test').length).to.be(1);
+      done();
+    }, 1000);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
+        'test').length).to.be(0);
+      notification.destroy();
+      done();
+    }, 5000);
+  });
+
   it('destroy works', () => {
     const notification = Notification.newInstance();
     notification.notice({
