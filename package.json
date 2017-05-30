@@ -48,6 +48,7 @@
     "expect.js": "~0.3.1",
     "pre-commit": "1.x",
     "rc-tools": "6.x",
+    "rc-test": "^6.0.1",
     "react": "15.x",
     "react-dom": "15.x"
   },
@@ -59,7 +60,6 @@
     "classnames": "2.x",
     "prop-types": "^15.5.8",
     "rc-animate": "2.x",
-    "rc-test": "^6.0.1",
     "rc-util": "4.x"
   },
   "pre-commit": [

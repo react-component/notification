@@ -79,9 +79,13 @@ class Notification extends Component {
       [props.prefixCls]: 1,
       [props.className]: !!props.className,
     };
+    const animateProps = {};
+    if (this.state.notices.length <= 1) {
+      animateProps.component = '';
+    }
     return (
       <div className={classnames(className)} style={props.style}>
-        <Animate transitionName={this.getTransitionName()} component="">{noticeNodes}</Animate>
+        <Animate transitionName={this.getTransitionName()} {...animateProps}>{noticeNodes}</Animate>
       </div>
     );
   }
