@@ -38,11 +38,11 @@
     "compile": "rc-tools run compile --babel-runtime",
     "pub": "rc-tools run pub --babel-runtime",
     "lint": "rc-tools run lint",
-    "karma": "rc-tools run karma",
-    "saucelabs": "rc-tools run saucelabs",
-    "test": "rc-tools run test",
-    "chrome-test": "rc-tools run chrome-test",
-    "coverage": "rc-tools run coverage"
+    "karma": "rc-test run karma",
+    "saucelabs": "rc-test run saucelabs",
+    "test": "rc-test run test",
+    "chrome-test": "rc-test run chrome-test",
+    "coverage": "rc-test run coverage"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",
@@ -59,6 +59,7 @@
     "classnames": "2.x",
     "prop-types": "^15.5.8",
     "rc-animate": "2.x",
+    "rc-test": "^6.0.1",
     "rc-util": "4.x"
   },
   "pre-commit": [

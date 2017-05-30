@@ -1,7 +1,8 @@
-const React = require('react');
-const TestUtils = require('react-dom/test-utils');
-const expect = require('expect.js');
-const Notification = require('../');
+import React from 'react';
+import TestUtils from 'react-dom/test-utils';
+import expect from 'expect.js';
+
+import Notification from '../';
 
 require('../assets/index.less');
 
