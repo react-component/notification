@@ -11259,7 +11259,7 @@ var Notification = function (_Component) {
         { className: __WEBPACK_IMPORTED_MODULE_12_classnames___default()(className), style: props.style },
         __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_10_rc_animate___default.a,
-          { transitionName: this.getTransitionName() },
+          { transitionName: this.getTransitionName(), component: '' },
           noticeNodes
         )
       );
