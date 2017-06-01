@@ -35,7 +35,7 @@
   text-decoration: none;
 }
 .rc-notification-notice-close-x:after {
-  content: '×';
+  content: '\D7';
 }
 .rc-notification-notice-close:hover {
   opacity: 1;
