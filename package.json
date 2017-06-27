@@ -60,7 +60,7 @@
     "classnames": "2.x",
     "prop-types": "^15.5.8",
     "rc-animate": "2.x",
-    "rc-util": "4.x"
+    "rc-util": "^4.0.4"
   },
   "pre-commit": [
     "lint"
