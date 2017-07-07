@@ -31,21 +31,16 @@ describe('rc-notification', () => {
     });
     notification.notice({
       content: <p className="test">2</p>,
-      duration: 0.5,
+      duration: 0.1,
     });
     expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
       'test').length).to.be(2);
     setTimeout(() => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
-        'test').length).to.be(1);
-      done();
-    }, 1000);
-    setTimeout(() => {
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component,
         'test').length).to.be(0);
       notification.destroy();
       done();
-    }, 5000);
+    }, 1000);
   });
 
   it('destroy works', () => {
