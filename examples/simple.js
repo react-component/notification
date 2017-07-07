@@ -11518,16 +11518,12 @@ var Notification = function (_Component) {
         );
       });
       var className = (_className = {}, __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_defineProperty___default()(_className, props.prefixCls, 1), __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_defineProperty___default()(_className, props.className, !!props.className), _className);
-      var animateProps = {};
-      if (this.state.notices.length <= 1) {
-        animateProps.component = '';
-      }
       return __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(
         'div',
         { className: __WEBPACK_IMPORTED_MODULE_12_classnames___default()(className), style: props.style },
         __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_10_rc_animate__["a" /* default */],
-          __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_extends___default()({ transitionName: this.getTransitionName() }, animateProps),
+          { transitionName: this.getTransitionName() },
           noticeNodes
         )
       );
