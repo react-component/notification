@@ -2,7 +2,7 @@ import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import expect from 'expect.js';
 
-import Notification from '../';
+import Notification from '../src/';
 
 require('../assets/index.less');
 
