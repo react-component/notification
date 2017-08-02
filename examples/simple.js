@@ -11564,7 +11564,9 @@ Notification.newInstance = function newNotificationInstance(properties) {
     component: notification,
     destroy: function destroy() {
       __WEBPACK_IMPORTED_MODULE_9_react_dom___default.a.unmountComponentAtNode(div);
-      document.body.removeChild(div);
+      if (!getContainer) {
+        document.body.removeChild(div);
+      }
     }
   };
 };
