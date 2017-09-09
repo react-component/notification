@@ -61,11 +61,11 @@ export default class Notice extends Component {
         onMouseLeave={this.startCloseTimer}
       >
         <div className={`${componentClass}-content`}>{props.children}</div>
-        {props.closable ?
-          <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
-            <span className={`${componentClass}-close-x`}></span>
-          </a> : null
-        }
+          {props.closable ?
+            <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
+              <span className={`${componentClass}-close-x`}></span>
+            </a> : null
+          }
       </div>
     );
   }
