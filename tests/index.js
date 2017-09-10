@@ -72,40 +72,50 @@ describe('rc-notification', () => {
     notification.destroy();
   });
 
-  it('remove notify works', ()=>{
+  it('remove notify works', (done) => {
     const notification = Notification.newInstance();
     const key = Date.now();
+    const close = (k) => {
+      notification.removeNotice(k);
+    };
     notification.notice({
-      content: <p id="test" className="test"><button id="closeButton" onClick={notification.removeNotice(key)}>close</button></p>,
+      content: <p id="test" className="test">
+                  <button id="closeButton" onClick={close.bind(null, key)}>
+                    close
+                  </button>
+                </p>,
       key,
       duration: null,
-      closable: true
     });
 
-    expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length).to.be(1);
-    let btn = document.getElementById("closeButton");
-    TestUtils.Simulate.click(btn);
-    setTimeout(()=>{
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length).to.be(0);
+    expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test')
+      .length).to.be(1);
+    const btnClose = document.getElementById('closeButton');
+    TestUtils.Simulate.click(btnClose);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test')
+        .length).to.be(0);
       notification.destroy();
       done();
     }, 1000);
   });
 
-  it('freeze notification layer when mouse over', (done)=>{
+  it('freeze notification layer when mouse over', (done) => {
     const notification = Notification.newInstance();
     notification.notice({
       content: <p id="freeze" className="freeze">freeze</p>,
       duration: 0.3,
     });
     expect(document.querySelectorAll('.freeze').length).to.be(1);
-    let content = document.getElementById("freeze");
+    const content = document.getElementById('freeze');
     TestUtils.Simulate.mouseEnter(content);
     setTimeout(() => {
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length).to.be(1);
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze')
+        .length).to.be(1);
       TestUtils.Simulate.mouseLeave(content);
-      setTimeout(()=>{
-        expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length).to.be(0);
+      setTimeout(() => {
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze')
+          .length).to.be(0);
         notification.destroy();
         done();
       }, 400);
