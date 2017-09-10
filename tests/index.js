@@ -69,5 +69,46 @@ describe('rc-notification', () => {
       duration: 1,
     });
     expect(document.querySelectorAll('.rc').length).to.be(1);
+    notification.destroy();
+  });
+
+  it('remove notify works', ()=>{
+    const notification = Notification.newInstance();
+    const key = Date.now();
+    notification.notice({
+      content: <p id="test" className="test"><button id="closeButton" onClick={notification.removeNotice(key)}>close</button></p>,
+      key,
+      duration: null,
+      closable: true
+    });
+
+    expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length).to.be(1);
+    let btn = document.getElementById("closeButton");
+    TestUtils.Simulate.click(btn);
+    setTimeout(()=>{
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length).to.be(0);
+      notification.destroy();
+      done();
+    }, 1000);
+  });
+
+  it('freeze notification layer when mouse over', (done)=>{
+    const notification = Notification.newInstance();
+    notification.notice({
+      content: <p id="freeze" className="freeze">freeze</p>,
+      duration: 0.3,
+    });
+    expect(document.querySelectorAll('.freeze').length).to.be(1);
+    let content = document.getElementById("freeze");
+    TestUtils.Simulate.mouseEnter(content);
+    setTimeout(() => {
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length).to.be(1);
+      TestUtils.Simulate.mouseLeave(content);
+      setTimeout(()=>{
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length).to.be(0);
+        notification.destroy();
+        done();
+      }, 400);
+    }, 500);
   });
 });
