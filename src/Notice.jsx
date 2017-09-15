@@ -21,6 +21,19 @@ export default class Notice extends Component {
   };
 
   componentDidMount() {
+    this.startCloseTimer();
+  }
+
+  componentWillUnmount() {
+    this.clearCloseTimer();
+  }
+
+  close = () => {
+    this.clearCloseTimer();
+    this.props.onClose();
+  }
+
+  startCloseTimer = () => {
     if (this.props.duration) {
       this.closeTimer = setTimeout(() => {
         this.close();
@@ -28,20 +41,11 @@ export default class Notice extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.clearCloseTimer();
-  }
-
   clearCloseTimer = () => {
     if (this.closeTimer) {
       clearTimeout(this.closeTimer);
       this.closeTimer = null;
     }
-  }
-
-  close = () => {
-    this.clearCloseTimer();
-    this.props.onClose();
   }
 
   render() {
@@ -53,13 +57,15 @@ export default class Notice extends Component {
       [props.className]: !!props.className,
     };
     return (
-      <div className={classNames(className)} style={props.style}>
+      <div className={classNames(className)} style={props.style} onMouseEnter={this.clearCloseTimer}
+        onMouseLeave={this.startCloseTimer}
+      >
         <div className={`${componentClass}-content`}>{props.children}</div>
-        {props.closable ?
-          <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
-            <span className={`${componentClass}-close-x`}></span>
-          </a> : null
-        }
+          {props.closable ?
+            <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
+              <span className={`${componentClass}-close-x`}></span>
+            </a> : null
+          }
       </div>
     );
   }
