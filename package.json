@@ -36,8 +36,8 @@
       "rc-notification": [
         "./assets/index.less",
         "./src/index.js"
-        ]
-      }
+      ]
+    }
   },
   "scripts": {
     "build": "rc-tools run build",
@@ -53,12 +53,13 @@
     "coverage": "rc-test run coverage"
   },
   "devDependencies": {
+    "core-js": "^2.5.1",
     "expect.js": "~0.3.1",
     "pre-commit": "1.x",
-    "rc-tools": "^6.3.6",
     "rc-test": "^6.0.8",
-    "react": "15.x",
-    "react-dom": "15.x"
+    "rc-tools": "^6.3.6",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "precommit": [
     "lint"

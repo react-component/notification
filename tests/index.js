@@ -1,3 +1,5 @@
+import 'core-js/es6/map';
+import 'core-js/es6/set';
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import expect from 'expect.js';
