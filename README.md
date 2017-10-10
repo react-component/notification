@@ -51,15 +51,16 @@ online example: http://react-component.github.io/notification/examples/
 
 ```js
 var Notification = require('rc-notification');
-var notification = Notification.newInstance();
-notification.notice({
-  content: 'content'
+Notification.newInstance({}, notification => {
+  notification.notice({
+    content: 'content'
+  });
 });
 ```
 
 ## API
 
-### Notification.newInstance(props)
+### Notification.newInstance(props, (notification) => void) => void
 
 props details:
 
