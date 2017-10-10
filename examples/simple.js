@@ -3,7 +3,8 @@ import 'rc-notification/assets/index.less';
 import Notification from 'rc-notification';
 import React from 'react';
 import ReactDOM from 'react-dom';
-const notification = Notification.newInstance({});
+let notification = null;
+Notification.newInstance({}, (n) => notification = n);
 
 function simpleFn() {
   notification.notice({
