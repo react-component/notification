@@ -102,6 +102,9 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       return;
     }
     called = true;
+    if (notification === null) {
+      return;
+    }
     callback({
       notice(noticeProps) {
         notification.add(noticeProps);
