@@ -8,6 +8,7 @@ import Notice from './Notice';
 
 let seed = 0;
 const now = Date.now();
+let _isLastTop = false;
 
 function getUuid() {
   return `rcNotification_${now}_${seed++}`;
@@ -48,9 +49,7 @@ class Notification extends Component {
     this.setState(previousState => {
       const notices = previousState.notices;
       if (!notices.filter(v => v.key === key).length) {
-        return {
-          notices: notices.concat(notice),
-        };
+        return { notices: _isLastTop ? [notice, ...notices] : notices.concat(notice) };
       }
     });
   }
@@ -88,7 +87,8 @@ class Notification extends Component {
 }
 
 Notification.newInstance = function newNotificationInstance(properties, callback) {
-  const { getContainer, ...props } = properties || {};
+  const { getContainer, isLastTop, ...props } = properties || {};
+  _isLastTop = !!isLastTop;
   const div = document.createElement('div');
   if (getContainer) {
     const root = getContainer();
@@ -103,6 +103,9 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     }
     called = true;
     callback({
+      toggleOrder() {
+        _isLastTop = !_isLastTop;
+      },
       notice(noticeProps) {
         notification.add(noticeProps);
       },

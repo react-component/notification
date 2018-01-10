@@ -49,8 +49,15 @@ function manualClose() {
   });
 }
 
+function toggleOrder() {
+  notification.toggleOrder();
+}
+
 ReactDOM.render(<div>
   <div>
+    <label><input type="checkbox" onChange={toggleOrder} />Show last added on top</label>
+    <br/>
+    <br/>
     <button onClick={simpleFn}>simple show</button>
     <button onClick={durationFn}>duration=0</button>
     <button onClick={closableFn}>closable</button>

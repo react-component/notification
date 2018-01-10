@@ -92,6 +92,12 @@ props details:
           <td></td>
           <td>function returning html node which will act as notification container</td>
         </tr>
+        <tr>
+          <td>isLastTop</td>
+          <td>Boolean</td>
+          <td></td>
+          <td>whether to show recent notification on top, this is global change.</td>
+        </tr>
     </tbody>
 </table>
 
