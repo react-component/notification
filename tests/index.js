@@ -73,12 +73,14 @@ describe('rc-notification', () => {
   });
 
   it('getContainer works', () => {
+    const div = document.createElement('div');
+    div.id = 'get-container-test';
+    div.className = 'rc';
+    document.body.appendChild(div);
+
     Notification.newInstance({
       getContainer: () => {
-        const div = document.createElement('div');
-        div.className = 'rc';
-        document.body.appendChild(div);
-        return div;
+        return document.getElementById('get-container-test');
       },
     }, notification => {
       notification.notice({
