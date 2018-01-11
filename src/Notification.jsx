@@ -112,14 +112,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       component: notification,
       destroy() {
         ReactDOM.unmountComponentAtNode(div);
-        if (!getContainer) {
-          document.body.removeChild(div);
-        } else {
-          const root = getContainer();
-          if (root) {
-            root.removeChild(div);
-          }
-        }
+        div.parentNode.removeChild(div);
       },
     });
   }
