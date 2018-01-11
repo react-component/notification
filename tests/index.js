@@ -73,20 +73,27 @@ describe('rc-notification', () => {
   });
 
   it('getContainer works', () => {
+    const id = 'get-container-test';
+    const div = document.createElement('div');
+    div.id = id;
+    div.innerHTML = '<span>test</span>';
+    document.body.appendChild(div);
+
     Notification.newInstance({
       getContainer: () => {
-        const div = document.createElement('div');
-        div.className = 'rc';
-        document.body.appendChild(div);
-        return div;
+        return document.getElementById('get-container-test');
       },
     }, notification => {
       notification.notice({
         content: <p id="test" className="test">222222</p>,
         duration: 1,
       });
-      expect(document.querySelectorAll('.rc').length).to.be(1);
+      expect(document.getElementById(id).children.length).to.be(2);
+      expect(document.getElementById(id)).not.to.be(null);
+
       notification.destroy();
+
+      expect(document.getElementById(id).children.length).to.be(1);
     });
   });
 

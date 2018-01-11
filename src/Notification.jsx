@@ -89,11 +89,11 @@ class Notification extends Component {
 
 Notification.newInstance = function newNotificationInstance(properties, callback) {
   const { getContainer, ...props } = properties || {};
-  let div;
+  const div = document.createElement('div');
   if (getContainer) {
-    div = getContainer();
+    const root = getContainer();
+    root.appendChild(div);
   } else {
-    div = document.createElement('div');
     document.body.appendChild(div);
   }
   let called = false;
@@ -112,9 +112,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       component: notification,
       destroy() {
         ReactDOM.unmountComponentAtNode(div);
-        if (!getContainer) {
-          document.body.removeChild(div);
-        }
+        div.parentNode.removeChild(div);
       },
     });
   }
