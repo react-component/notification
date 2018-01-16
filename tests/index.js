@@ -175,4 +175,39 @@ describe('rc-notification', () => {
     expect(() => ReactDOM.render(<Test />, container))
       .to.not.throwException();
   });
+
+  it('last notification on top works', (done) => {
+    Notification.newInstance({ isLastTop: true }, notification => {
+      notification.notice({
+        content: <p className="test">1</p>,
+        duration: 0,
+      });
+      notification.notice({
+        content: <p className="test">2</p>,
+        duration: 0,
+      });
+      setTimeout(() => {
+        expect(
+          TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test')
+          .map(e => e.textContent)
+        ).to.eql(
+          ['2', '1']
+        );
+        notification.toggleOrder();
+        notification.notice({
+          content: <p className="test">3</p>,
+          duration: 0,
+        });
+        setTimeout(() => {
+          expect(
+            TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test')
+            .map(e => e.textContent)
+          ).to.eql(
+            ['2', '1', '3']
+          );
+          done();
+        });
+      }, 10);
+    });
+  });
 });
