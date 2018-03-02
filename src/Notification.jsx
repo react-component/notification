@@ -102,20 +102,24 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       return;
     }
     called = true;
-    callback({
-      notice(noticeProps) {
-        notification.add(noticeProps);
-      },
-      removeNotice(key) {
-        notification.remove(key);
-      },
-      component: notification,
-      destroy() {
-        ReactDOM.unmountComponentAtNode(div);
-        div.parentNode.removeChild(div);
-      },
-    });
+
+    if (callback) {
+      callback({
+        notice(noticeProps) {
+          notification.add(noticeProps);
+        },
+        removeNotice(key) {
+          notification.remove(key);
+        },
+        component: notification,
+        destroy() {
+          ReactDOM.unmountComponentAtNode(div);
+          div.parentNode.removeChild(div);
+        },
+      });
+    }
   }
+
   ReactDOM.render(<Notification {...props} ref={ref} />, div);
 };
 
