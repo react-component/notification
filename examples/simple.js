@@ -49,11 +49,37 @@ function manualClose() {
   });
 }
 
+let counter = 0;
+let intervalKey;
+function updatableFn() {
+  if (counter !== 0) {
+    return;
+  }
+
+  const key = 'updatable-notification';
+  const initialProps = {
+    content: `Timer: ${counter}s`,
+    key,
+    duration: null,
+    closable: true,
+    onClose() {
+      clearInterval(intervalKey);
+      counter = 0;
+    },
+  };
+
+  notification.notice(initialProps);
+  intervalKey = setInterval(() => {
+    notification.notice({ ...initialProps, content: `Timer: ${++counter}s` });
+  }, 1000);
+}
+
 ReactDOM.render(<div>
   <div>
     <button onClick={simpleFn}>simple show</button>
     <button onClick={durationFn}>duration=0</button>
     <button onClick={closableFn}>closable</button>
     <button onClick={manualClose}>controlled close</button>
+    <button onClick={updatableFn}>updatable</button>
   </div>
 </div>, document.getElementById('__react-content'));

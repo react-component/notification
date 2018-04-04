@@ -47,11 +47,17 @@ class Notification extends Component {
     const key = notice.key = notice.key || getUuid();
     this.setState(previousState => {
       const notices = previousState.notices;
-      if (!notices.filter(v => v.key === key).length) {
-        return {
-          notices: notices.concat(notice),
-        };
+      const noticeIndex = notices.map(v => v.key).indexOf(key);
+      let updatedNotices;
+      if (noticeIndex === -1) {
+        updatedNotices = notices.concat(notice);
+      } else {
+        updatedNotices = notices.concat();
+        updatedNotices.splice(noticeIndex, 1, notice);
       }
+      return {
+        notices: updatedNotices,
+      };
     });
   }
 
