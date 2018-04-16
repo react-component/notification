@@ -145,6 +145,12 @@ props details:
           <td> { right: '50%' } </td>
           <td>additional style for single notice node.</td>
         </tr>
+        <tr>
+          <td>maxItems</td>
+          <td>number</td>
+          <td>99</td>
+          <td>max notices show, update last if exceed limit</td>
+        </tr>
     </tbody>
 </table>
 

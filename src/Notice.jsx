@@ -7,6 +7,7 @@ export default class Notice extends Component {
     duration: PropTypes.number,
     onClose: PropTypes.func,
     children: PropTypes.any,
+    update: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -25,7 +26,8 @@ export default class Notice extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.duration !== prevProps.duration) {
+    if (this.props.duration !== prevProps.duration
+      || this.props.update) {
       this.restartCloseTimer();
     }
   }

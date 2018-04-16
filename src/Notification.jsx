@@ -19,6 +19,7 @@ class Notification extends Component {
     transitionName: PropTypes.string,
     animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     style: PropTypes.object,
+    maxItems: PropTypes.number,
   };
 
   static defaultProps = {
@@ -28,6 +29,7 @@ class Notification extends Component {
       top: 65,
       left: '50%',
     },
+    maxItems: 99,
   };
 
   state = {
@@ -45,15 +47,21 @@ class Notification extends Component {
 
   add = (notice) => {
     const key = notice.key = notice.key || getUuid();
+    const { maxItems } = this.props;
     this.setState(previousState => {
       const notices = previousState.notices;
       const noticeIndex = notices.map(v => v.key).indexOf(key);
-      let updatedNotices;
-      if (noticeIndex === -1) {
-        updatedNotices = notices.concat(notice);
-      } else {
-        updatedNotices = notices.concat();
+      const updatedNotices = notices.concat();
+      if (noticeIndex !== -1) {
         updatedNotices.splice(noticeIndex, 1, notice);
+      } else {
+        if (notices.length < maxItems) {
+          updatedNotices.push(notice);
+        } else {
+          notice.key = updatedNotices[maxItems - 1].key;
+          notice.update = true;
+          updatedNotices[maxItems - 1] = notice;
+        }
       }
       return {
         notices: updatedNotices,
