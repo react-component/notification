@@ -24,6 +24,12 @@ export default class Notice extends Component {
     this.startCloseTimer();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.duration !== prevProps.duration) {
+      this.restartCloseTimer();
+    }
+  }
+
   componentWillUnmount() {
     this.clearCloseTimer();
   }
@@ -46,6 +52,11 @@ export default class Notice extends Component {
       clearTimeout(this.closeTimer);
       this.closeTimer = null;
     }
+  }
+
+  restartCloseTimer() {
+    this.clearCloseTimer();
+    this.startCloseTimer();
   }
 
   render() {

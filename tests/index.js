@@ -130,6 +130,51 @@ describe('rc-notification', () => {
     });
   });
 
+  it('update notification by key with multi instance', (done) => {
+    Notification.newInstance({}, notification => {
+      const key = 'updatable';
+      const value = 'value';
+      const newValue = `new-${value}`;
+      const notUpdatableValue = 'not-updatable-value';
+      notification.notice({
+        content: <p id="not-updatable" className="not-updatable">{notUpdatableValue}</p>,
+        duration: null,
+      });
+      notification.notice({
+        content: <p id="updatable" className="updatable">{value}</p>,
+        key,
+        duration: null,
+      });
+
+      setTimeout(() => {
+        expect(document.querySelectorAll('.updatable').length).to.be(1);
+        expect(document.querySelector('.updatable').innerText).to.be(value);
+
+        notification.notice({
+          content: <p id="updatable" className="updatable">{newValue}</p>,
+          key,
+          duration: 0.1,
+        });
+
+        setTimeout(() => {
+          // Text updated successfully
+          expect(document.querySelectorAll('.updatable').length).to.be(1);
+          expect(document.querySelector('.updatable').innerText).to.be(newValue);
+
+          setTimeout(() => {
+            // Other notices are not affected
+            expect(document.querySelectorAll('.not-updatable').length).to.be(1);
+            expect(document.querySelector('.not-updatable').innerText).to.be(notUpdatableValue);
+            // Duration updated successfully
+            expect(document.querySelectorAll('.updatable').length).to.be(0);
+            notification.destroy();
+            done();
+          }, 500);
+        }, 10);
+      }, 10);
+    });
+  });
+
   it('freeze notification layer when mouse over', (done) => {
     Notification.newInstance({}, notification => {
       notification.notice({
