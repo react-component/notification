@@ -19,7 +19,7 @@ class Notification extends Component {
     transitionName: PropTypes.string,
     animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     style: PropTypes.object,
-    maxItems: PropTypes.number,
+    maxCount: PropTypes.number,
   };
 
   static defaultProps = {
@@ -29,7 +29,6 @@ class Notification extends Component {
       top: 65,
       left: '50%',
     },
-    maxItems: 99,
   };
 
   state = {
@@ -47,7 +46,7 @@ class Notification extends Component {
 
   add = (notice) => {
     const key = notice.key = notice.key || getUuid();
-    const { maxItems } = this.props;
+    const { maxCount } = this.props;
     this.setState(previousState => {
       const notices = previousState.notices;
       const noticeIndex = notices.map(v => v.key).indexOf(key);
@@ -55,13 +54,14 @@ class Notification extends Component {
       if (noticeIndex !== -1) {
         updatedNotices.splice(noticeIndex, 1, notice);
       } else {
-        if (notices.length < maxItems) {
-          updatedNotices.push(notice);
-        } else {
-          notice.key = updatedNotices[maxItems - 1].key;
-          notice.update = true;
-          updatedNotices[maxItems - 1] = notice;
+        if (maxCount && notices.length >= maxCount) {
+          // XXX, use key of first item to update new added (let React to move exsiting
+          // instead of remove and mount). Same key was used before for both a) external
+          // manual control and b) internal react 'key' prop , which is not that good.
+          notice.updateKey = updatedNotices[0].updateKey || updatedNotices[0].key;
+          updatedNotices.shift();
         }
+        updatedNotices.push(notice);
       }
       return {
         notices: updatedNotices,
@@ -79,11 +79,16 @@ class Notification extends Component {
 
   render() {
     const props = this.props;
-    const noticeNodes = this.state.notices.map((notice) => {
+    const { notices } = this.state;
+    const noticeNodes = notices.map((notice, index) => {
+      const update = Boolean(index === notices.length - 1 && notice.updateKey);
+      const key = notice.updateKey ? notice.updateKey : notice.key;
       const onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
       return (<Notice
         prefixCls={props.prefixCls}
         {...notice}
+        key={key}
+        update={update}
         onClose={onClose}
       >
         {notice.content}

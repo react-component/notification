@@ -146,10 +146,10 @@ props details:
           <td>additional style for single notice node.</td>
         </tr>
         <tr>
-          <td>maxItems</td>
+          <td>maxCount</td>
           <td>number</td>
-          <td>99</td>
-          <td>max notices show, update last if exceed limit</td>
+          <td></td>
+          <td>max notices show, drop first notice if exceed limit</td>
         </tr>
     </tbody>
 </table>

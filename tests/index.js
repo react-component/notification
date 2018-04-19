@@ -221,25 +221,25 @@ describe('rc-notification', () => {
       .to.not.throwException();
   });
 
-  it('update last notice when items limit exceeds', (done) => {
-    Notification.newInstance({ maxItems: 1 }, notification => {
+  it('drop first notice when items limit exceeds', (done) => {
+    Notification.newInstance({ maxCount: 1 }, notification => {
       const value = 'updated last';
       notification.notice({
-        content: <span className="test-maxitems">simple show</span>,
+        content: <span className="test-maxcount">simple show</span>,
         duration: 3,
       });
       notification.notice({
-        content: <span className="test-maxitems">simple show</span>,
+        content: <span className="test-maxcount">simple show</span>,
         duration: 3,
       });
       notification.notice({
-        content: <span className="test-maxitems">{value}</span>,
+        content: <span className="test-maxcount">{value}</span>,
         duration: 3,
       });
 
       setTimeout(() => {
-        expect(document.querySelectorAll('.test-maxitems').length).to.be(1);
-        expect(document.querySelector('.test-maxitems').innerText).to.be(value);
+        expect(document.querySelectorAll('.test-maxcount').length).to.be(1);
+        expect(document.querySelector('.test-maxcount').innerText).to.be(value);
         done();
       }, 10);
     });
