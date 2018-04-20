@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-notification@3.1.0 - notification ui component for react</title>
+  <title>rc-notification@3.1.1 - notification ui component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-notification@3.1.0</h1>
+  <h1>rc-notification@3.1.1</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -850,6 +850,12 @@ Notification.newInstance({}, notification =&gt; {
           <td>Object</td>
           <td> { right: &#39;50%&#39; } </td>
           <td>additional style for single notice node.</td>
+        </tr>
+        <tr>
+          <td>maxCount</td>
+          <td>number</td>
+          <td></td>
+          <td>max notices show, drop first notice if exceed limit</td>
         </tr>
     </tbody>
 </table>
