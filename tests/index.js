@@ -220,4 +220,28 @@ describe('rc-notification', () => {
     expect(() => ReactDOM.render(<Test />, container))
       .to.not.throwException();
   });
+
+  it('drop first notice when items limit exceeds', (done) => {
+    Notification.newInstance({ maxCount: 1 }, notification => {
+      const value = 'updated last';
+      notification.notice({
+        content: <span className="test-maxcount">simple show</span>,
+        duration: 3,
+      });
+      notification.notice({
+        content: <span className="test-maxcount">simple show</span>,
+        duration: 3,
+      });
+      notification.notice({
+        content: <span className="test-maxcount">{value}</span>,
+        duration: 3,
+      });
+
+      setTimeout(() => {
+        expect(document.querySelectorAll('.test-maxcount').length).to.be(1);
+        expect(document.querySelector('.test-maxcount').innerText).to.be(value);
+        done();
+      }, 10);
+    });
+  });
 });
