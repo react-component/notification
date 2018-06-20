@@ -69,9 +69,19 @@ export default class Notice extends Component {
       [`${componentClass}-closable`]: props.closable,
       [props.className]: !!props.className,
     };
+    const dataOrAriaAttributeProps = Object.keys(props).reduce((prev, key) => {
+      if ((key.substr(0, 5) === 'data-' || key.substr(0, 5) === 'aria-' || key === 'role')) {
+        prev[key] = props[key];
+      }
+      return prev;
+    }, {});
     return (
-      <div className={classNames(className)} style={props.style} onMouseEnter={this.clearCloseTimer}
+      <div
+        className={classNames(className)}
+        style={props.style}
+        onMouseEnter={this.clearCloseTimer}
         onMouseLeave={this.startCloseTimer}
+        {...dataOrAriaAttributeProps}
       >
         <div className={`${componentClass}-content`}>{props.children}</div>
           {props.closable ?

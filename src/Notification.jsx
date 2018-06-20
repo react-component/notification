@@ -90,6 +90,7 @@ class Notification extends Component {
         key={key}
         update={update}
         onClose={onClose}
+        {...notice.props}
       >
         {notice.content}
       </Notice>);

@@ -244,4 +244,68 @@ describe('rc-notification', () => {
       }, 10);
     });
   });
+
+  describe('data and aria props', () => {
+    it('sets data attributes', (done) => {
+      Notification.newInstance({}, notification => {
+        notification.notice({
+          content: <span className="test-data-attributes">simple show</span>,
+          duration: 3,
+          className: 'notice-class',
+          props: {
+            'data-test': 'test-id',
+            'data-id': '12345',
+          },
+        });
+
+        setTimeout(() => {
+          const notices = document.querySelectorAll('.notice-class');
+          expect(notices.length).to.be(1);
+          expect(notices[0].getAttribute('data-test')).to.be('test-id');
+          expect(notices[0].getAttribute('data-id')).to.be('12345');
+          done();
+        }, 10);
+      });
+    });
+
+    it('sets aria attributes', (done) => {
+      Notification.newInstance({}, notification => {
+        notification.notice({
+          content: <span className="test-aria-attributes">simple show</span>,
+          duration: 3,
+          className: 'notice-class',
+          props: {
+            'aria-describedby': 'described-id',
+            'aria-labelledby': 'label-id',
+          },
+        });
+
+        setTimeout(() => {
+          const notices = document.querySelectorAll('.notice-class');
+          expect(notices.length).to.be(1);
+          expect(notices[0].getAttribute('aria-describedby')).to.be('test-id');
+          expect(notices[0].getAttribute('aria-labelledby')).to.be('label-id');
+          done();
+        }, 10);
+      });
+    });
+
+    it('sets role attribute', (done) => {
+      Notification.newInstance({}, notification => {
+        notification.notice({
+          content: <span className="test-aria-attributes">simple show</span>,
+          duration: 3,
+          className: 'notice-class',
+          props: { role: 'alert' },
+        });
+
+        setTimeout(() => {
+          const notices = document.querySelectorAll('.notice-class');
+          expect(notices.length).to.be(1);
+          expect(notices[0].getAttribute('role')).to.be('alert');
+          done();
+        }, 10);
+      });
+    });
+  });
 });
