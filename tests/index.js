@@ -251,7 +251,7 @@ describe('rc-notification', () => {
         notification.notice({
           content: <span className="test-data-attributes">simple show</span>,
           duration: 3,
-          className: 'notice-class',
+          className: 'test-data-class',
           props: {
             'data-test': 'test-id',
             'data-id': '12345',
@@ -259,7 +259,7 @@ describe('rc-notification', () => {
         });
 
         setTimeout(() => {
-          const notices = document.querySelectorAll('.notice-class');
+          const notices = document.querySelectorAll('.test-data-class');
           expect(notices.length).to.be(1);
           expect(notices[0].getAttribute('data-test')).to.be('test-id');
           expect(notices[0].getAttribute('data-id')).to.be('12345');
@@ -273,7 +273,7 @@ describe('rc-notification', () => {
         notification.notice({
           content: <span className="test-aria-attributes">simple show</span>,
           duration: 3,
-          className: 'notice-class',
+          className: 'test-aria-class',
           props: {
             'aria-describedby': 'described-id',
             'aria-labelledby': 'label-id',
@@ -281,9 +281,9 @@ describe('rc-notification', () => {
         });
 
         setTimeout(() => {
-          const notices = document.querySelectorAll('.notice-class');
+          const notices = document.querySelectorAll('.test-aria-class');
           expect(notices.length).to.be(1);
-          expect(notices[0].getAttribute('aria-describedby')).to.be('test-id');
+          expect(notices[0].getAttribute('aria-describedby')).to.be('described-id');
           expect(notices[0].getAttribute('aria-labelledby')).to.be('label-id');
           done();
         }, 10);
@@ -295,12 +295,12 @@ describe('rc-notification', () => {
         notification.notice({
           content: <span className="test-aria-attributes">simple show</span>,
           duration: 3,
-          className: 'notice-class',
+          className: 'test-role-class',
           props: { role: 'alert' },
         });
 
         setTimeout(() => {
-          const notices = document.querySelectorAll('.notice-class');
+          const notices = document.querySelectorAll('.test-role-class');
           expect(notices.length).to.be(1);
           expect(notices[0].getAttribute('role')).to.be('alert');
           done();
