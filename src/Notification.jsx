@@ -20,6 +20,7 @@ class Notification extends Component {
     animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     style: PropTypes.object,
     maxCount: PropTypes.number,
+    closeIcon: PropTypes.node,
   };
 
   static defaultProps = {
@@ -90,6 +91,7 @@ class Notification extends Component {
         key={key}
         update={update}
         onClose={onClose}
+        closeIcon={props.closeIcon}
       >
         {notice.content}
       </Notice>);
