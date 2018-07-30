@@ -31,6 +31,29 @@ describe('rc-notification', () => {
     });
   });
 
+  it('works with custom close icon', (done) => {
+    Notification.newInstance({
+      closeIcon: <span className="test-icon">test-close-icon</span>,
+    }, notification => {
+      notification.notice({
+        content: <p className="test">1</p>,
+        closable: true,
+        duration: 0,
+      });
+      setTimeout(() => {
+        expect(
+          TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length
+        ).to.be(1);
+        expect(
+          TestUtils
+            .scryRenderedDOMComponentsWithClass(notification.component, 'test-icon')[0]
+            .innerText
+        ).to.be('test-close-icon');
+        done();
+      }, 10);
+    });
+  });
+
   it('works with multi instance', (done) => {
     Notification.newInstance({}, notification => {
       notification.notice({

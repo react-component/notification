@@ -8,6 +8,7 @@ export default class Notice extends Component {
     onClose: PropTypes.func,
     children: PropTypes.any,
     update: PropTypes.bool,
+    closeIcon: PropTypes.node,
   };
 
   static defaultProps = {
@@ -76,7 +77,7 @@ export default class Notice extends Component {
         <div className={`${componentClass}-content`}>{props.children}</div>
           {props.closable ?
             <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
-              <span className={`${componentClass}-close-x`}></span>
+              {props.closeIcon || <span className={`${componentClass}-close-x`}/>}
             </a> : null
           }
       </div>

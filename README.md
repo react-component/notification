@@ -151,6 +151,12 @@ props details:
           <td></td>
           <td>max notices show, drop first notice if exceed limit</td>
         </tr>
+        <tr>
+          <td>closeIcon</td>
+          <td>ReactNode</td>
+          <td></td>
+          <td>specific the close icon.</td>
+        </tr>
     </tbody>
 </table>
 
