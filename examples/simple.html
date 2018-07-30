@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-notification@3.1.1</title>
+  <title>simple.js - example - rc-notification@3.2.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -263,7 +263,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-notification@3.1.1</h1>
+      <h1>rc-notification@3.2.0</h1>
 
       <p>notification ui component for react</p>
     </div>
@@ -345,13 +345,52 @@ function updatableFn() {
   }, 1000);
 }
 
-ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+let notification2 = null;
+const clearPath = 'M793 242H366v-74c0-6.7-7.7-10.4-12.9' +
+  '-6.3l-142 112c-4.1 3.2-4.1 9.4 0 12.6l142 112c' +
+  '5.2 4.1 12.9 0.4 12.9-6.3v-74h415v470H175c-4.4' +
+  ' 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h618c35.3 0 64-' +
+  '28.7 64-64V306c0-35.3-28.7-64-64-64z';
+
+const getSvg = (path, props = {}, align = false) =&gt; {
+  return (
+    <span class="hljs-tag">&lt;<span class="hljs-title">i</span> {<span class="hljs-attribute">...props</span>}&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">svg</span>
+        <span class="hljs-attribute">viewBox</span>=<span class="hljs-value">"0 0 1024 1024"</span>
+        <span class="hljs-attribute">width</span>=<span class="hljs-value">"1em"</span>
+        <span class="hljs-attribute">height</span>=<span class="hljs-value">"1em"</span>
+        <span class="hljs-attribute">fill</span>=<span class="hljs-value">"currentColor"</span>
+        <span class="hljs-attribute">style</span>=<span class="hljs-value">{align</span> ? { <span class="hljs-attribute">verticalAlign:</span> '<span class="hljs-attribute">-.125em</span> ' } <span class="hljs-attribute">:</span> {}}
+      &gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">path</span> <span class="hljs-attribute">d</span>=<span class="hljs-value">{path}</span> <span class="hljs-attribute">p-id</span>=<span class="hljs-value">"5827"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">path</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">svg</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">i</span>&gt;</span>
+  )</span>;
+};
+Notification.newInstance({
+  closeIcon: getSvg(clearPath, {}, <span class="hljs-literal">true</span>),
+}, (n) =&gt; {
+  notification2 = n;
+});
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">customCloseIconFn</span>(<span class="hljs-params"></span>) </span>{
+  notification2.notice({
+    content: <span class="hljs-string">'It use custom close icon'</span>,
+    closable: <span class="hljs-literal">true</span>,
+    duration: <span class="hljs-number">0</span>,
+    closeIcon: <span class="hljs-string">'test'</span>,
+  });
+}
+
+ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{simpleFn}</span>&gt;</span>simple show<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{durationFn}</span>&gt;</span>duration=0<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{closableFn}</span>&gt;</span>closable<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{manualClose}</span>&gt;</span>controlled close<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{updatableFn}</span>&gt;</span>updatable<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{customCloseIconFn}</span>&gt;</span>custom close icon<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>, document.getElementById('__react-content'));
 </span></code></pre></div>
