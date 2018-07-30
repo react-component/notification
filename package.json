@@ -27,7 +27,7 @@
   "bugs": {
     "url": "http://github.com/react-component/notification/issues"
   },
-  "licenses": "MIT",
+  "license": "MIT",
   "main": "lib/index",
   "module": "es/index",
   "config": {
