@@ -103,7 +103,7 @@ Notification.newInstance({
 });
 function customCloseIconFn() {
   notification2.notice({
-    content: 'It use custom close icon',
+    content: 'It is using custom close icon...',
     closable: true,
     duration: 0,
   });
