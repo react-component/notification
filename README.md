@@ -153,7 +153,7 @@ props details:
         </tr>
         <tr>
           <td>closeIcon</td>
-          <td>React.ReactNode</td>
+          <td>ReactNode</td>
           <td></td>
           <td>specific the close icon.</td>
         </tr>
