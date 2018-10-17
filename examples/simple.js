@@ -30,6 +30,9 @@ function closableFn() {
       console.log('closable close');
     },
     closable: true,
+    onClick() {
+      console.log('clicked!!!');
+    },
   });
 }
 

@@ -267,4 +267,35 @@ describe('rc-notification', () => {
       }, 10);
     });
   });
+
+  it('onClick trigger', (done) => {
+    let clicked = 0;
+    Notification.newInstance({}, notification => {
+      const key = Date.now();
+      const close = (k) => {
+        notification.removeNotice(k);
+      };
+      notification.notice({
+        content: <p className="test">
+          <button id="closeButton" onClick={close.bind(null, key)}>
+            close
+          </button>
+        </p>,
+        key,
+        duration: null,
+        onClick: () => {
+          clicked += 1;
+        },
+      });
+
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.rc-notification-notice');
+        TestUtils.Simulate.click(elements[elements.length - 1]);
+
+        expect(clicked).to.be(1);
+        notification.destroy();
+        done();
+      }, 10);
+    });
+  });
 });

@@ -91,6 +91,7 @@ class Notification extends Component {
         key={key}
         update={update}
         onClose={onClose}
+        onClick={notice.onClick}
         closeIcon={props.closeIcon}
       >
         {notice.content}
