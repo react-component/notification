@@ -94,7 +94,7 @@ const getSvg = (path, props = {}, align = false) => {
         fill="currentColor"
         style={align ? { verticalAlign: '-.125em ' } : {}}
       >
-        <path d={path} p-id="5827"></path>
+        <path d={path} />
       </svg>
     </i>
   );
@@ -106,10 +106,9 @@ Notification.newInstance({
 });
 function customCloseIconFn() {
   notification2.notice({
-    content: 'It use custom close icon',
+    content: 'It is using custom close icon...',
     closable: true,
     duration: 0,
-    closeIcon: 'test',
   });
 }
 
