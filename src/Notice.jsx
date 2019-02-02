@@ -37,7 +37,8 @@ export default class Notice extends Component {
     this.clearCloseTimer();
   }
 
-  close = () => {
+  close = (e) => {
+    e.stopPropagation();
     this.clearCloseTimer();
     this.props.onClose();
   }
