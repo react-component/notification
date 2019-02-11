@@ -298,4 +298,31 @@ describe('rc-notification', () => {
       }, 10);
     });
   });
+
+  it('Close Notification only trigger onCloase', (done) => {
+    let clickCount = 0;
+    let closeCount = 0;
+    Notification.newInstance({}, notification => {
+      notification.notice({
+        content: <p className="test">1</p>,
+        closable: true,
+        onClick: () => {
+          clickCount++;
+        },
+        onClose: () => {
+          closeCount++;
+        },
+      });
+
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.rc-notification-notice-close');
+        TestUtils.Simulate.click(elements[elements.length - 1]);
+
+        expect(clickCount).to.be(0);
+        expect(closeCount).to.be(1);
+        notification.destroy();
+        done();
+      }, 10);
+    });
+  });
 });
