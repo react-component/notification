@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-notification@3.2.0</title>
+  <title>simple.js - example - rc-notification@3.3.1</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -263,7 +263,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-notification@3.2.0</h1>
+      <h1>rc-notification@3.3.1</h1>
 
       <p>notification ui component for react</p>
     </div>
@@ -301,6 +301,9 @@ function closableFn() {
       console.log('closable close');
     },
     closable: true,
+    onClick() {
+      console.log('clicked!!!');
+    },
   });
 }
 
@@ -362,7 +365,7 @@ const getSvg = (path, props = {}, align = false) =&gt; {
         <span class="hljs-attribute">fill</span>=<span class="hljs-value">"currentColor"</span>
         <span class="hljs-attribute">style</span>=<span class="hljs-value">{align</span> ? { <span class="hljs-attribute">verticalAlign:</span> '<span class="hljs-attribute">-.125em</span> ' } <span class="hljs-attribute">:</span> {}}
       &gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">path</span> <span class="hljs-attribute">d</span>=<span class="hljs-value">{path}</span> <span class="hljs-attribute">p-id</span>=<span class="hljs-value">"5827"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">path</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">path</span> <span class="hljs-attribute">d</span>=<span class="hljs-value">{path}</span> /&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">svg</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-title">i</span>&gt;</span>
   )</span>;
@@ -374,10 +377,9 @@ Notification.newInstance({
 });
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">customCloseIconFn</span>(<span class="hljs-params"></span>) </span>{
   notification2.notice({
-    content: <span class="hljs-string">'It use custom close icon'</span>,
+    content: <span class="hljs-string">'It is using custom close icon...'</span>,
     closable: <span class="hljs-literal">true</span>,
     duration: <span class="hljs-number">0</span>,
-    closeIcon: <span class="hljs-string">'test'</span>,
   });
 }
 
