@@ -77,7 +77,6 @@ function updatableFn() {
   }, 1000);
 }
 
-let notification2 = null;
 const clearPath = 'M793 242H366v-74c0-6.7-7.7-10.4-12.9' +
   '-6.3l-142 112c-4.1 3.2-4.1 9.4 0 12.6l142 112c' +
   '5.2 4.1 12.9 0.4 12.9-6.3v-74h415v470H175c-4.4' +
@@ -99,15 +98,12 @@ const getSvg = (path, props = {}, align = false) => {
     </i>
   );
 };
-Notification.newInstance({
-  closeIcon: getSvg(clearPath, {}, true),
-}, (n) => {
-  notification2 = n;
-});
+
 function customCloseIconFn() {
-  notification2.notice({
+  notification.notice({
     content: 'It is using custom close icon...',
     closable: true,
+    closeIcon: getSvg(clearPath, {}, true),
     duration: 0,
   });
 }
