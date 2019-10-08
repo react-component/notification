@@ -87,12 +87,12 @@ class Notification extends Component {
       const onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
       return (<Notice
         prefixCls={props.prefixCls}
+        closeIcon={props.closeIcon}
         {...notice}
         key={key}
         update={update}
         onClose={onClose}
         onClick={notice.onClick}
-        closeIcon={props.closeIcon}
       >
         {notice.content}
       </Notice>);
