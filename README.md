@@ -92,6 +92,12 @@ props details:
           <td></td>
           <td>function returning html node which will act as notification container</td>
         </tr>
+        <tr>
+          <td>maxCount</td>
+          <td>number</td>
+          <td></td>
+          <td>max notices show, drop first notice if exceed limit</td>
+        </tr>
     </tbody>
 </table>
 
@@ -144,12 +150,6 @@ props details:
           <td>Object</td>
           <td> { right: '50%' } </td>
           <td>additional style for single notice node.</td>
-        </tr>
-        <tr>
-          <td>maxCount</td>
-          <td>number</td>
-          <td></td>
-          <td>max notices show, drop first notice if exceed limit</td>
         </tr>
         <tr>
           <td>closeIcon</td>
