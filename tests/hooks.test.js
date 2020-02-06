@@ -40,7 +40,11 @@ describe('Notification.Hooks', () => {
       demo.find('button').simulate('click');
       setTimeout(() => {
         expect(demo.find('.context-content').text()).toEqual('bamboo');
-        done();
+
+        setTimeout(() => {
+          instance.destroy();
+          done();
+        }, 1000);
       }, 10);
     }, 0);
   });
