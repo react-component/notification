@@ -10,7 +10,9 @@ let seed = 0;
 const now = Date.now();
 
 function getUuid() {
-  return `rcNotification_${now}_${seed++}`;
+  const id = seed;
+  seed += 1;
+  return `rcNotification_${now}_${id}`;
 }
 
 class Notification extends Component {
@@ -37,19 +39,20 @@ class Notification extends Component {
   };
 
   getTransitionName() {
-    const props = this.props;
-    let transitionName = props.transitionName;
-    if (!transitionName && props.animation) {
-      transitionName = `${props.prefixCls}-${props.animation}`;
+    const { prefixCls, animation } = this.props;
+    let { transitionName } = this.props;
+    if (!transitionName && animation) {
+      transitionName = `${prefixCls}-${animation}`;
     }
     return transitionName;
   }
 
-  add = (notice) => {
-    const key = notice.key = notice.key || getUuid();
+  add = notice => {
+    notice.key = notice.key || getUuid();
+    const { key } = notice;
     const { maxCount } = this.props;
     this.setState(previousState => {
-      const notices = previousState.notices;
+      const { notices } = previousState;
       const noticeIndex = notices.map(v => v.key).indexOf(key);
       const updatedNotices = notices.concat();
       if (noticeIndex !== -1) {
@@ -68,41 +71,37 @@ class Notification extends Component {
         notices: updatedNotices,
       };
     });
-  }
+  };
 
-  remove = (key) => {
-    this.setState(previousState => {
-      return {
-        notices: previousState.notices.filter(notice => notice.key !== key),
-      };
-    });
-  }
+  remove = key => {
+    this.setState(previousState => ({
+      notices: previousState.notices.filter(notice => notice.key !== key),
+    }));
+  };
 
   render() {
-    const props = this.props;
     const { notices } = this.state;
+    const { prefixCls, className, closeIcon, style } = this.props;
     const noticeNodes = notices.map((notice, index) => {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
       const onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
-      return (<Notice
-        prefixCls={props.prefixCls}
-        closeIcon={props.closeIcon}
-        {...notice}
-        key={key}
-        update={update}
-        onClose={onClose}
-        onClick={notice.onClick}
-      >
-        {notice.content}
-      </Notice>);
+      return (
+        <Notice
+          prefixCls={prefixCls}
+          closeIcon={closeIcon}
+          {...notice}
+          key={key}
+          update={update}
+          onClose={onClose}
+          onClick={notice.onClick}
+        >
+          {notice.content}
+        </Notice>
+      );
     });
-    const className = {
-      [props.prefixCls]: 1,
-      [props.className]: !!props.className,
-    };
     return (
-      <div className={classnames(className)} style={props.style}>
+      <div className={classnames(prefixCls, className)} style={style}>
         <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
       </div>
     );
@@ -138,6 +137,13 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       },
     });
   }
+
+  // Only used for test case usage
+  if (process.env.NODE_ENV === 'test' && properties.TEST_RENDER) {
+    properties.TEST_RENDER(<Notification {...props} ref={ref} />);
+    return;
+  }
+
   ReactDOM.render(<Notification {...props} ref={ref} />, div);
 };
 

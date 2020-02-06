@@ -1,3 +1,4 @@
+.storybook
 *.iml
 *.log
 *.log.*
@@ -28,3 +29,4 @@ lib
 es
 coverage
 yarn.lock
+package-lock.json
