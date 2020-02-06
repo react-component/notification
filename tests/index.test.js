@@ -107,262 +107,310 @@ describe('Notification.Basic', () => {
     });
   });
 
-  // it('getContainer works', () => {
-  //   const id = 'get-container-test';
-  //   const div = document.createElement('div');
-  //   div.id = id;
-  //   div.innerHTML = '<span>test</span>';
-  //   document.body.appendChild(div);
+  it('getContainer works', () => {
+    const id = 'get-container-test';
+    const div = document.createElement('div');
+    div.id = id;
+    div.innerHTML = '<span>test</span>';
+    document.body.appendChild(div);
 
-  //   Notification.newInstance(
-  //     {
-  //       getContainer: () => {
-  //         return document.getElementById('get-container-test');
-  //       },
-  //     },
-  //     notification => {
-  //       notification.notice({
-  //         content: (
-  //           <p id="test" className="test">
-  //             222222
-  //           </p>
-  //         ),
-  //         duration: 1,
-  //       });
-  //       expect(document.getElementById(id).children.length).to.be(2);
-  //       expect(document.getElementById(id)).not.to.be(null);
+    Notification.newInstance(
+      {
+        getContainer: () => document.getElementById('get-container-test'),
+      },
+      notification => {
+        notification.notice({
+          content: (
+            <p id="test" className="test">
+              222222
+            </p>
+          ),
+          duration: 1,
+        });
 
-  //       notification.destroy();
+        expect(document.getElementById(id).children).toHaveLength(2);
+        notification.destroy();
+        expect(document.getElementById(id).children).toHaveLength(1);
+      },
+    );
+  });
 
-  //       expect(document.getElementById(id).children.length).to.be(1);
-  //     },
-  //   );
-  // });
+  it('remove notify works', done => {
+    let wrapper;
 
-  // it('remove notify works', done => {
-  //   Notification.newInstance({}, notification => {
-  //     const key = Date.now();
-  //     const close = k => {
-  //       notification.removeNotice(k);
-  //     };
-  //     notification.notice({
-  //       content: (
-  //         <p className="test">
-  //           <button id="closeButton" onClick={close.bind(null, key)}>
-  //             close
-  //           </button>
-  //         </p>
-  //       ),
-  //       key,
-  //       duration: null,
-  //     });
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        const key = Date.now();
+        const close = k => {
+          notification.removeNotice(k);
+        };
+        notification.notice({
+          content: (
+            <p className="test">
+              <button type="button" id="closeButton" onClick={close.bind(null, key)}>
+                close
+              </button>
+            </p>
+          ),
+          key,
+          duration: null,
+        });
 
-  //     setTimeout(() => {
-  //       expect(
-  //         TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //       ).to.be(1);
-  //       const btnClose = document.getElementById('closeButton');
-  //       TestUtils.Simulate.click(btnClose);
-  //       setTimeout(() => {
-  //         expect(
-  //           TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //         ).to.be(0);
-  //         notification.destroy();
-  //         done();
-  //       }, 1000);
-  //     }, 10);
-  //   });
-  // });
+        setTimeout(() => {
+          expect(wrapper.find('.test')).toHaveLength(1);
+          wrapper.find('#closeButton').simulate('click');
+          setTimeout(() => {
+            wrapper.update();
+            expect(wrapper.find('.test')).toHaveLength(0);
+            notification.destroy();
+            done();
+          }, 1000);
+        }, 10);
+      },
+    );
+  });
 
-  // it('update notification by key with multi instance', done => {
-  //   Notification.newInstance({}, notification => {
-  //     const key = 'updatable';
-  //     const value = 'value';
-  //     const newValue = `new-${value}`;
-  //     const notUpdatableValue = 'not-updatable-value';
-  //     notification.notice({
-  //       content: (
-  //         <p id="not-updatable" className="not-updatable">
-  //           {notUpdatableValue}
-  //         </p>
-  //       ),
-  //       duration: null,
-  //     });
-  //     notification.notice({
-  //       content: (
-  //         <p id="updatable" className="updatable">
-  //           {value}
-  //         </p>
-  //       ),
-  //       key,
-  //       duration: null,
-  //     });
+  it('update notification by key with multi instance', done => {
+    let wrapper;
 
-  //     setTimeout(() => {
-  //       expect(document.querySelectorAll('.updatable').length).to.be(1);
-  //       expect(document.querySelector('.updatable').innerText).to.be(value);
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        const key = 'updatable';
+        const value = 'value';
+        const newValue = `new-${value}`;
+        const notUpdatableValue = 'not-updatable-value';
+        notification.notice({
+          content: (
+            <p id="not-updatable" className="not-updatable">
+              {notUpdatableValue}
+            </p>
+          ),
+          duration: null,
+        });
+        notification.notice({
+          content: (
+            <p id="updatable" className="updatable">
+              {value}
+            </p>
+          ),
+          key,
+          duration: null,
+        });
 
-  //       notification.notice({
-  //         content: (
-  //           <p id="updatable" className="updatable">
-  //             {newValue}
-  //           </p>
-  //         ),
-  //         key,
-  //         duration: 0.1,
-  //       });
+        setTimeout(() => {
+          expect(wrapper.find('.updatable')).toHaveLength(1);
+          expect(wrapper.find('.updatable').text()).toEqual(value);
 
-  //       setTimeout(() => {
-  //         // Text updated successfully
-  //         expect(document.querySelectorAll('.updatable').length).to.be(1);
-  //         expect(document.querySelector('.updatable').innerText).to.be(newValue);
+          notification.notice({
+            content: (
+              <p id="updatable" className="updatable">
+                {newValue}
+              </p>
+            ),
+            key,
+            duration: 0.1,
+          });
 
-  //         setTimeout(() => {
-  //           // Other notices are not affected
-  //           expect(document.querySelectorAll('.not-updatable').length).to.be(1);
-  //           expect(document.querySelector('.not-updatable').innerText).to.be(notUpdatableValue);
-  //           // Duration updated successfully
-  //           expect(document.querySelectorAll('.updatable').length).to.be(0);
-  //           notification.destroy();
-  //           done();
-  //         }, 500);
-  //       }, 10);
-  //     }, 10);
-  //   });
-  // });
+          setTimeout(() => {
+            // Text updated successfully
+            wrapper.update();
+            expect(wrapper.find('.updatable')).toHaveLength(1);
+            expect(wrapper.find('.updatable').text()).toEqual(newValue);
 
-  // it('freeze notification layer when mouse over', done => {
-  //   Notification.newInstance({}, notification => {
-  //     notification.notice({
-  //       content: (
-  //         <p id="freeze" className="freeze">
-  //           freeze
-  //         </p>
-  //       ),
-  //       duration: 0.3,
-  //     });
-  //     setTimeout(() => {
-  //       expect(document.querySelectorAll('.freeze').length).to.be(1);
-  //       const content = document.getElementById('freeze');
-  //       TestUtils.Simulate.mouseEnter(content);
-  //       setTimeout(() => {
-  //         expect(
-  //           TestUtils
-  // .scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
-  //         ).to.be(1);
-  //         TestUtils.Simulate.mouseLeave(content);
-  //         setTimeout(() => {
-  //           expect(
-  //             TestUtils
-  // .scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
-  //           ).to.be(0);
-  //           notification.destroy();
-  //           done();
-  //         }, 400);
-  //       }, 500);
-  //     }, 10);
-  //   });
-  // });
+            setTimeout(() => {
+              // Other notices are not affected
+              wrapper.update();
+              expect(wrapper.find('.not-updatable')).toHaveLength(1);
+              expect(wrapper.find('.not-updatable').text()).toEqual(notUpdatableValue);
+              // Duration updated successfully
+              expect(wrapper.find('.updatable')).toHaveLength(0);
+              notification.destroy();
+              done();
+            }, 500);
+          }, 10);
+        }, 10);
+      },
+    );
+  });
 
-  // it('should work in lifecycle of React component', () => {
-  //   class Test extends React.Component {
-  //     componentDidMount() {
-  //       Notification.newInstance({}, notification => {
-  //         notification.notice({
-  //           content: <span>In lifecycle</span>,
-  //         });
-  //       });
-  //     }
-  //     render() {
-  //       return null;
-  //     }
-  //   }
-  //   const container = document.createElement('div');
-  //   document.body.appendChild(container);
-  //   expect(() => ReactDOM.render(<Test />, container)).to.not.throwException();
-  // });
+  it('freeze notification layer when mouse over', done => {
+    let wrapper;
 
-  // it('drop first notice when items limit exceeds', done => {
-  //   Notification.newInstance({ maxCount: 1 }, notification => {
-  //     const value = 'updated last';
-  //     notification.notice({
-  //       content: <span className="test-maxcount">simple show</span>,
-  //       duration: 3,
-  //     });
-  //     notification.notice({
-  //       content: <span className="test-maxcount">simple show</span>,
-  //       duration: 3,
-  //     });
-  //     notification.notice({
-  //       content: <span className="test-maxcount">{value}</span>,
-  //       duration: 3,
-  //     });
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        notification.notice({
+          content: (
+            <p id="freeze" className="freeze">
+              freeze
+            </p>
+          ),
+          duration: 0.3,
+        });
+        setTimeout(() => {
+          wrapper.update();
+          expect(wrapper.find('.freeze')).toHaveLength(1);
+          wrapper.find('.rc-notification-notice').simulate('mouseEnter');
+          setTimeout(() => {
+            wrapper.update();
+            expect(wrapper.find('.freeze')).toHaveLength(1);
+            wrapper.find('.rc-notification-notice').simulate('mouseLeave');
+            setTimeout(() => {
+              wrapper.update();
+              expect(wrapper.find('.freeze')).toHaveLength(0);
+              notification.destroy();
+              done();
+            }, 400);
+          }, 500);
+        }, 10);
+      },
+    );
+  });
 
-  //     setTimeout(() => {
-  //       expect(document.querySelectorAll('.test-maxcount').length).to.be(1);
-  //       expect(document.querySelector('.test-maxcount').innerText).to.be(value);
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+  it('should work in lifecycle of React component', () => {
+    class Test extends React.Component {
+      componentDidMount() {
+        Notification.newInstance({}, notification => {
+          notification.notice({
+            content: <span>In lifecycle</span>,
+          });
+        });
+      }
 
-  // it('onClick trigger', done => {
-  //   let clicked = 0;
-  //   Notification.newInstance({}, notification => {
-  //     const key = Date.now();
-  //     const close = k => {
-  //       notification.removeNotice(k);
-  //     };
-  //     notification.notice({
-  //       content: (
-  //         <p className="test">
-  //           <button id="closeButton" onClick={close.bind(null, key)}>
-  //             close
-  //           </button>
-  //         </p>
-  //       ),
-  //       key,
-  //       duration: null,
-  //       onClick: () => {
-  //         clicked += 1;
-  //       },
-  //     });
+      render() {
+        return null;
+      }
+    }
 
-  //     setTimeout(() => {
-  //       const elements = document.querySelectorAll('.rc-notification-notice');
-  //       TestUtils.Simulate.click(elements[elements.length - 1]);
+    const container = document.createElement('div');
+    mount(<Test />, container);
+  });
 
-  //       expect(clicked).to.be(1);
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+  it('drop first notice when items limit exceeds', done => {
+    let wrapper;
 
-  // it('Close Notification only trigger onCloase', done => {
-  //   let clickCount = 0;
-  //   let closeCount = 0;
-  //   Notification.newInstance({}, notification => {
-  //     notification.notice({
-  //       content: <p className="test">1</p>,
-  //       closable: true,
-  //       onClick: () => {
-  //         clickCount++;
-  //       },
-  //       onClose: () => {
-  //         closeCount++;
-  //       },
-  //     });
+    Notification.newInstance(
+      {
+        maxCount: 1,
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        const value = 'updated last';
+        notification.notice({
+          content: <span className="test-maxcount">simple show</span>,
+          duration: 3,
+        });
+        notification.notice({
+          content: <span className="test-maxcount">simple show</span>,
+          duration: 3,
+        });
+        notification.notice({
+          content: <span className="test-maxcount">{value}</span>,
+          duration: 3,
+        });
 
-  //     setTimeout(() => {
-  //       const elements = document.querySelectorAll('.rc-notification-notice-close');
-  //       TestUtils.Simulate.click(elements[elements.length - 1]);
+        setTimeout(() => {
+          wrapper.update();
+          expect(wrapper.find('.test-maxcount')).toHaveLength(1);
+          expect(wrapper.find('.test-maxcount').text()).toEqual(value);
+          done();
+        }, 10);
+      },
+    );
+  });
 
-  //       expect(clickCount).to.be(0);
-  //       expect(closeCount).to.be(1);
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+  it('onClick trigger', done => {
+    let wrapper;
+    let clicked = 0;
+
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        const key = Date.now();
+        const close = k => {
+          notification.removeNotice(k);
+        };
+        notification.notice({
+          content: (
+            <p className="test">
+              <button type="button" id="closeButton" onClick={close.bind(null, key)}>
+                close
+              </button>
+            </p>
+          ),
+          key,
+          duration: null,
+          onClick: () => {
+            clicked += 1;
+          },
+        });
+
+        setTimeout(() => {
+          wrapper
+            .find('.rc-notification-notice')
+            .last()
+            .simulate('click');
+          expect(clicked).toEqual(1);
+          notification.destroy();
+          done();
+        }, 10);
+      },
+    );
+  });
+
+  it('Close Notification only trigger onClose', done => {
+    let wrapper;
+    let clickCount = 0;
+    let closeCount = 0;
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          closable: true,
+          onClick: () => {
+            clickCount += 1;
+          },
+          onClose: () => {
+            closeCount += 1;
+          },
+        });
+
+        setTimeout(() => {
+          wrapper
+            .find('.rc-notification-notice-close')
+            .last()
+            .simulate('click');
+          expect(clickCount).toEqual(0);
+          expect(closeCount).toEqual(1);
+          notification.destroy();
+          done();
+        }, 10);
+      },
+    );
+  });
 });
