@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
 export interface NoticeProps {
@@ -12,6 +13,9 @@ export interface NoticeProps {
   closable?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onClose?: () => void;
+
+  /** @private Only for internal usage. We don't promise that we will refactor this */
+  holder?: HTMLDivElement;
 }
 
 export default class Notice extends Component<NoticeProps> {
@@ -68,9 +72,18 @@ export default class Notice extends Component<NoticeProps> {
   }
 
   render() {
-    const { prefixCls, className, closable, closeIcon, style, onClick, children } = this.props;
+    const {
+      prefixCls,
+      className,
+      closable,
+      closeIcon,
+      style,
+      onClick,
+      children,
+      holder,
+    } = this.props;
     const componentClass = `${prefixCls}-notice`;
-    return (
+    const node = (
       <div
         className={classNames(componentClass, className, {
           [`${componentClass}-closable`]: closable,
@@ -88,5 +101,11 @@ export default class Notice extends Component<NoticeProps> {
         ) : null}
       </div>
     );
+
+    if (holder) {
+      return ReactDOM.createPortal(node, holder);
+    }
+
+    return node;
   }
 }
