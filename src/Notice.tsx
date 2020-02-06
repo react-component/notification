@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 
-export default class Notice extends Component {
-  static propTypes = {
-    duration: PropTypes.number,
-    onClose: PropTypes.func,
-    children: PropTypes.any,
-    update: PropTypes.bool,
-    closeIcon: PropTypes.node,
-    style: PropTypes.object,
-  };
+export interface NoticeProps {
+  prefixCls: string;
+  style?: React.CSSProperties;
+  className?: string;
+  duration?: number;
+  children?: React.ReactNode;
+  update?: boolean;
+  closeIcon?: React.ReactNode;
+  closable?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClose?: () => void;
+}
 
+export default class Notice extends Component<NoticeProps> {
   static defaultProps = {
     onClose() {},
     duration: 1.5,
@@ -20,11 +23,13 @@ export default class Notice extends Component {
     },
   };
 
+  closeTimer: number;
+
   componentDidMount() {
     this.startCloseTimer();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: NoticeProps) {
     if (this.props.duration !== prevProps.duration || this.props.update) {
       this.restartCloseTimer();
     }
@@ -34,7 +39,7 @@ export default class Notice extends Component {
     this.clearCloseTimer();
   }
 
-  close = e => {
+  close = (e?: React.MouseEvent<HTMLAnchorElement>) => {
     if (e) {
       e.stopPropagation();
     }
@@ -44,7 +49,7 @@ export default class Notice extends Component {
 
   startCloseTimer = () => {
     if (this.props.duration) {
-      this.closeTimer = setTimeout(() => {
+      this.closeTimer = window.setTimeout(() => {
         this.close();
       }, this.props.duration * 1000);
     }

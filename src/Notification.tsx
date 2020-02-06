@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import classnames from 'classnames';
-import Notice from './Notice';
+import Notice, { NoticeProps } from './Notice';
 
 let seed = 0;
 const now = Date.now();
@@ -15,15 +14,36 @@ function getUuid() {
   return `rcNotification_${now}_${id}`;
 }
 
-class Notification extends Component {
-  static propTypes = {
-    prefixCls: PropTypes.string,
-    transitionName: PropTypes.string,
-    animation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    style: PropTypes.object,
-    maxCount: PropTypes.number,
-    closeIcon: PropTypes.node,
-  };
+interface NoticeContent extends Omit<NoticeProps, 'children'> {
+  key?: React.Key;
+  updateKey?: React.Key;
+  content?: React.ReactNode;
+}
+
+export interface NotificationProps {
+  prefixCls?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  transitionName?: string;
+  animation?: string | object;
+  maxCount?: number;
+  closeIcon?: React.ReactNode;
+}
+
+interface NotificationState {
+  notices: NoticeContent[];
+}
+
+class Notification extends Component<NotificationProps, NotificationState> {
+  static newInstance: (
+    properties: NotificationProps & { getContainer?: () => HTMLElement },
+    callback: (opt: {
+      notice: (noticeProps: NoticeContent) => void;
+      removeNotice: (key: React.Key) => void;
+      destroy: () => void;
+      component: Notification;
+    }) => void,
+  ) => void;
 
   static defaultProps = {
     prefixCls: 'rc-notification',
@@ -34,7 +54,7 @@ class Notification extends Component {
     },
   };
 
-  state = {
+  state: NotificationState = {
     notices: [],
   };
 
@@ -47,7 +67,7 @@ class Notification extends Component {
     return transitionName;
   }
 
-  add = notice => {
+  add = (notice: NoticeContent) => {
     notice.key = notice.key || getUuid();
     const { key } = notice;
     const { maxCount } = this.props;
@@ -73,7 +93,7 @@ class Notification extends Component {
     });
   };
 
-  remove = key => {
+  remove = (key: React.Key) => {
     this.setState(previousState => ({
       notices: previousState.notices.filter(notice => notice.key !== key),
     }));
@@ -85,7 +105,10 @@ class Notification extends Component {
     const noticeNodes = notices.map((notice, index) => {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
-      const onClose = createChainedFunction(this.remove.bind(this, notice.key), notice.onClose);
+      const onClose = createChainedFunction(
+        this.remove.bind(this, notice.key),
+        notice.onClose,
+      ) as any;
       return (
         <Notice
           prefixCls={prefixCls}
@@ -118,7 +141,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     document.body.appendChild(div);
   }
   let called = false;
-  function ref(notification) {
+  function ref(notification: Notification) {
     if (called) {
       return;
     }
@@ -139,8 +162,8 @@ Notification.newInstance = function newNotificationInstance(properties, callback
   }
 
   // Only used for test case usage
-  if (process.env.NODE_ENV === 'test' && properties.TEST_RENDER) {
-    properties.TEST_RENDER(<Notification {...props} ref={ref} />);
+  if (process.env.NODE_ENV === 'test' && (properties as any).TEST_RENDER) {
+    (properties as any).TEST_RENDER(<Notification {...props} ref={ref} />);
     return;
   }
 
