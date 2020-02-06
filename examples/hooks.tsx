@@ -30,7 +30,7 @@ const Demo = () => {
           notificationInstance.notice({ ...NOTICE });
           notice({
             ...NOTICE,
-            content: 'I am Hook!',
+            content: <Context.Consumer>{({ name }) => `Hi ${name}!`}</Context.Consumer>,
           });
           notificationInstance.notice({ ...NOTICE });
         }}

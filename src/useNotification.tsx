@@ -7,7 +7,6 @@ export default function useNotification(
 ): [NoticeFunc, React.ReactElement] {
   const createdRef = React.useRef<Record<React.Key, React.ReactElement>>({});
   const [elements, setElements] = React.useState<React.ReactElement[]>([]);
-  const holder = <>{elements}</>;
 
   function notify(noticeProps: NoticeContent) {
     notificationInstance.add(noticeProps, (div, props) => {
@@ -21,5 +20,5 @@ export default function useNotification(
     });
   }
 
-  return [notify, holder];
+  return [notify, <>{elements}</>];
 }
