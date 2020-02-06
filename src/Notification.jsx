@@ -137,6 +137,13 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       },
     });
   }
+
+  // Only used for test case usage
+  if (process.env.NODE_ENV === 'test') {
+    properties.TEST_RENDER(<Notification {...props} ref={ref} />);
+    return;
+  }
+
   ReactDOM.render(<Notification {...props} ref={ref} />, div);
 };
 

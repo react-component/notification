@@ -1,55 +1,63 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { mount } from 'enzyme';
 import Notification from '../src';
 
 require('../assets/index.less');
 
 describe('Notification.Basic', () => {
   it('works', done => {
-    Notification.newInstance({}, notification => {
-      notification.notice({
-        content: <p className="test">1</p>,
-        duration: 0.1,
-      });
-      setTimeout(() => {
-        expect(
-          TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-        ).to.be(1);
-      }, 10);
-      setTimeout(() => {
-        expect(
-          TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-        ).to.be(0);
-        notification.destroy();
-        done();
-      }, 1000);
-    });
+    let wrapper;
+
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          duration: 0.1,
+        });
+
+        setTimeout(() => {
+          expect(wrapper.find('.test')).toHaveLength(1);
+        }, 10);
+        setTimeout(() => {
+          wrapper.update();
+          expect(wrapper.find('.test')).toHaveLength(0);
+          notification.destroy();
+          done();
+        }, 1000);
+      },
+    );
   });
 
-  // it('works with custom close icon', done => {
-  //   Notification.newInstance(
-  //     {
-  //       closeIcon: <span className="test-icon">test-close-icon</span>,
-  //     },
-  //     notification => {
-  //       notification.notice({
-  //         content: <p className="test">1</p>,
-  //         closable: true,
-  //         duration: 0,
-  //       });
-  //       setTimeout(() => {
-  //         expect(
-  //           TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //         ).to.be(1);
-  //         expect(
-  //           TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test-icon')[0]
-  //             .innerText,
-  //         ).to.be('test-close-icon');
-  //         done();
-  //       }, 10);
-  //     },
-  //   );
-  // });
+  it('works with custom close icon', done => {
+    let wrapper;
+
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+        closeIcon: <span className="test-icon">test-close-icon</span>,
+      },
+      notification => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          closable: true,
+          duration: 0,
+        });
+        setTimeout(() => {
+          expect(wrapper.find('.test')).toHaveLength(1);
+          expect(wrapper.find('.test-icon').text()).toEqual('test-close-icon');
+          done();
+        }, 10);
+      },
+    );
+  });
 
   // it('works with multi instance', done => {
   //   Notification.newInstance({}, notification => {
