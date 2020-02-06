@@ -9,13 +9,11 @@ export default class Notice extends Component {
     children: PropTypes.any,
     update: PropTypes.bool,
     closeIcon: PropTypes.node,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
-    onEnd() {
-    },
-    onClose() {
-    },
+    onClose() {},
     duration: 1.5,
     style: {
       right: '50%',
@@ -27,8 +25,7 @@ export default class Notice extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.duration !== prevProps.duration
-      || this.props.update) {
+    if (this.props.duration !== prevProps.duration || this.props.update) {
       this.restartCloseTimer();
     }
   }
@@ -37,13 +34,13 @@ export default class Notice extends Component {
     this.clearCloseTimer();
   }
 
-  close = (e) => {
+  close = e => {
     if (e) {
       e.stopPropagation();
     }
     this.clearCloseTimer();
     this.props.onClose();
-  }
+  };
 
   startCloseTimer = () => {
     if (this.props.duration) {
@@ -51,14 +48,14 @@ export default class Notice extends Component {
         this.close();
       }, this.props.duration * 1000);
     }
-  }
+  };
 
   clearCloseTimer = () => {
     if (this.closeTimer) {
       clearTimeout(this.closeTimer);
       this.closeTimer = null;
     }
-  }
+  };
 
   restartCloseTimer() {
     this.clearCloseTimer();
@@ -66,27 +63,24 @@ export default class Notice extends Component {
   }
 
   render() {
-    const props = this.props;
-    const componentClass = `${props.prefixCls}-notice`;
-    const className = {
-      [`${componentClass}`]: 1,
-      [`${componentClass}-closable`]: props.closable,
-      [props.className]: !!props.className,
-    };
+    const { prefixCls, className, closable, closeIcon, style, onClick, children } = this.props;
+    const componentClass = `${prefixCls}-notice`;
     return (
       <div
-        className={classNames(className)}
-        style={props.style}
+        className={classNames(componentClass, className, {
+          [`${componentClass}-closable`]: closable,
+        })}
+        style={style}
         onMouseEnter={this.clearCloseTimer}
         onMouseLeave={this.startCloseTimer}
-        onClick={props.onClick}
+        onClick={onClick}
       >
-        <div className={`${componentClass}-content`}>{props.children}</div>
-          {props.closable ?
-            <a tabIndex="0" onClick={this.close} className={`${componentClass}-close`}>
-              {props.closeIcon || <span className={`${componentClass}-close-x`}/>}
-            </a> : null
-          }
+        <div className={`${componentClass}-content`}>{children}</div>
+        {closable ? (
+          <a tabIndex={0} onClick={this.close} className={`${componentClass}-close`}>
+            {closeIcon || <span className={`${componentClass}-close-x`} />}
+          </a>
+        ) : null}
       </div>
     );
   }
