@@ -4,8 +4,14 @@ import Notification from '../src';
 
 require('../assets/index.less');
 
+async function timeout(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 describe('Notification.Hooks', () => {
-  it('works', done => {
+  it('works', async () => {
     let instance;
 
     const Context = React.createContext({ name: 'light' });
@@ -14,38 +20,36 @@ describe('Notification.Hooks', () => {
       instance = notification;
     });
 
-    setTimeout(() => {
-      const Demo = () => {
-        const [notify, holder] = instance.useNotification();
-        return (
-          <Context.Provider value={{ name: 'bamboo' }}>
-            <button
-              type="button"
-              onClick={() => {
-                notify({
-                  content: (
-                    <Context.Consumer>
-                      {({ name }) => <div className="context-content">{name}</div>}
-                    </Context.Consumer>
-                  ),
-                });
-              }}
-            />
-            {holder}
-          </Context.Provider>
-        );
-      };
+    await timeout(0);
 
-      const demo = mount(<Demo />);
-      demo.find('button').simulate('click');
-      setTimeout(() => {
-        expect(demo.find('.context-content').text()).toEqual('bamboo');
+    const Demo = () => {
+      const [notify, holder] = instance.useNotification();
+      return (
+        <Context.Provider value={{ name: 'bamboo' }}>
+          <button
+            type="button"
+            onClick={() => {
+              notify({
+                content: (
+                  <Context.Consumer>
+                    {({ name }) => <div className="context-content">{name}</div>}
+                  </Context.Consumer>
+                ),
+              });
+            }}
+          />
+          {holder}
+        </Context.Provider>
+      );
+    };
 
-        setTimeout(() => {
-          instance.destroy();
-          done();
-        }, 1000);
-      }, 10);
-    }, 0);
+    const demo = mount(<Demo />);
+    demo.find('button').simulate('click');
+
+    await timeout(10);
+    expect(demo.find('.context-content').text()).toEqual('bamboo');
+
+    await timeout(1000);
+    instance.destroy();
   });
 });
