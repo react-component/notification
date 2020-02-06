@@ -38,7 +38,7 @@ function closableFn() {
   });
 }
 
-function close(key) {
+function close(key: React.Key) {
   notification.removeNotice(key);
 }
 
@@ -59,7 +59,7 @@ function manualClose() {
 }
 
 let counter = 0;
-let intervalKey;
+let intervalKey: number;
 function updatableFn() {
   if (counter !== 0) {
     return;
@@ -78,7 +78,7 @@ function updatableFn() {
   };
 
   notification.notice(initialProps);
-  intervalKey = setInterval(() => {
+  intervalKey = window.setInterval(() => {
     counter += 1;
     notification.notice({ ...initialProps, content: `Timer: ${counter}s` });
   }, 1000);
@@ -91,7 +91,7 @@ const clearPath =
   ' 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h618c35.3 0 64-' +
   '28.7 64-64V306c0-35.3-28.7-64-64-64z';
 
-const getSvg = (path, props = {}, align = false) => (
+const getSvg = (path: string, props = {}, align = false) => (
   <i {...props}>
     <svg
       viewBox="0 0 1024 1024"
