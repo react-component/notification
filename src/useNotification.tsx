@@ -5,7 +5,7 @@ import Notice from './Notice';
 export default function useNotification(
   notificationInstance: Notification,
 ): [NoticeFunc, React.ReactElement] {
-  const createdRef = React.useRef<Record<React.Key, boolean>>({});
+  const createdRef = React.useRef<Record<React.Key, React.ReactElement>>({});
   const [elements, setElements] = React.useState<React.ReactElement[]>([]);
   const holder = <>{elements}</>;
 
@@ -14,8 +14,9 @@ export default function useNotification(
       const { key } = props;
 
       if (div && !createdRef.current[key]) {
-        createdRef.current[key] = true;
-        setElements(originElements => [...originElements, <Notice {...props} holder={div} />]);
+        const noticeEle = <Notice {...props} holder={div} />;
+        createdRef.current[key] = noticeEle;
+        setElements(originElements => [...originElements, noticeEle]);
       }
     });
   }

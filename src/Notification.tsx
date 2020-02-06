@@ -48,7 +48,10 @@ export interface NotificationProps {
 }
 
 interface NotificationState {
-  notices: { notice: NoticeContent; holderCallback?: HolderReadyCallback }[];
+  notices: {
+    notice: NoticeContent;
+    holderCallback?: HolderReadyCallback;
+  }[];
 }
 
 class Notification extends Component<NotificationProps, NotificationState> {
