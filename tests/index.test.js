@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import Notification from '../src';
 
@@ -59,50 +58,54 @@ describe('Notification.Basic', () => {
     );
   });
 
-  // it('works with multi instance', done => {
-  //   Notification.newInstance({}, notification => {
-  //     notification.notice({
-  //       content: <p className="test">1</p>,
-  //       duration: 0.1,
-  //     });
-  //     notification.notice({
-  //       content: <p className="test">2</p>,
-  //       duration: 0.1,
-  //     });
-  //     setTimeout(() => {
-  //       expect(
-  //         TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //       ).to.be(2);
-  //     }, 10);
-  //     setTimeout(() => {
-  //       expect(
-  //         TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //       ).to.be(0);
-  //       notification.destroy();
-  //       done();
-  //     }, 1000);
-  //   });
-  // });
+  it('works with multi instance', done => {
+    let wrapper;
 
-  // it('destroy works', () => {
-  //   Notification.newInstance({}, notification => {
-  //     notification.notice({
-  //       content: (
-  //         <p id="test" className="test">
-  //           222222
-  //         </p>
-  //       ),
-  //       duration: 0.1,
-  //     });
-  //     setTimeout(() => {
-  //       expect(
-  //         TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'test').length,
-  //       ).to.be(1);
-  //       notification.destroy();
-  //       expect(document.getElementById('test')).not.to.be.ok();
-  //     }, 10);
-  //   });
-  // });
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      },
+      notification => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          duration: 0.1,
+        });
+        notification.notice({
+          content: <p className="test">2</p>,
+          duration: 0.1,
+        });
+        setTimeout(() => {
+          expect(wrapper.find('.test')).toHaveLength(2);
+        }, 10);
+        setTimeout(() => {
+          wrapper.update();
+          expect(wrapper.find('.test')).toHaveLength(0);
+          notification.destroy();
+          done();
+        }, 1000);
+      },
+    );
+  });
+
+  it('destroy works', () => {
+    Notification.newInstance({}, notification => {
+      notification.notice({
+        content: (
+          <p id="test" className="test">
+            222222
+          </p>
+        ),
+        duration: 0.1,
+      });
+      setTimeout(() => {
+        expect(document.querySelector('.test')).toBeTruthy();
+        notification.destroy();
+        expect(document.querySelector('.test')).toBeFalsy();
+      }, 10);
+    });
+  });
 
   // it('getContainer works', () => {
   //   const id = 'get-container-test';
@@ -244,12 +247,14 @@ describe('Notification.Basic', () => {
   //       TestUtils.Simulate.mouseEnter(content);
   //       setTimeout(() => {
   //         expect(
-  //           TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
+  //           TestUtils
+  // .scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
   //         ).to.be(1);
   //         TestUtils.Simulate.mouseLeave(content);
   //         setTimeout(() => {
   //           expect(
-  //             TestUtils.scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
+  //             TestUtils
+  // .scryRenderedDOMComponentsWithClass(notification.component, 'freeze').length,
   //           ).to.be(0);
   //           notification.destroy();
   //           done();

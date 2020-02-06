@@ -139,7 +139,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
   }
 
   // Only used for test case usage
-  if (process.env.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === 'test' && properties.TEST_RENDER) {
     properties.TEST_RENDER(<Notification {...props} ref={ref} />);
     return;
   }
