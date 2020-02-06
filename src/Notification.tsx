@@ -4,6 +4,7 @@ import Animate from 'rc-animate';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import classnames from 'classnames';
 import Notice, { NoticeProps } from './Notice';
+import useNotification from './useNotification';
 
 let seed = 0;
 const now = Date.now();
@@ -14,10 +15,26 @@ function getUuid() {
   return `rcNotification_${now}_${id}`;
 }
 
-interface NoticeContent extends Omit<NoticeProps, 'children'> {
+export interface NoticeContent extends Omit<NoticeProps, 'prefixCls' | 'children'> {
+  prefixCls?: string;
   key?: React.Key;
   updateKey?: React.Key;
   content?: React.ReactNode;
+}
+
+export type NoticeFunc = (noticeProps: NoticeContent) => void;
+export type HolderReadyCallback = (
+  div: HTMLDivElement,
+  noticeProps: NoticeProps & { key: React.Key },
+) => void;
+
+export interface NotificationInstance {
+  notice: NoticeFunc;
+  removeNotice: (key: React.Key) => void;
+  destroy: () => void;
+  component: Notification;
+
+  useNotification: () => [NoticeFunc, React.ReactElement];
 }
 
 export interface NotificationProps {
@@ -31,18 +48,16 @@ export interface NotificationProps {
 }
 
 interface NotificationState {
-  notices: NoticeContent[];
+  notices: {
+    notice: NoticeContent;
+    holderCallback?: HolderReadyCallback;
+  }[];
 }
 
 class Notification extends Component<NotificationProps, NotificationState> {
   static newInstance: (
     properties: NotificationProps & { getContainer?: () => HTMLElement },
-    callback: (opt: {
-      notice: (noticeProps: NoticeContent) => void;
-      removeNotice: (key: React.Key) => void;
-      destroy: () => void;
-      component: Notification;
-    }) => void,
+    callback: (instance: NotificationInstance) => void,
   ) => void;
 
   static defaultProps = {
@@ -58,6 +73,8 @@ class Notification extends Component<NotificationProps, NotificationState> {
     notices: [],
   };
 
+  private hookRefs = new Map<React.Key, HTMLDivElement>();
+
   getTransitionName() {
     const { prefixCls, animation } = this.props;
     let { transitionName } = this.props;
@@ -67,25 +84,25 @@ class Notification extends Component<NotificationProps, NotificationState> {
     return transitionName;
   }
 
-  add = (notice: NoticeContent) => {
+  add = (notice: NoticeContent, holderCallback?: HolderReadyCallback) => {
     notice.key = notice.key || getUuid();
     const { key } = notice;
     const { maxCount } = this.props;
     this.setState(previousState => {
       const { notices } = previousState;
-      const noticeIndex = notices.map(v => v.key).indexOf(key);
+      const noticeIndex = notices.map(v => v.notice.key).indexOf(key);
       const updatedNotices = notices.concat();
       if (noticeIndex !== -1) {
-        updatedNotices.splice(noticeIndex, 1, notice);
+        updatedNotices.splice(noticeIndex, 1, { notice, holderCallback });
       } else {
         if (maxCount && notices.length >= maxCount) {
           // XXX, use key of first item to update new added (let React to move exsiting
           // instead of remove and mount). Same key was used before for both a) external
           // manual control and b) internal react 'key' prop , which is not that good.
-          notice.updateKey = updatedNotices[0].updateKey || updatedNotices[0].key;
+          notice.updateKey = updatedNotices[0].notice.updateKey || updatedNotices[0].notice.key;
           updatedNotices.shift();
         }
-        updatedNotices.push(notice);
+        updatedNotices.push({ notice, holderCallback });
       }
       return {
         notices: updatedNotices,
@@ -95,33 +112,50 @@ class Notification extends Component<NotificationProps, NotificationState> {
 
   remove = (key: React.Key) => {
     this.setState(previousState => ({
-      notices: previousState.notices.filter(notice => notice.key !== key),
+      notices: previousState.notices.filter(({ notice }) => notice.key !== key),
     }));
   };
 
   render() {
     const { notices } = this.state;
     const { prefixCls, className, closeIcon, style } = this.props;
-    const noticeNodes = notices.map((notice, index) => {
+    const noticeNodes = notices.map(({ notice, holderCallback }, index) => {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
       const onClose = createChainedFunction(
         this.remove.bind(this, notice.key),
         notice.onClose,
       ) as any;
-      return (
-        <Notice
-          prefixCls={prefixCls}
-          closeIcon={closeIcon}
-          {...notice}
-          key={key}
-          update={update}
-          onClose={onClose}
-          onClick={notice.onClick}
-        >
-          {notice.content}
-        </Notice>
-      );
+
+      const noticeProps = {
+        prefixCls,
+        closeIcon,
+        ...notice,
+        key,
+        update,
+        onClose,
+        onClick: notice.onClick,
+        children: notice.content,
+      };
+
+      if (holderCallback) {
+        return (
+          <div
+            key={key}
+            className={`${prefixCls}-hook-holder`}
+            ref={div => {
+              if (div) {
+                this.hookRefs.set(key, div);
+                holderCallback(div, noticeProps);
+              } else {
+                this.hookRefs.delete(key);
+              }
+            }}
+          />
+        );
+      }
+
+      return <Notice {...noticeProps} />;
     });
     return (
       <div className={classnames(prefixCls, className)} style={style}>
@@ -157,6 +191,11 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       destroy() {
         ReactDOM.unmountComponentAtNode(div);
         div.parentNode.removeChild(div);
+      },
+
+      // Hooks
+      useNotification() {
+        return useNotification(notification);
       },
     });
   }
