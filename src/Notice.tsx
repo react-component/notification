@@ -6,7 +6,7 @@ export interface NoticeProps {
   prefixCls: string;
   style?: React.CSSProperties;
   className?: string;
-  duration?: number;
+  duration?: number | null;
   children?: React.ReactNode;
   update?: boolean;
   closeIcon?: React.ReactNode;
