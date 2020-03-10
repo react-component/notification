@@ -131,6 +131,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
         prefixCls,
         closeIcon,
         ...notice,
+        ...notice.props,
         key,
         update,
         onClose,

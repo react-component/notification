@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
+interface DivProps extends React.HTMLProps<HTMLDivElement> {
+  // Ideally we would allow all data-* props but this would depend on https://github.com/microsoft/TypeScript/issues/28960
+  'data-testid'?: string;
+}
+
 export interface NoticeProps {
   prefixCls: string;
   style?: React.CSSProperties;
@@ -11,6 +16,7 @@ export interface NoticeProps {
   update?: boolean;
   closeIcon?: React.ReactNode;
   closable?: boolean;
+  props?: DivProps;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onClose?: () => void;
 
@@ -83,6 +89,15 @@ export default class Notice extends Component<NoticeProps> {
       holder,
     } = this.props;
     const componentClass = `${prefixCls}-notice`;
+    const dataOrAriaAttributeProps = Object.keys(this.props).reduce(
+      (acc: { [key: string]: string }, key: string) => {
+        if (key.substr(0, 5) === 'data-' || key.substr(0, 5) === 'aria-' || key === 'role') {
+          acc[key] = this.props[key];
+        }
+        return acc;
+      },
+      {},
+    );
     const node = (
       <div
         className={classNames(componentClass, className, {
@@ -92,6 +107,7 @@ export default class Notice extends Component<NoticeProps> {
         onMouseEnter={this.clearCloseTimer}
         onMouseLeave={this.startCloseTimer}
         onClick={onClick}
+        {...dataOrAriaAttributeProps}
       >
         <div className={`${componentClass}-content`}>{children}</div>
         {closable ? (
