@@ -31,6 +31,9 @@ const Demo = () => {
           notice({
             ...NOTICE,
             content: <Context.Consumer>{({ name }) => `Hi ${name}!`}</Context.Consumer>,
+            props: {
+              'data-testid': 'my-data-testid',
+            },
           });
           notificationInstance.notice({ ...NOTICE });
         }}

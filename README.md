@@ -157,6 +157,12 @@ props details:
           <td></td>
           <td>specific the close icon.</td>
         </tr>
+        <tr>
+          <td>props</td>
+          <td>Object</td>
+          <td></td>
+          <td>An object that can contain <code>data-*</code>, <code>aria-*</code>, or <code>role</code> props, to be put on the notification <code>div</code>. This currently only allows <code>data-testid</code> instead of <code>data-*</code> in TypeScript. See https://github.com/microsoft/TypeScript/issues/28960.</td>
+        </tr>
     </tbody>
 </table>
 
