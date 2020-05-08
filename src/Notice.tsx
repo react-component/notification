@@ -33,7 +33,7 @@ export default class Notice extends Component<NoticeProps> {
     },
   };
 
-  closeTimer: number;
+  closeTimer: number | null = null;
 
   componentDidMount() {
     this.startCloseTimer();
@@ -54,7 +54,10 @@ export default class Notice extends Component<NoticeProps> {
       e.stopPropagation();
     }
     this.clearCloseTimer();
-    this.props.onClose();
+    const { onClose } = this.props;
+    if (onClose) {
+      onClose();
+    }
   };
 
   startCloseTimer = () => {
@@ -92,7 +95,7 @@ export default class Notice extends Component<NoticeProps> {
     const dataOrAriaAttributeProps = Object.keys(this.props).reduce(
       (acc: { [key: string]: string }, key: string) => {
         if (key.substr(0, 5) === 'data-' || key.substr(0, 5) === 'aria-' || key === 'role') {
-          acc[key] = this.props[key];
+          acc[key] = (this.props as any)[key];
         }
         return acc;
       },

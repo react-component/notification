@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
@@ -137,7 +137,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
         onClose,
         onClick: notice.onClick,
         children: notice.content,
-      };
+      } as (NoticeProps & { key: ReactText });
 
       if (holderCallback) {
         return (
@@ -145,6 +145,9 @@ class Notification extends Component<NotificationProps, NotificationState> {
             key={key}
             className={`${prefixCls}-hook-holder`}
             ref={div => {
+              if (typeof key === 'undefined') {
+                return;
+              }
               if (div) {
                 this.hookRefs.set(key, div);
                 holderCallback(div, noticeProps);
@@ -191,7 +194,9 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       component: notification,
       destroy() {
         ReactDOM.unmountComponentAtNode(div);
-        div.parentNode.removeChild(div);
+        if (div.parentNode) {
+          div.parentNode.removeChild(div);
+        }
       },
 
       // Hooks
