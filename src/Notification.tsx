@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
@@ -85,6 +85,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
   }
 
   add = (notice: NoticeContent, holderCallback?: HolderReadyCallback) => {
+    // eslint-disable-next-line no-param-reassign
     notice.key = notice.key || getUuid();
     const { key } = notice;
     const { maxCount } = this.props;
@@ -99,6 +100,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
           // XXX, use key of first item to update new added (let React to move exsiting
           // instead of remove and mount). Same key was used before for both a) external
           // manual control and b) internal react 'key' prop , which is not that good.
+          // eslint-disable-next-line no-param-reassign
           notice.updateKey = updatedNotices[0].notice.updateKey || updatedNotices[0].notice.key;
           updatedNotices.shift();
         }
@@ -123,7 +125,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
       const onClose = createChainedFunction(
-        this.remove.bind(this, notice.key),
+        this.remove.bind(this, notice.key!),
         notice.onClose,
       ) as any;
 
@@ -137,7 +139,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
         onClose,
         onClick: notice.onClick,
         children: notice.content,
-      };
+      } as (NoticeProps & { key: ReactText });
 
       if (holderCallback) {
         return (
@@ -145,6 +147,9 @@ class Notification extends Component<NotificationProps, NotificationState> {
             key={key}
             className={`${prefixCls}-hook-holder`}
             ref={div => {
+              if (typeof key === 'undefined') {
+                return;
+              }
               if (div) {
                 this.hookRefs.set(key, div);
                 holderCallback(div, noticeProps);
@@ -191,7 +196,9 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       component: notification,
       destroy() {
         ReactDOM.unmountComponentAtNode(div);
-        div.parentNode.removeChild(div);
+        if (div.parentNode) {
+          div.parentNode.removeChild(div);
+        }
       },
 
       // Hooks
