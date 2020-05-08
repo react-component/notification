@@ -1,5 +1,9 @@
 # History
 
+## 4.1.0
+
+- Upgrade `rc-animate` to `3.x`.
+
 ## 3.3.0
 
 - Add `onClick` property.
