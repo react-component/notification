@@ -6,9 +6,10 @@ React Notification UI Component
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
-[![gemnasium deps][gemnasium-image]][gemnasium-url]
-[![node version][node-image]][node-url]
+[![Dependencies][david-image]][david-url]
+[![DevDependencies][david-dev-image]][david-dev-url]
 [![npm download][download-image]][download-url]
+[![bundle size][bundlephobia-image]][bundlephobia-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-notification
@@ -16,47 +17,42 @@ React Notification UI Component
 [travis-url]: https://travis-ci.org/react-component/notification
 [coveralls-image]: https://img.shields.io/coveralls/react-component/notification.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/react-component/notification?branch=master
-[gemnasium-image]: http://img.shields.io/gemnasium/react-component/notification.svg?style=flat-square
-[gemnasium-url]: https://gemnasium.com/react-component/notification
-[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
-[node-url]: http://nodejs.org/download/
+[david-url]: https://david-dm.org/react-component/notification
+[david-image]: https://david-dm.org/react-component/notification/status.svg?style=flat-square
+[david-dev-url]: https://david-dm.org/react-component/notification?type=dev
+[david-dev-image]: https://david-dm.org/react-component/notification/dev-status.svg?style=flat-square
 [download-image]: https://img.shields.io/npm/dm/rc-notification.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rc-notification
+[bundlephobia-url]: https://bundlephobia.com/result?p=rc-notification
+[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-notification
 
-
-## Development
-
-```
-npm install
-npm start
-```
-
-## Example
-
-http://localhost:8000/examples/
-
-online example: http://react-component.github.io/notification/examples/
-
-
-## Feature
-
-* support ie9,ie9+,chrome,firefox,safari
-
-
-## install
+## Install
 
 [![rc-notification](https://nodei.co/npm/rc-notification.png)](https://npmjs.org/package/rc-notification)
 
 ## Usage
 
 ```js
-var Notification = require('rc-notification');
+import Notification from 'rc-notification';
+
 Notification.newInstance({}, notification => {
   notification.notice({
     content: 'content'
   });
 });
 ```
+
+## Compatibility
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Electron |
+| --- | --- | --- | --- | --- |
+| IE11, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+
+## Example
+
+http://localhost:8001
+
+online example: http://react-component.github.io/notification/
 
 ## API
 
