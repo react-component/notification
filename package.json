@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "classnames": "2.x",
-    "rc-animate": "2.x",
+    "rc-animate": "3.x",
     "rc-util": "^4.0.4"
   }
 }
