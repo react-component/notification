@@ -125,7 +125,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
       const onClose = createChainedFunction(
-        this.remove.bind(this, notice.key),
+        this.remove.bind(this, notice.key!),
         notice.onClose,
       ) as any;
 
