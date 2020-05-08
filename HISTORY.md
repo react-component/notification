@@ -1,6 +1,6 @@
 # History
 
-## 4.2.0
+## 4.3.0
 
 - Upgrade `rc-animate` to `3.x`.
 
