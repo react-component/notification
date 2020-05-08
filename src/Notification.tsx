@@ -85,6 +85,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
   }
 
   add = (notice: NoticeContent, holderCallback?: HolderReadyCallback) => {
+    // eslint-disable-next-line no-param-reassign
     notice.key = notice.key || getUuid();
     const { key } = notice;
     const { maxCount } = this.props;
@@ -99,6 +100,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
           // XXX, use key of first item to update new added (let React to move exsiting
           // instead of remove and mount). Same key was used before for both a) external
           // manual control and b) internal react 'key' prop , which is not that good.
+          // eslint-disable-next-line no-param-reassign
           notice.updateKey = updatedNotices[0].notice.updateKey || updatedNotices[0].notice.key;
           updatedNotices.shift();
         }
