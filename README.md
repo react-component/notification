@@ -13,7 +13,7 @@ React Notification UI Component
 
 [npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-notification
-[travis-image]: https://img.shields.io/travis/react-component/notification.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/react-component/notification/master?style=flat-square
 [travis-url]: https://travis-ci.org/react-component/notification
 [coveralls-image]: https://img.shields.io/coveralls/react-component/notification.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/react-component/notification?branch=master
