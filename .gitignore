@@ -30,3 +30,4 @@ es
 coverage
 yarn.lock
 package-lock.json
+tsconfig.json
