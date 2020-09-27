@@ -54,6 +54,7 @@
     animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
   }
 
+  &-fade-appear,
   &-fade-enter {
     opacity: 0;
     .fade-effect();
@@ -65,6 +66,7 @@
     animation-play-state: paused;
   }
 
+  &-fade-appear&-fade-appear-active,
   &-fade-enter&-fade-enter-active {
     animation-name: rcNotificationFadeIn;
     animation-play-state: running;

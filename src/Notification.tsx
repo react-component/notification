@@ -1,8 +1,8 @@
 import React, { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
-import Animate from 'rc-animate';
+import classNames from 'classnames';
+import CSSMotion, { CSSMotionList } from 'rc-motion';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
-import classnames from 'classnames';
 import Notice, { NoticeProps } from './Notice';
 import useNotification from './useNotification';
 
@@ -118,12 +118,23 @@ class Notification extends Component<NotificationProps, NotificationState> {
     }));
   };
 
+  noticePropsMap: Record<
+    React.Key,
+    NoticeProps & {
+      key: ReactText;
+    }
+  > = {};
+
   render() {
     const { notices } = this.state;
     const { prefixCls, className, closeIcon, style } = this.props;
-    const noticeNodes = notices.map(({ notice, holderCallback }, index) => {
+
+    const noticeKeys: React.Key[] = [];
+
+    notices.forEach(({ notice, holderCallback }, index) => {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
+
       const onClose = createChainedFunction(
         this.remove.bind(this, notice.key!),
         notice.onClose,
@@ -139,7 +150,11 @@ class Notification extends Component<NotificationProps, NotificationState> {
         onClose,
         onClick: notice.onClick,
         children: notice.content,
-      } as (NoticeProps & { key: ReactText });
+      } as NoticeProps & { key: ReactText };
+
+      // Give to motion
+      noticeKeys.push(key);
+      this.noticePropsMap[key] = noticeProps;
 
       if (holderCallback) {
         return (
@@ -163,9 +178,28 @@ class Notification extends Component<NotificationProps, NotificationState> {
 
       return <Notice {...noticeProps} />;
     });
+
     return (
-      <div className={classnames(prefixCls, className)} style={style}>
-        <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
+      <div className={classNames(prefixCls, className)} style={style}>
+        <CSSMotionList
+          keys={noticeKeys}
+          motionName={this.getTransitionName()}
+          onLeaveEnd={(_, __, { key }) => {
+            delete this.noticePropsMap[key];
+          }}
+        >
+          {({ key, className: motionClassName, style: motionStyle }) => {
+            const noticeProps = this.noticePropsMap[key];
+
+            return (
+              <Notice
+                {...noticeProps}
+                className={classNames(motionClassName, noticeProps?.className)}
+                style={{ ...motionStyle, ...noticeProps?.style }}
+              />
+            );
+          }}
+        </CSSMotionList>
       </div>
     );
   }
