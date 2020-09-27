@@ -15,7 +15,8 @@ Notification.newInstance(
 
 function simpleFn() {
   notification.notice({
-    content: <span>simple show {Date.now()}</span>,
+    duration: 3,
+    content: <span>simple show {String(Date.now()).slice(-5)}</span>,
     onClose() {
       console.log('simple close');
     },

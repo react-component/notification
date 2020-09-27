@@ -13,7 +13,7 @@ export interface NoticeProps {
   className?: string;
   duration?: number | null;
   children?: React.ReactNode;
-  update?: boolean;
+  updateMark?: string;
   closeIcon?: React.ReactNode;
   closable?: boolean;
   props?: DivProps;
@@ -37,7 +37,10 @@ export default class Notice extends Component<NoticeProps> {
   }
 
   componentDidUpdate(prevProps: NoticeProps) {
-    if (this.props.duration !== prevProps.duration || this.props.update) {
+    if (
+      this.props.duration !== prevProps.duration ||
+      this.props.updateMark !== prevProps.updateMark
+    ) {
       this.restartCloseTimer();
     }
   }

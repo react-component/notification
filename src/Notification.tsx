@@ -18,7 +18,7 @@ function getUuid() {
 export interface NoticeContent extends Omit<NoticeProps, 'prefixCls' | 'children'> {
   prefixCls?: string;
   key?: React.Key;
-  updateKey?: React.Key;
+  updateMark?: string;
   content?: React.ReactNode;
 }
 
@@ -84,10 +84,9 @@ class Notification extends Component<NotificationProps, NotificationState> {
     return transitionName;
   }
 
-  add = (notice: NoticeContent, holderCallback?: HolderReadyCallback) => {
-    // eslint-disable-next-line no-param-reassign
-    notice.key = notice.key || getUuid();
-    const { key } = notice;
+  add = (originNotice: NoticeContent, holderCallback?: HolderReadyCallback) => {
+    const key = originNotice.key || getUuid();
+    const notice = { ...originNotice, key };
     const { maxCount } = this.props;
     this.setState(previousState => {
       const { notices } = previousState;
@@ -101,7 +100,12 @@ class Notification extends Component<NotificationProps, NotificationState> {
           // instead of remove and mount). Same key was used before for both a) external
           // manual control and b) internal react 'key' prop , which is not that good.
           // eslint-disable-next-line no-param-reassign
-          notice.updateKey = updatedNotices[0].notice.updateKey || updatedNotices[0].notice.key;
+
+          // zombieJ: Not know why use `updateKey`. This makes Notice infinite loop in jest.
+          // Change to `updateMark` for compare instead.
+          // https://github.com/react-component/notification/commit/32299e6be396f94040bfa82517eea940db947ece
+          notice.key = updatedNotices[0].notice.key;
+          notice.updateMark = getUuid();
           updatedNotices.shift();
         }
         updatedNotices.push({ notice, holderCallback });
@@ -135,13 +139,10 @@ class Notification extends Component<NotificationProps, NotificationState> {
     const noticeKeys: React.Key[] = [];
 
     notices.forEach(({ notice, holderCallback }, index) => {
-      const update = Boolean(index === notices.length - 1 && notice.updateKey);
-      const key = notice.updateKey ? notice.updateKey : notice.key;
+      const updateMark = index === notices.length - 1 ? notice.updateMark : undefined;
+      const { key } = notice;
 
-      const onClose = createChainedFunction(
-        this.remove.bind(this, notice.key!),
-        notice.onClose,
-      ) as any;
+      const onClose = createChainedFunction(this.remove.bind(this, key), notice.onClose) as any;
 
       const noticeProps = {
         prefixCls,
@@ -149,7 +150,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
         ...notice,
         ...notice.props,
         key,
-        update,
+        updateMark,
         onClose,
         onClick: notice.onClick,
         children: notice.content,
