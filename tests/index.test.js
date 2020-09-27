@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import Notification from '../src';
 
 require('../assets/index.less');
@@ -300,9 +301,12 @@ describe('Notification.Basic', () => {
     mount(<Test />, container);
   });
 
-  it('drop first notice when items limit exceeds', done => {
+  it('drop first notice when items limit exceeds', () => {
+    jest.useFakeTimers();
+
     let wrapper;
 
+    let notificationInstance;
     Notification.newInstance(
       {
         maxCount: 1,
@@ -311,28 +315,33 @@ describe('Notification.Basic', () => {
         },
       },
       notification => {
-        const value = 'updated last';
-        notification.notice({
-          content: <span className="test-maxcount">simple show</span>,
-          duration: 3,
-        });
-        notification.notice({
-          content: <span className="test-maxcount">simple show</span>,
-          duration: 3,
-        });
-        notification.notice({
-          content: <span className="test-maxcount">{value}</span>,
-          duration: 3,
-        });
-
-        setTimeout(() => {
-          wrapper.update();
-          expect(wrapper.find('.test-maxcount')).toHaveLength(1);
-          expect(wrapper.find('.test-maxcount').text()).toEqual(value);
-          done();
-        }, 10);
+        notificationInstance = notification;
       },
     );
+
+    const value = 'updated last';
+    notificationInstance.notice({
+      content: <span className="test-maxcount">simple show</span>,
+      duration: 0,
+    });
+    notificationInstance.notice({
+      content: <span className="test-maxcount">simple show</span>,
+      duration: 0,
+    });
+    notificationInstance.notice({
+      content: <span className="test-maxcount">{value}</span>,
+      duration: 0,
+    });
+
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('.test-maxcount')).toHaveLength(1);
+    expect(wrapper.find('.test-maxcount').text()).toEqual(value);
+
+    jest.useRealTimers();
   });
 
   it('onClick trigger', done => {

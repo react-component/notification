@@ -4,13 +4,18 @@ import Notification from '../src';
 import '../assets/index.less';
 
 let notification = null;
-Notification.newInstance({}, n => {
-  notification = n;
-});
+Notification.newInstance(
+  {
+    maxCount: 5,
+  },
+  n => {
+    notification = n;
+  },
+);
 
 function simpleFn() {
   notification.notice({
-    content: <span>simple show</span>,
+    content: <span>simple show {Date.now()}</span>,
     onClose() {
       console.log('simple close');
     },
