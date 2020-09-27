@@ -159,7 +159,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
       noticeKeys.push(key);
       this.noticePropsMap[key] = { props: noticeProps, holderCallback };
     });
- 
+
     return (
       <div className={classNames(prefixCls, className)} style={style}>
         <CSSMotionList
