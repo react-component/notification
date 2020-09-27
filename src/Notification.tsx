@@ -165,8 +165,10 @@ class Notification extends Component<NotificationProps, NotificationState> {
         <CSSMotionList
           keys={noticeKeys}
           motionName={this.getTransitionName()}
-          onLeaveEnd={(_, __, { key }) => {
-            delete this.noticePropsMap[key];
+          onVisibleChanged={(changedVisible, { key }) => {
+            if (!changedVisible) {
+              delete this.noticePropsMap[key];
+            }
           }}
         >
           {({ key, className: motionClassName, style: motionStyle }) => {

@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import Notification from '../src';
+import { NotificationInstance } from '../src/Notification';
 
 require('../assets/index.less');
 
@@ -12,13 +13,21 @@ async function timeout(delay = 0) {
 
 describe('Notification.Hooks', () => {
   it('works', async () => {
-    let instance;
+    let instance: NotificationInstance;
 
     const Context = React.createContext({ name: 'light' });
 
-    Notification.newInstance({}, notification => {
-      instance = notification;
-    });
+    let wrapper: ReactWrapper;
+    Notification.newInstance(
+      {
+        TEST_RENDER: (node: React.ReactElement) => {
+          wrapper = mount(<div>{node}</div>);
+        },
+      } as any,
+      notification => {
+        instance = notification;
+      },
+    );
 
     await timeout(0);
 
@@ -30,6 +39,7 @@ describe('Notification.Hooks', () => {
             type="button"
             onClick={() => {
               notify({
+                duration: 0.1,
                 content: (
                   <Context.Consumer>
                     {({ name }) => <div className="context-content">{name}</div>}
@@ -50,6 +60,8 @@ describe('Notification.Hooks', () => {
     expect(demo.find('.context-content').text()).toEqual('bamboo');
 
     await timeout(1000);
+    expect(wrapper.find('Notification').state().notices).toHaveLength(0);
+
     instance.destroy();
   });
 });
