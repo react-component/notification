@@ -1,8 +1,8 @@
 import React, { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
-import Animate from 'rc-animate';
+import classNames from 'classnames';
+import { CSSMotionList } from 'rc-motion';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
-import classnames from 'classnames';
 import Notice, { NoticeProps } from './Notice';
 import useNotification from './useNotification';
 
@@ -113,17 +113,31 @@ class Notification extends Component<NotificationProps, NotificationState> {
   };
 
   remove = (key: React.Key) => {
-    this.setState(previousState => ({
-      notices: previousState.notices.filter(({ notice }) => notice.key !== key),
+    this.setState(({ notices }) => ({
+      notices: notices.filter(({ notice }) => notice.key !== key),
     }));
   };
+
+  noticePropsMap: Record<
+    React.Key,
+    {
+      props: NoticeProps & {
+        key: ReactText;
+      };
+      holderCallback?: HolderReadyCallback;
+    }
+  > = {};
 
   render() {
     const { notices } = this.state;
     const { prefixCls, className, closeIcon, style } = this.props;
-    const noticeNodes = notices.map(({ notice, holderCallback }, index) => {
+
+    const noticeKeys: React.Key[] = [];
+
+    notices.forEach(({ notice, holderCallback }, index) => {
       const update = Boolean(index === notices.length - 1 && notice.updateKey);
       const key = notice.updateKey ? notice.updateKey : notice.key;
+
       const onClose = createChainedFunction(
         this.remove.bind(this, notice.key!),
         notice.onClose,
@@ -139,33 +153,55 @@ class Notification extends Component<NotificationProps, NotificationState> {
         onClose,
         onClick: notice.onClick,
         children: notice.content,
-      } as (NoticeProps & { key: ReactText });
+      } as NoticeProps & { key: ReactText };
 
-      if (holderCallback) {
-        return (
-          <div
-            key={key}
-            className={`${prefixCls}-hook-holder`}
-            ref={div => {
-              if (typeof key === 'undefined') {
-                return;
-              }
-              if (div) {
-                this.hookRefs.set(key, div);
-                holderCallback(div, noticeProps);
-              } else {
-                this.hookRefs.delete(key);
-              }
-            }}
-          />
-        );
-      }
-
-      return <Notice {...noticeProps} />;
+      // Give to motion
+      noticeKeys.push(key);
+      this.noticePropsMap[key] = { props: noticeProps, holderCallback };
     });
+
     return (
-      <div className={classnames(prefixCls, className)} style={style}>
-        <Animate transitionName={this.getTransitionName()}>{noticeNodes}</Animate>
+      <div className={classNames(prefixCls, className)} style={style}>
+        <CSSMotionList
+          keys={noticeKeys}
+          motionName={this.getTransitionName()}
+          onLeaveEnd={(_, __, { key }) => {
+            delete this.noticePropsMap[key];
+          }}
+        >
+          {({ key, className: motionClassName, style: motionStyle }) => {
+            const { props: noticeProps, holderCallback } = this.noticePropsMap[key];
+            if (holderCallback) {
+              return (
+                <div
+                  key={key}
+                  className={classNames(motionClassName, `${prefixCls}-hook-holder`)}
+                  style={{ ...motionStyle }}
+                  ref={div => {
+                    if (typeof key === 'undefined') {
+                      return;
+                    }
+
+                    if (div) {
+                      this.hookRefs.set(key, div);
+                      holderCallback(div, noticeProps);
+                    } else {
+                      this.hookRefs.delete(key);
+                    }
+                  }}
+                />
+              );
+            }
+
+            return (
+              <Notice
+                {...noticeProps}
+                className={classNames(motionClassName, noticeProps?.className)}
+                style={{ ...motionStyle, ...noticeProps?.style }}
+              />
+            );
+          }}
+        </CSSMotionList>
       </div>
     );
   }

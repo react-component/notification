@@ -28,9 +28,6 @@ export default class Notice extends Component<NoticeProps> {
   static defaultProps = {
     onClose() {},
     duration: 1.5,
-    style: {
-      right: '50%',
-    },
   };
 
   closeTimer: number | null = null;
