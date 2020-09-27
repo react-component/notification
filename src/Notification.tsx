@@ -1,7 +1,7 @@
 import React, { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import CSSMotion, { CSSMotionList } from 'rc-motion';
+import { CSSMotionList } from 'rc-motion';
 import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import Notice, { NoticeProps } from './Notice';
 import useNotification from './useNotification';
@@ -113,15 +113,18 @@ class Notification extends Component<NotificationProps, NotificationState> {
   };
 
   remove = (key: React.Key) => {
-    this.setState(previousState => ({
-      notices: previousState.notices.filter(({ notice }) => notice.key !== key),
+    this.setState(({ notices }) => ({
+      notices: notices.filter(({ notice }) => notice.key !== key),
     }));
   };
 
   noticePropsMap: Record<
     React.Key,
-    NoticeProps & {
-      key: ReactText;
+    {
+      props: NoticeProps & {
+        key: ReactText;
+      };
+      holderCallback?: HolderReadyCallback;
     }
   > = {};
 
@@ -154,29 +157,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
 
       // Give to motion
       noticeKeys.push(key);
-      this.noticePropsMap[key] = noticeProps;
-
-      if (holderCallback) {
-        return (
-          <div
-            key={key}
-            className={`${prefixCls}-hook-holder`}
-            ref={div => {
-              if (typeof key === 'undefined') {
-                return;
-              }
-              if (div) {
-                this.hookRefs.set(key, div);
-                holderCallback(div, noticeProps);
-              } else {
-                this.hookRefs.delete(key);
-              }
-            }}
-          />
-        );
-      }
-
-      return <Notice {...noticeProps} />;
+      this.noticePropsMap[key] = { props: noticeProps, holderCallback };
     });
 
     return (
@@ -189,7 +170,28 @@ class Notification extends Component<NotificationProps, NotificationState> {
           }}
         >
           {({ key, className: motionClassName, style: motionStyle }) => {
-            const noticeProps = this.noticePropsMap[key];
+            const { props: noticeProps, holderCallback } = this.noticePropsMap[key];
+            if (holderCallback) {
+              return (
+                <div
+                  key={key}
+                  className={classNames(motionClassName, `${prefixCls}-hook-holder`)}
+                  style={{ ...motionStyle }}
+                  ref={div => {
+                    if (typeof key === 'undefined') {
+                      return;
+                    }
+
+                    if (div) {
+                      this.hookRefs.set(key, div);
+                      holderCallback(div, noticeProps);
+                    } else {
+                      this.hookRefs.delete(key);
+                    }
+                  }}
+                />
+              );
+            }
 
             return (
               <Notice
