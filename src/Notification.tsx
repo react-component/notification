@@ -1,4 +1,5 @@
-import React, { Component, ReactText } from 'react';
+import * as React from 'react';
+import { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
