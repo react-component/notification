@@ -3,7 +3,6 @@ import { Component, ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
-import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import Notice, { NoticeProps } from './Notice';
 import useNotification from './useNotification';
 
@@ -16,11 +15,13 @@ function getUuid() {
   return `rcNotification_${now}_${id}`;
 }
 
-export interface NoticeContent extends Omit<NoticeProps, 'prefixCls' | 'children'> {
+export interface NoticeContent
+  extends Omit<NoticeProps, 'prefixCls' | 'children' | 'noticeKey' | 'onClose'> {
   prefixCls?: string;
   key?: React.Key;
   updateMark?: string;
   content?: React.ReactNode;
+  onClose?: () => void;
 }
 
 export type NoticeFunc = (noticeProps: NoticeContent) => void;
@@ -94,9 +95,9 @@ class Notification extends Component<NotificationProps, NotificationState> {
       key,
     };
     const { maxCount } = this.props;
-    this.setState((previousState) => {
+    this.setState(previousState => {
       const { notices } = previousState;
-      const noticeIndex = notices.map((v) => v.notice.key).indexOf(key);
+      const noticeIndex = notices.map(v => v.notice.key).indexOf(key);
       const updatedNotices = notices.concat();
       if (noticeIndex !== -1) {
         updatedNotices.splice(noticeIndex, 1, { notice, holderCallback });
@@ -155,9 +156,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
 
     notices.forEach(({ notice, holderCallback }, index) => {
       const updateMark = index === notices.length - 1 ? notice.updateMark : undefined;
-      const { key } = notice;
-
-      const onClose = createChainedFunction(this.remove.bind(this, key), notice.onClose) as any;
+      const { key, userPassKey } = notice;
 
       const noticeProps = {
         prefixCls,
@@ -165,8 +164,12 @@ class Notification extends Component<NotificationProps, NotificationState> {
         ...notice,
         ...notice.props,
         key,
+        noticeKey: userPassKey || key,
         updateMark,
-        onClose,
+        onClose: (noticeKey: React.Key) => {
+          this.remove(noticeKey);
+          notice.onClose?.();
+        },
         onClick: notice.onClick,
         children: notice.content,
       } as NoticeProps & { key: ReactText };
@@ -195,7 +198,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
                   key={key}
                   className={classNames(motionClassName, `${prefixCls}-hook-holder`)}
                   style={{ ...motionStyle }}
-                  ref={(div) => {
+                  ref={div => {
                     if (typeof key === 'undefined') {
                       return;
                     }

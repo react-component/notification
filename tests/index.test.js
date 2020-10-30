@@ -176,46 +176,6 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('remove work when maxCount set', done => {
-    let wrapper;
-
-    Notification.newInstance(
-      {
-        TEST_RENDER: node => {
-          wrapper = mount(<div>{node}</div>);
-        },
-        maxCount: 1,
-      },
-      notification => {
-        // First
-        notification.notice({
-          content: <div className="max-count">bamboo</div>,
-          key: 'bamboo',
-          duration: 0,
-        });
-
-        // Next
-        notification.notice({
-          content: <div className="max-count">bamboo</div>,
-          key: 'bamboo',
-          duration: 0,
-        });
-
-        setTimeout(() => {
-          expect(wrapper.find('.max-count')).toHaveLength(1);
-          notification.removeNotice('bamboo');
-
-          setTimeout(() => {
-            wrapper.update();
-            expect(wrapper.find('.max-count')).toHaveLength(0);
-            notification.destroy();
-            done();
-          }, 500);
-        }, 10);
-      },
-    );
-  });
-
   it('update notification by key with multi instance', done => {
     let wrapper;
 
@@ -341,47 +301,133 @@ describe('Notification.Basic', () => {
     mount(<Test />, container);
   });
 
-  it('drop first notice when items limit exceeds', () => {
-    jest.useFakeTimers();
+  describe('maxCount', () => {
+    it('remove work when maxCount set', done => {
+      let wrapper;
 
-    let wrapper;
-
-    let notificationInstance;
-    Notification.newInstance(
-      {
-        maxCount: 1,
-        TEST_RENDER: node => {
-          wrapper = mount(<div>{node}</div>);
+      Notification.newInstance(
+        {
+          TEST_RENDER: node => {
+            wrapper = mount(<div>{node}</div>);
+          },
+          maxCount: 1,
         },
-      },
-      notification => {
-        notificationInstance = notification;
-      },
-    );
+        notification => {
+          // First
+          notification.notice({
+            content: <div className="max-count">bamboo</div>,
+            key: 'bamboo',
+            duration: 0,
+          });
 
-    const value = 'updated last';
-    notificationInstance.notice({
-      content: <span className="test-maxcount">simple show</span>,
-      duration: 0,
-    });
-    notificationInstance.notice({
-      content: <span className="test-maxcount">simple show</span>,
-      duration: 0,
-    });
-    notificationInstance.notice({
-      content: <span className="test-maxcount">{value}</span>,
-      duration: 0,
+          // Next
+          notification.notice({
+            content: <div className="max-count">bamboo</div>,
+            key: 'bamboo',
+            duration: 0,
+          });
+
+          setTimeout(() => {
+            expect(wrapper.find('.max-count')).toHaveLength(1);
+            notification.removeNotice('bamboo');
+
+            setTimeout(() => {
+              wrapper.update();
+              expect(wrapper.find('.max-count')).toHaveLength(0);
+              notification.destroy();
+              done();
+            }, 500);
+          }, 10);
+        },
+      );
     });
 
-    act(() => {
-      jest.runAllTimers();
-      wrapper.update();
+    it('drop first notice when items limit exceeds', () => {
+      jest.useFakeTimers();
+
+      let wrapper;
+
+      let notificationInstance;
+      Notification.newInstance(
+        {
+          maxCount: 1,
+          TEST_RENDER: node => {
+            wrapper = mount(<div>{node}</div>);
+          },
+        },
+        notification => {
+          notificationInstance = notification;
+        },
+      );
+
+      const value = 'updated last';
+      notificationInstance.notice({
+        content: <span className="test-maxcount">simple show</span>,
+        duration: 0,
+      });
+      notificationInstance.notice({
+        content: <span className="test-maxcount">simple show</span>,
+        duration: 0,
+      });
+      notificationInstance.notice({
+        content: <span className="test-maxcount">{value}</span>,
+        duration: 0,
+      });
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(wrapper.find('.test-maxcount')).toHaveLength(1);
+      expect(wrapper.find('.test-maxcount').text()).toEqual(value);
+
+      jest.useRealTimers();
     });
 
-    expect(wrapper.find('.test-maxcount')).toHaveLength(1);
-    expect(wrapper.find('.test-maxcount').text()).toEqual(value);
+    it('duration should work', done => {
+      let wrapper;
 
-    jest.useRealTimers();
+      let notificationInstance;
+      Notification.newInstance(
+        {
+          maxCount: 1,
+          TEST_RENDER: node => {
+            wrapper = mount(<div>{node}</div>);
+          },
+        },
+        notification => {
+          notificationInstance = notification;
+
+          notificationInstance.notice({
+            content: <span className="auto-remove">bamboo</span>,
+            duration: 99,
+          });
+
+          setTimeout(() => {
+            wrapper.update();
+            expect(wrapper.find('.auto-remove').text()).toEqual('bamboo');
+
+            notificationInstance.notice({
+              content: <span className="auto-remove">light</span>,
+              duration: 0.5,
+            });
+
+            setTimeout(() => {
+              wrapper.update();
+              expect(wrapper.find('.auto-remove').text()).toEqual('light');
+
+              setTimeout(() => {
+                wrapper.update();
+                expect(wrapper.find('.auto-remove')).toHaveLength(0);
+                notification.destroy();
+                done();
+              }, 500);
+            }, 10);
+          }, 10);
+        },
+      );
+    });
   });
 
   it('onClick trigger', done => {
