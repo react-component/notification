@@ -4,7 +4,7 @@
 React Notification UI Component
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
+[![build status][github-actions-image]][github-actions-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![Dependencies][david-image]][david-url]
 [![DevDependencies][david-dev-image]][david-dev-url]
@@ -13,8 +13,8 @@ React Notification UI Component
 
 [npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-notification
-[travis-image]: https://img.shields.io/travis/react-component/notification/master?style=flat-square
-[travis-url]: https://travis-ci.org/react-component/notification
+[github-actions-image]: https://github.com/react-component/notification/workflows/CI/badge.svg
+[github-actions-url]: https://github.com/react-component/notification/actions
 [coveralls-image]: https://img.shields.io/coveralls/react-component/notification.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/react-component/notification?branch=master
 [david-url]: https://david-dm.org/react-component/notification
