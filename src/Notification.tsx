@@ -50,7 +50,9 @@ export interface NotificationProps {
 
 interface NotificationState {
   notices: {
-    notice: NoticeContent;
+    notice: NoticeContent & {
+      userPassKey?: React.Key;
+    };
     holderCallback?: HolderReadyCallback;
   }[];
 }
@@ -87,11 +89,14 @@ class Notification extends Component<NotificationProps, NotificationState> {
 
   add = (originNotice: NoticeContent, holderCallback?: HolderReadyCallback) => {
     const key = originNotice.key || getUuid();
-    const notice = { ...originNotice, key };
+    const notice: NoticeContent & { key: React.Key; userPassKey?: React.Key } = {
+      ...originNotice,
+      key,
+    };
     const { maxCount } = this.props;
-    this.setState(previousState => {
+    this.setState((previousState) => {
       const { notices } = previousState;
-      const noticeIndex = notices.map(v => v.notice.key).indexOf(key);
+      const noticeIndex = notices.map((v) => v.notice.key).indexOf(key);
       const updatedNotices = notices.concat();
       if (noticeIndex !== -1) {
         updatedNotices.splice(noticeIndex, 1, { notice, holderCallback });
@@ -107,6 +112,12 @@ class Notification extends Component<NotificationProps, NotificationState> {
           // https://github.com/react-component/notification/commit/32299e6be396f94040bfa82517eea940db947ece
           notice.key = updatedNotices[0].notice.key;
           notice.updateMark = getUuid();
+
+          // zombieJ: That's why. User may close by key directly.
+          // We need record this but not re-render to avoid upper issue
+          // https://github.com/react-component/notification/issues/129
+          notice.userPassKey = key;
+
           updatedNotices.shift();
         }
         updatedNotices.push({ notice, holderCallback });
@@ -117,9 +128,12 @@ class Notification extends Component<NotificationProps, NotificationState> {
     });
   };
 
-  remove = (key: React.Key) => {
+  remove = (removeKey: React.Key) => {
     this.setState(({ notices }) => ({
-      notices: notices.filter(({ notice }) => notice.key !== key),
+      notices: notices.filter(({ notice: { key, userPassKey } }) => {
+        const mergedKey = userPassKey || key;
+        return mergedKey !== removeKey;
+      }),
     }));
   };
 
@@ -181,7 +195,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
                   key={key}
                   className={classNames(motionClassName, `${prefixCls}-hook-holder`)}
                   style={{ ...motionStyle }}
-                  ref={div => {
+                  ref={(div) => {
                     if (typeof key === 'undefined') {
                       return;
                     }

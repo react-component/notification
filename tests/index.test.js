@@ -176,6 +176,46 @@ describe('Notification.Basic', () => {
     );
   });
 
+  it('remove work when maxCount set', done => {
+    let wrapper;
+
+    Notification.newInstance(
+      {
+        TEST_RENDER: node => {
+          wrapper = mount(<div>{node}</div>);
+        },
+        maxCount: 1,
+      },
+      notification => {
+        // First
+        notification.notice({
+          content: <div className="max-count">bamboo</div>,
+          key: 'bamboo',
+          duration: 0,
+        });
+
+        // Next
+        notification.notice({
+          content: <div className="max-count">bamboo</div>,
+          key: 'bamboo',
+          duration: 0,
+        });
+
+        setTimeout(() => {
+          expect(wrapper.find('.max-count')).toHaveLength(1);
+          notification.removeNotice('bamboo');
+
+          setTimeout(() => {
+            wrapper.update();
+            expect(wrapper.find('.max-count')).toHaveLength(0);
+            notification.destroy();
+            done();
+          }, 500);
+        }, 10);
+      },
+    );
+  });
+
   it('update notification by key with multi instance', done => {
     let wrapper;
 
