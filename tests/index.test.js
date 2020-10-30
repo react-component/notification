@@ -384,6 +384,50 @@ describe('Notification.Basic', () => {
 
       jest.useRealTimers();
     });
+
+    it('duration should work', done => {
+      let wrapper;
+
+      let notificationInstance;
+      Notification.newInstance(
+        {
+          maxCount: 1,
+          TEST_RENDER: node => {
+            wrapper = mount(<div>{node}</div>);
+          },
+        },
+        notification => {
+          notificationInstance = notification;
+
+          notificationInstance.notice({
+            content: <span className="auto-remove">bamboo</span>,
+            duration: 99,
+          });
+
+          setTimeout(() => {
+            wrapper.update();
+            expect(wrapper.find('.auto-remove').text()).toEqual('bamboo');
+
+            notificationInstance.notice({
+              content: <span className="auto-remove">light</span>,
+              duration: 0.5,
+            });
+
+            setTimeout(() => {
+              wrapper.update();
+              expect(wrapper.find('.auto-remove').text()).toEqual('light');
+
+              setTimeout(() => {
+                wrapper.update();
+                expect(wrapper.find('.auto-remove')).toHaveLength(0);
+                notification.destroy();
+                done();
+              }, 500);
+            }, 10);
+          }, 10);
+        },
+      );
+    });
   });
 
   it('onClick trigger', done => {
