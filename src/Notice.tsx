@@ -15,11 +15,13 @@ export interface NoticeProps {
   duration?: number | null;
   children?: React.ReactNode;
   updateMark?: string;
+  /** Mark as final key since set maxCount may keep the key but user pass key is different */
+  noticeKey: React.Key;
   closeIcon?: React.ReactNode;
   closable?: boolean;
   props?: DivProps;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  onClose?: () => void;
+  onClose?: (key: React.Key) => void;
 
   /** @private Only for internal usage. We don't promise that we will refactor this */
   holder?: HTMLDivElement;
@@ -55,9 +57,9 @@ export default class Notice extends Component<NoticeProps> {
       e.stopPropagation();
     }
     this.clearCloseTimer();
-    const { onClose } = this.props;
+    const { onClose, noticeKey } = this.props;
     if (onClose) {
-      onClose();
+      onClose(noticeKey);
     }
   };
 
