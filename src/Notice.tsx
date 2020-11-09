@@ -27,10 +27,15 @@ export interface NoticeProps {
   holder?: HTMLDivElement;
 }
 
+const defaultStyle = {
+  right: '50%',
+};
+
 export default class Notice extends Component<NoticeProps> {
   static defaultProps = {
     onClose() {},
     duration: 1.5,
+    style: {},
   };
 
   closeTimer: number | null = null;
@@ -109,7 +114,7 @@ export default class Notice extends Component<NoticeProps> {
         className={classNames(componentClass, className, {
           [`${componentClass}-closable`]: closable,
         })}
-        style={style}
+        style={{ ...defaultStyle, ...style }}
         onMouseEnter={this.clearCloseTimer}
         onMouseLeave={this.startCloseTimer}
         onClick={onClick}
