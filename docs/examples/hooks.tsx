@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import React from 'react';
-import Notification from '../src';
-import '../assets/index.less';
-import { NotificationInstance } from '../src/Notification';
+import Notification from 'rc-notification';
+import '../../assets/index.less';
+import { NotificationInstance } from 'rc-notification/Notification';
 
 let notificationInstance: NotificationInstance = null;
 Notification.newInstance({}, n => {

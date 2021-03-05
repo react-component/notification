@@ -1,4 +1,4 @@
-# History
+# Changelog
 
 ## 4.3.0
 

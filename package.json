@@ -34,8 +34,9 @@
   "main": "lib/index",
   "module": "es/index",
   "scripts": {
-    "start": "cross-env NODE_ENV=development father doc dev --storybook",
-    "build": "father doc build --storybook",
+    "start": "dumi dev",
+    "build": "dumi build",
+    "docs:deploy": "gh-pages -d .doc",
     "compile": "father build && lessc assets/index.less assets/index.css",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
@@ -53,15 +54,17 @@
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
     "cross-env": "^7.0.0",
+    "dumi": "^1.1.0",
     "enzyme": "^3.3.0",
     "enzyme-to-json": "^3.4.0",
     "eslint": "^7.8.1",
     "father": "^2.13.2",
+    "gh-pages": "^3.1.0",
     "less": "^3.10.3",
     "np": "^6.0.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "typescript": "^3.7.5"
+    "typescript": "^4.0.5"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.1",

@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import React from 'react';
-import Notification from '../src';
-import '../assets/index.less';
+import Notification from 'rc-notification';
+import '../../assets/index.less';
 
-let notification = null;
+let notification: any = null;
 Notification.newInstance(
   {
     maxCount: 5,
