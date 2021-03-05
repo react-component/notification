@@ -39,7 +39,7 @@
     "docs:deploy": "gh-pages -d .doc",
     "compile": "father build && lessc assets/index.less assets/index.css",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
-    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
     "test": "father test",
     "now-build": "npm run build"
   },
