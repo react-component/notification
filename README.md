@@ -1,5 +1,4 @@
 # rc-notification
----
 
 React Notification UI Component
 
@@ -46,7 +45,7 @@ Notification.newInstance({}, notification => {
 
 http://localhost:8001
 
-online example: http://react-component.github.io/notification/
+online example: https://notification-react-component.vercel.app
 
 ## API
 
