@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
+import type { ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
@@ -15,8 +16,6 @@ function getUuid() {
   seed += 1;
   return `rcNotification_${now}_${id}`;
 }
-
-type ReactText = React.ReactText;
 
 export interface NoticeContent
   extends Omit<NoticeProps, 'prefixCls' | 'children' | 'noticeKey' | 'onClose'> {
@@ -47,7 +46,7 @@ export interface NotificationProps {
   className?: string;
   style?: React.CSSProperties;
   transitionName?: string;
-  animation?: string | Record<string, unknown>;
+  animation?: string | object;
   maxCount?: number;
   closeIcon?: React.ReactNode;
 }
