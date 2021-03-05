@@ -1,15 +1,8 @@
 # rc-notification
----
 
 React Notification UI Component
 
-[![NPM version][npm-image]][npm-url]
-[![build status][github-actions-image]][github-actions-url]
-[![Test coverage][coveralls-image]][coveralls-url]
-[![Dependencies][david-image]][david-url]
-[![DevDependencies][david-dev-image]][david-dev-url]
-[![npm download][download-image]][download-url]
-[![bundle size][bundlephobia-image]][bundlephobia-url]
+[![NPM version][npm-image]][npm-url] [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square)](https://github.com/umijs/dumi) [![build status][github-actions-image]][github-actions-url] [![Test coverage][coveralls-image]][coveralls-url] [![Dependencies][david-image]][david-url] [![DevDependencies][david-dev-image]][david-dev-url] [![npm download][download-image]][download-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-notification
@@ -52,7 +45,7 @@ Notification.newInstance({}, notification => {
 
 http://localhost:8001
 
-online example: http://react-component.github.io/notification/
+online example: https://notification-react-component.vercel.app
 
 ## API
 

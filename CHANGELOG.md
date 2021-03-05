@@ -1,4 +1,6 @@
-# History
+# Changelog
+
+- https://github.com/react-component/notification/releases
 
 ## 4.3.0
 
