@@ -192,7 +192,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
             }
           }}
         >
-          {({ key, className: motionClassName, style: motionStyle }) => {
+          {({ key, className: motionClassName, style: motionStyle, visible }) => {
             const { props: noticeProps, holderCallback } = this.noticePropsMap[key];
             if (holderCallback) {
               return (
@@ -221,6 +221,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
                 {...noticeProps}
                 className={classNames(motionClassName, noticeProps?.className)}
                 style={{ ...motionStyle, ...noticeProps?.style }}
+                visible={visible}
               />
             );
           }}
