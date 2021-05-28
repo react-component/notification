@@ -25,6 +25,9 @@ export interface NoticeProps {
 
   /** @private Only for internal usage. We don't promise that we will refactor this */
   holder?: HTMLDivElement;
+
+  /** @private Provided by CSSMotionList */
+  visible?: boolean;
 }
 
 export default class Notice extends Component<NoticeProps> {
@@ -42,7 +45,9 @@ export default class Notice extends Component<NoticeProps> {
   componentDidUpdate(prevProps: NoticeProps) {
     if (
       this.props.duration !== prevProps.duration ||
-      this.props.updateMark !== prevProps.updateMark
+      this.props.updateMark !== prevProps.updateMark ||
+      // Visible again need reset timer
+      (this.props.visible !== prevProps.visible && this.props.visible)
     ) {
       this.restartCloseTimer();
     }
@@ -84,16 +89,8 @@ export default class Notice extends Component<NoticeProps> {
   }
 
   render() {
-    const {
-      prefixCls,
-      className,
-      closable,
-      closeIcon,
-      style,
-      onClick,
-      children,
-      holder,
-    } = this.props;
+    const { prefixCls, className, closable, closeIcon, style, onClick, children, holder } =
+      this.props;
     const componentClass = `${prefixCls}-notice`;
     const dataOrAriaAttributeProps = Object.keys(this.props).reduce(
       (acc: Record<string, string>, key: string) => {
