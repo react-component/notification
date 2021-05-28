@@ -46,7 +46,8 @@ export default class Notice extends Component<NoticeProps> {
     if (
       this.props.duration !== prevProps.duration ||
       this.props.updateMark !== prevProps.updateMark ||
-      this.props.visible !== prevProps.visible
+      // Visible again need reset timer
+      (this.props.visible !== prevProps.visible && this.props.visible)
     ) {
       this.restartCloseTimer();
     }

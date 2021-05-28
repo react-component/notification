@@ -6,16 +6,16 @@ import Notification from '../src';
 require('../assets/index.less');
 
 describe('Notification.Basic', () => {
-  it('works', done => {
+  it('works', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: <p className="test">1</p>,
           duration: 0.1,
@@ -34,17 +34,17 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('works with custom close icon', done => {
+  it('works with custom close icon', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
         closeIcon: <span className="test-icon">test-close-icon</span>,
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: <p className="test">1</p>,
           closable: true,
@@ -59,16 +59,16 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('works with multi instance', done => {
+  it('works with multi instance', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: <p className="test">1</p>,
           duration: 0.1,
@@ -91,7 +91,7 @@ describe('Notification.Basic', () => {
   });
 
   it('destroy works', () => {
-    Notification.newInstance({}, notification => {
+    Notification.newInstance({}, (notification) => {
       notification.notice({
         content: (
           <p id="test" className="test">
@@ -119,7 +119,7 @@ describe('Notification.Basic', () => {
       {
         getContainer: () => document.getElementById('get-container-test'),
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: (
             <p id="test" className="test">
@@ -136,18 +136,18 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('remove notify works', done => {
+  it('remove notify works', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         const key = Date.now();
-        const close = k => {
+        const close = (k) => {
           notification.removeNotice(k);
         };
         notification.notice({
@@ -176,16 +176,16 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('update notification by key with multi instance', done => {
+  it('update notification by key with multi instance', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         const key = 'updatable';
         const value = 'value';
         const newValue = `new-${value}`;
@@ -244,16 +244,16 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('freeze notification layer when mouse over', done => {
+  it('freeze notification layer when mouse over', (done) => {
     let wrapper;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: (
             <p id="freeze" className="freeze">
@@ -285,7 +285,7 @@ describe('Notification.Basic', () => {
   it('should work in lifecycle of React component', () => {
     class Test extends React.Component {
       componentDidMount() {
-        Notification.newInstance({}, notification => {
+        Notification.newInstance({}, (notification) => {
           notification.notice({
             content: <span>In lifecycle</span>,
           });
@@ -302,17 +302,17 @@ describe('Notification.Basic', () => {
   });
 
   describe('maxCount', () => {
-    it('remove work when maxCount set', done => {
+    it('remove work when maxCount set', (done) => {
       let wrapper;
 
       Notification.newInstance(
         {
-          TEST_RENDER: node => {
+          TEST_RENDER: (node) => {
             wrapper = mount(<div>{node}</div>);
           },
           maxCount: 1,
         },
-        notification => {
+        (notification) => {
           // First
           notification.notice({
             content: <div className="max-count">bamboo</div>,
@@ -351,11 +351,11 @@ describe('Notification.Basic', () => {
       Notification.newInstance(
         {
           maxCount: 1,
-          TEST_RENDER: node => {
+          TEST_RENDER: (node) => {
             wrapper = mount(<div>{node}</div>);
           },
         },
-        notification => {
+        (notification) => {
           notificationInstance = notification;
         },
       );
@@ -385,18 +385,18 @@ describe('Notification.Basic', () => {
       jest.useRealTimers();
     });
 
-    it('duration should work', done => {
+    it('duration should work', (done) => {
       let wrapper;
 
       let notificationInstance;
       Notification.newInstance(
         {
           maxCount: 1,
-          TEST_RENDER: node => {
+          TEST_RENDER: (node) => {
             wrapper = mount(<div>{node}</div>);
           },
         },
-        notification => {
+        (notification) => {
           notificationInstance = notification;
 
           notificationInstance.notice({
@@ -430,19 +430,19 @@ describe('Notification.Basic', () => {
     });
   });
 
-  it('onClick trigger', done => {
+  it('onClick trigger', (done) => {
     let wrapper;
     let clicked = 0;
 
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         const key = Date.now();
-        const close = k => {
+        const close = (k) => {
           notification.removeNotice(k);
         };
         notification.notice({
@@ -461,10 +461,7 @@ describe('Notification.Basic', () => {
         });
 
         setTimeout(() => {
-          wrapper
-            .find('.rc-notification-notice')
-            .last()
-            .simulate('click');
+          wrapper.find('.rc-notification-notice').last().simulate('click');
           expect(clicked).toEqual(1);
           notification.destroy();
           done();
@@ -473,17 +470,17 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('Close Notification only trigger onClose', done => {
+  it('Close Notification only trigger onClose', (done) => {
     let wrapper;
     let clickCount = 0;
     let closeCount = 0;
     Notification.newInstance(
       {
-        TEST_RENDER: node => {
+        TEST_RENDER: (node) => {
           wrapper = mount(<div>{node}</div>);
         },
       },
-      notification => {
+      (notification) => {
         notification.notice({
           content: <p className="test">1</p>,
           closable: true,
@@ -496,10 +493,7 @@ describe('Notification.Basic', () => {
         });
 
         setTimeout(() => {
-          wrapper
-            .find('.rc-notification-notice-close')
-            .last()
-            .simulate('click');
+          wrapper.find('.rc-notification-notice-close').last().simulate('click');
           expect(clickCount).toEqual(0);
           expect(closeCount).toEqual(1);
           notification.destroy();
@@ -509,8 +503,8 @@ describe('Notification.Basic', () => {
     );
   });
 
-  it('sets data attributes', done => {
-    Notification.newInstance({}, notification => {
+  it('sets data attributes', (done) => {
+    Notification.newInstance({}, (notification) => {
       notification.notice({
         content: <span className="test-data-attributes">simple show</span>,
         duration: 3,
@@ -532,8 +526,8 @@ describe('Notification.Basic', () => {
     });
   });
 
-  it('sets aria attributes', done => {
-    Notification.newInstance({}, notification => {
+  it('sets aria attributes', (done) => {
+    Notification.newInstance({}, (notification) => {
       notification.notice({
         content: <span className="test-aria-attributes">simple show</span>,
         duration: 3,
@@ -555,8 +549,8 @@ describe('Notification.Basic', () => {
     });
   });
 
-  it('sets role attribute', done => {
-    Notification.newInstance({}, notification => {
+  it('sets role attribute', (done) => {
+    Notification.newInstance({}, (notification) => {
       notification.notice({
         content: <span className="test-aria-attributes">simple show</span>,
         duration: 3,
