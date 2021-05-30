@@ -79,7 +79,12 @@ class Notification extends Component<NotificationProps, NotificationState> {
     notices: [],
   };
 
-  private hookRefs = new Map<React.Key, HTMLDivElement>();
+  /**
+   * @private Internal props do not call it directly.
+   * We do not make this as private is caused TS will trade private as
+   * different prop that between es and lib
+   */
+  hookRefs = new Map<React.Key, HTMLDivElement>();
 
   getTransitionName() {
     const { prefixCls, animation } = this.props;
