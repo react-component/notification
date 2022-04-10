@@ -1,45 +1,42 @@
+// ReactDOM.render is no longer supported in React 18. Use createRoot instead.
+// Until you switch to the new API, your app will behave as if it’s running React 17.
+// Learn more: https://reactjs.org/link/switch-to-createroot
+
 import type * as React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
-import type { Root } from 'react-dom/client';
-// import * as reactDomClient from 'react-dom/client';
+import type { Root, RootOptions } from 'react-dom/client';
 
-let createRoot: (container: ContainerType) => Root;
+type ContainerType = Element | DocumentFragment;
+
+let createRoot: (container: ContainerType, options?: RootOptions) => Root;
+
 try {
   createRoot = require('react-dom/client').createRoot;
 } catch (e) {
   // Do nothing;
 }
 
-const MARK = '__antd_react_root__';
-
-type ContainerType = (Element | DocumentFragment) & {
-  [MARK]?: Root;
-};
-
-export function reactRender(node: React.ReactElement, container: ContainerType) {
-  // React 17 test will not reach here
+export function reactRender(
+  node: React.ReactElement,
+  container: ContainerType,
+  options?: RootOptions,
+) {
+  // React 18
   /* istanbul ignore next */
   if (createRoot !== undefined) {
-    const root = container[MARK] || createRoot(container);
+    const root = createRoot(container, options);
     root.render(node);
-
-    container[MARK] = root;
     return;
   }
 
   render(node, container);
 }
 
-export function reactUnmount(container: ContainerType) {
-  // React 17 test will not reach here
+export function reactUnmount(container: ContainerType, reactRoot?: Root) {
+  // React 18
   /* istanbul ignore next */
   if (createRoot !== undefined) {
-    // Delay to unmount to avoid React 18 sync warning
-    Promise.resolve().then(() => {
-      container[MARK]?.unmount();
-
-      delete container[MARK];
-    });
+    reactRoot?.unmount();
 
     return;
   }
