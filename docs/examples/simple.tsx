@@ -8,8 +8,9 @@ Notification.newInstance(
   {
     maxCount: 5,
   },
-  n => {
+  (n) => {
     notification = n;
+    console.log('###:simple.tsx回调结束, 更新instance:', n);
   },
 );
 

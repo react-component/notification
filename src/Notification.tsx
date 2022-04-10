@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Component } from 'react';
 import type { ReactText } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
 import type { NoticeProps } from './Notice';
 import Notice from './Notice';
 import useNotification from './useNotification';
+import { reactRender, reactUnmount } from './utils/compatible';
+import type { Root } from 'react-dom/client';
 
 let seed = 0;
 const now = Date.now();
@@ -245,12 +248,18 @@ Notification.newInstance = function newNotificationInstance(properties, callback
   } else {
     document.body.appendChild(div);
   }
+
+  // eslint-disable-next-line prefer-const
+  let reactRoot: Root;
   let called = false;
   function ref(notification: Notification) {
     if (called) {
       return;
     }
     called = true;
+
+    console.log('@@@:即将执行ref中的callback, instance的参数:', properties);
+
     callback({
       notice(noticeProps) {
         notification.add(noticeProps);
@@ -260,7 +269,8 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       },
       component: notification,
       destroy() {
-        ReactDOM.unmountComponentAtNode(div);
+        // ReactDOM.unmountComponentAtNode(div);
+        reactUnmount(div, reactRoot);
         if (div.parentNode) {
           div.parentNode.removeChild(div);
         }
@@ -279,7 +289,9 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     return;
   }
 
-  ReactDOM.render(<Notification {...props} ref={ref} />, div);
+  console.log('%%:即将开始执行reactRender, instance的参数:', properties);
+  reactRoot = reactRender(<Notification {...props} ref={ref} />, div);
+  // ReactDOM.render(<Notification {...props} ref={ref} />, div);
 };
 
 export default Notification;

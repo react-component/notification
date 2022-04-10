@@ -20,7 +20,7 @@ export function reactRender(
   node: React.ReactElement,
   container: ContainerType,
   options?: RootOptions,
-) {
+): Root | undefined {
   // React 18
   /* istanbul ignore next */
   if (createRoot !== undefined) {
@@ -30,6 +30,7 @@ export function reactRender(
   }
 
   render(node, container);
+  return;
 }
 
 export function reactUnmount(container: ContainerType, reactRoot?: Root) {
