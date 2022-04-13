@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import type { ReactText } from 'react';
-import ReactDOM from 'react-dom';
+import { render, unmount } from 'rc-util/lib/React/render';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
 import type { NoticeProps } from './Notice';
@@ -260,7 +260,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
       },
       component: notification,
       destroy() {
-        ReactDOM.unmountComponentAtNode(div);
+        unmount(div);
         if (div.parentNode) {
           div.parentNode.removeChild(div);
         }
@@ -279,7 +279,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     return;
   }
 
-  ReactDOM.render(<Notification {...props} ref={ref} />, div);
+  render(<Notification {...props} ref={ref} />, div);
 };
 
 export default Notification;
