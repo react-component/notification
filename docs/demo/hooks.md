@@ -1,3 +1,3 @@
 ## hooks
 
-<code src="../examples/hooks.tsx">
+<!-- <code src="../examples/hooks.tsx"> -->

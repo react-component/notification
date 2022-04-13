@@ -10,7 +10,7 @@ Notification.newInstance(
   },
   (n) => {
     notification = n;
-    console.log('###:simple.tsx回调结束, 更新instance:', n);
+    // console.log('###:simple.tsx回调结束, 更新instance:', n);
   },
 );
 

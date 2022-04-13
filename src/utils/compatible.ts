@@ -26,7 +26,7 @@ export function reactRender(
   if (createRoot !== undefined) {
     const root = createRoot(container, options);
     root.render(node);
-    return;
+    return root;
   }
 
   render(node, container);

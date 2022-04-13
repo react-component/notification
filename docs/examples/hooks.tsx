@@ -7,7 +7,7 @@ import type { NotificationInstance } from 'rc-notification/Notification';
 let notificationInstance: NotificationInstance = null;
 Notification.newInstance({}, (n) => {
   notificationInstance = n;
-  console.log('###:hooks.tsx回调结束, 更新instance:', n);
+  // console.log('###:hooks.tsx回调结束, 更新instance:', n);
 });
 
 const Context = React.createContext({ name: 'light' });
@@ -22,7 +22,7 @@ const NOTICE = {
 
 const Demo = () => {
   const [notice, holder] = notificationInstance?.useNotification() ?? [];
-  console.log('$$$:Demo 组件开始渲染, 此时的instance:', notificationInstance);
+  // console.log('$$$:Demo 组件开始渲染, 此时的instance:', notificationInstance);
 
   return (
     <Context.Provider value={{ name: 'bamboo' }}>

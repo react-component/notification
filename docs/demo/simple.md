@@ -1,3 +1,3 @@
 ## simple
 
-<code src="../examples/simple.tsx">
+<!-- <code src="../examples/simple.tsx"> -->

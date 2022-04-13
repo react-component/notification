@@ -258,7 +258,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     }
     called = true;
 
-    console.log('@@@:即将执行ref中的callback, instance的参数:', properties);
+    // console.log('@@@:即将执行ref中的callback, instance的参数:', properties);
 
     callback({
       notice(noticeProps) {
@@ -289,7 +289,7 @@ Notification.newInstance = function newNotificationInstance(properties, callback
     return;
   }
 
-  console.log('%%:即将开始执行reactRender, instance的参数:', properties);
+  // console.log('%%:即将开始执行reactRender, instance的参数:', properties);
   reactRoot = reactRender(<Notification {...props} ref={ref} />, div);
   // ReactDOM.render(<Notification {...props} ref={ref} />, div);
 };
