@@ -1,6 +1,5 @@
 import React from 'react';
-import type { ReactWrapper } from 'enzyme';
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import Notification from '../src';
 import type { NotificationInstance } from '../src/Notification';
 
@@ -18,11 +17,11 @@ describe('Notification.Hooks', () => {
 
     const Context = React.createContext({ name: 'light' });
 
-    let wrapper: ReactWrapper;
+    let container: HTMLElement;
     Notification.newInstance(
       {
         TEST_RENDER: (node: React.ReactElement) => {
-          wrapper = mount(<div>{node}</div>);
+          ({ container } = render(<div>{node}</div>));
         },
       } as any,
       (notification) => {
@@ -54,14 +53,14 @@ describe('Notification.Hooks', () => {
       );
     };
 
-    const demo = mount(<Demo />);
-    demo.find('button').simulate('click');
+    const { container: demoContainer } = render(<Demo />);
+    fireEvent.click(demoContainer.querySelector('button'));
 
     await timeout(10);
-    expect(demo.find('.context-content').text()).toEqual('bamboo');
+    expect(container.querySelector('.context-content').textContent).toEqual('bamboo');
 
     await timeout(1000);
-    expect(wrapper.find('Notification').state().notices).toHaveLength(0);
+    expect(container.querySelectorAll('.rc-notification-notice')).toHaveLength(0);
 
     instance.destroy();
   });
@@ -69,11 +68,12 @@ describe('Notification.Hooks', () => {
   it('key replace', async () => {
     let instance: NotificationInstance;
 
-    let wrapper: ReactWrapper;
+    let container: HTMLElement;
+    let unmount: () => void;
     Notification.newInstance(
       {
         TEST_RENDER: (node: React.ReactElement) => {
-          wrapper = mount(<div>{node}</div>);
+          ({ container, unmount } = render(<div>{node}</div>));
         },
       } as any,
       (notification) => {
@@ -110,17 +110,17 @@ describe('Notification.Hooks', () => {
       );
     };
 
-    const demo = mount(<Demo />);
-    demo.find('button').simulate('click');
+    const { container: demoContainer } = render(<Demo />);
+    fireEvent.click(demoContainer.querySelector('button'));
 
     await timeout(10);
-    expect(demo.find('.context-content').text()).toEqual('light');
+    expect(container.querySelector('.context-content').textContent).toEqual('light');
 
     await timeout(600);
-    expect(demo.find('.context-content').text()).toEqual('bamboo');
+    expect(container.querySelector('.context-content').textContent).toEqual('bamboo');
 
     instance.destroy();
 
-    wrapper.unmount();
+    unmount();
   });
 });
