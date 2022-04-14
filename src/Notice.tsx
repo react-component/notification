@@ -8,6 +8,8 @@ interface DivProps extends React.HTMLProps<HTMLDivElement> {
   'data-testid'?: string;
 }
 
+export type CloseTypes = 'manual' | 'auto'
+
 export interface NoticeProps {
   prefixCls: string;
   style?: React.CSSProperties;
@@ -21,7 +23,7 @@ export interface NoticeProps {
   closable?: boolean;
   props?: DivProps;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  onClose?: (key: React.Key) => void;
+  onClose?: (key: React.Key, closeType: CloseTypes) => void;
 
   /** @private Only for internal usage. We don't promise that we will refactor this */
   holder?: HTMLDivElement;
@@ -57,21 +59,30 @@ export default class Notice extends Component<NoticeProps> {
     this.clearCloseTimer();
   }
 
+  onCloseHandler = (closeType: CloseTypes) => {
+    const { onClose, noticeKey } = this.props;
+    if (onClose) {
+      onClose(noticeKey, closeType);
+    }
+  }
+
   close = (e?: React.MouseEvent<HTMLAnchorElement>) => {
     if (e) {
       e.stopPropagation();
     }
     this.clearCloseTimer();
-    const { onClose, noticeKey } = this.props;
-    if (onClose) {
-      onClose(noticeKey);
-    }
+    this.onCloseHandler('manual');
   };
+
+  autoClose = () => {
+    this.clearCloseTimer();
+    this.onCloseHandler('auto');
+  }
 
   startCloseTimer = () => {
     if (this.props.duration) {
       this.closeTimer = window.setTimeout(() => {
-        this.close();
+        this.autoClose();
       }, this.props.duration * 1000);
     }
   };

@@ -4,7 +4,7 @@ import type { ReactText } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
-import type { NoticeProps } from './Notice';
+import type { NoticeProps, CloseTypes } from './Notice';
 import Notice from './Notice';
 import useNotification from './useNotification';
 
@@ -23,7 +23,7 @@ export interface NoticeContent
   key?: React.Key;
   updateMark?: string;
   content?: React.ReactNode;
-  onClose?: () => void;
+  onClose?: (closeType: CloseTypes) => void;
 }
 
 export type NoticeFunc = (noticeProps: NoticeContent) => void;
@@ -173,9 +173,9 @@ class Notification extends Component<NotificationProps, NotificationState> {
         key,
         noticeKey: userPassKey || key,
         updateMark,
-        onClose: (noticeKey: React.Key) => {
+        onClose: (noticeKey: React.Key, closeType: CloseTypes) => {
           this.remove(noticeKey);
-          notice.onClose?.();
+          notice.onClose?.(closeType);
         },
         onClick: notice.onClick,
         children: notice.content,
