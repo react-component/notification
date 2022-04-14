@@ -436,141 +436,141 @@ describe('Notification.Basic', () => {
     });
   });
 
-  // it('onClick trigger', (done) => {
-  //   let container;
-  //   let clicked = 0;
+  it('onClick trigger', (done) => {
+    let container;
+    let clicked = 0;
 
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       const key = Date.now();
-  //       const close = (k) => {
-  //         notification.removeNotice(k);
-  //       };
-  //       notification.notice({
-  //         content: (
-  //           <p className="test">
-  //             <button type="button" id="closeButton" onClick={close.bind(null, key)}>
-  //               close
-  //             </button>
-  //           </p>
-  //         ),
-  //         key,
-  //         duration: null,
-  //         onClick: () => {
-  //           clicked += 1;
-  //         },
-  //       });
+    Notification.newInstance(
+      {
+        TEST_RENDER: (node) => {
+          ({ container } = render(<div>{node}</div>));
+        },
+      },
+      (notification) => {
+        const key = Date.now();
+        const close = (k) => {
+          notification.removeNotice(k);
+        };
+        notification.notice({
+          content: (
+            <p className="test">
+              <button type="button" id="closeButton" onClick={close.bind(null, key)}>
+                close
+              </button>
+            </p>
+          ),
+          key,
+          duration: null,
+          onClick: () => {
+            clicked += 1;
+          },
+        });
 
-  //       setTimeout(() => {
-  //         fireEvent.click(container.querySelector('.rc-notification-notice')); // origin latest
-  //         expect(clicked).toEqual(1);
-  //         notification.destroy();
-  //         done();
-  //       }, 10);
-  //     },
-  //   );
-  // });
+        setTimeout(() => {
+          fireEvent.click(container.querySelector('.rc-notification-notice')); // origin latest
+          expect(clicked).toEqual(1);
+          notification.destroy();
+          done();
+        }, 10);
+      },
+    );
+  });
 
-  // it('Close Notification only trigger onClose', (done) => {
-  //   let container;
-  //   let clickCount = 0;
-  //   let closeCount = 0;
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       notification.notice({
-  //         content: <p className="test">1</p>,
-  //         closable: true,
-  //         onClick: () => {
-  //           clickCount += 1;
-  //         },
-  //         onClose: () => {
-  //           closeCount += 1;
-  //         },
-  //       });
+  it('Close Notification only trigger onClose', (done) => {
+    let container;
+    let clickCount = 0;
+    let closeCount = 0;
+    Notification.newInstance(
+      {
+        TEST_RENDER: (node) => {
+          ({ container } = render(<div>{node}</div>));
+        },
+      },
+      (notification) => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          closable: true,
+          onClick: () => {
+            clickCount += 1;
+          },
+          onClose: () => {
+            closeCount += 1;
+          },
+        });
 
-  //       setTimeout(() => {
-  //         fireEvent.click(container.querySelector('.rc-notification-notice-close')); // origin latest
-  //         expect(clickCount).toEqual(0);
-  //         expect(closeCount).toEqual(1);
-  //         notification.destroy();
-  //         done();
-  //       }, 10);
-  //     },
-  //   );
-  // });
+        setTimeout(() => {
+          fireEvent.click(container.querySelector('.rc-notification-notice-close')); // origin latest
+          expect(clickCount).toEqual(0);
+          expect(closeCount).toEqual(1);
+          notification.destroy();
+          done();
+        }, 10);
+      },
+    );
+  });
 
-  // it('sets data attributes', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-data-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: {
-  //         'data-test': 'data-test-value',
-  //         'data-testid': 'data-testid-value',
-  //       },
-  //     });
+  it('sets data attributes', (done) => {
+    Notification.newInstance({}, (notification) => {
+      notification.notice({
+        content: <span className="test-data-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: {
+          'data-test': 'data-test-value',
+          'data-testid': 'data-testid-value',
+        },
+      });
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('data-test')).toBe('data-test-value');
-  //       expect(notice[0].getAttribute('data-testid')).toBe('data-testid-value');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+      setTimeout(() => {
+        const notice = document.querySelectorAll('.notice-class');
+        expect(notice.length).toBe(1);
+        expect(notice[0].getAttribute('data-test')).toBe('data-test-value');
+        expect(notice[0].getAttribute('data-testid')).toBe('data-testid-value');
+        notification.destroy();
+        done();
+      }, 10);
+    });
+  });
 
-  // it('sets aria attributes', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-aria-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: {
-  //         'aria-describedby': 'aria-describedby-value',
-  //         'aria-labelledby': 'aria-labelledby-value',
-  //       },
-  //     });
+  it('sets aria attributes', (done) => {
+    Notification.newInstance({}, (notification) => {
+      notification.notice({
+        content: <span className="test-aria-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: {
+          'aria-describedby': 'aria-describedby-value',
+          'aria-labelledby': 'aria-labelledby-value',
+        },
+      });
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('aria-describedby')).toBe('aria-describedby-value');
-  //       expect(notice[0].getAttribute('aria-labelledby')).toBe('aria-labelledby-value');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+      setTimeout(() => {
+        const notice = document.querySelectorAll('.notice-class');
+        expect(notice.length).toBe(1);
+        expect(notice[0].getAttribute('aria-describedby')).toBe('aria-describedby-value');
+        expect(notice[0].getAttribute('aria-labelledby')).toBe('aria-labelledby-value');
+        notification.destroy();
+        done();
+      }, 10);
+    });
+  });
 
-  // it('sets role attribute', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-aria-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: { role: 'alert' },
-  //     });
+  it('sets role attribute', (done) => {
+    Notification.newInstance({}, (notification) => {
+      notification.notice({
+        content: <span className="test-aria-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: { role: 'alert' },
+      });
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('role')).toBe('alert');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+      setTimeout(() => {
+        const notice = document.querySelectorAll('.notice-class');
+        expect(notice.length).toBe(1);
+        expect(notice[0].getAttribute('role')).toBe('alert');
+        notification.destroy();
+        done();
+      }, 10);
+    });
+  });
 });
