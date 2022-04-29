@@ -2,13 +2,25 @@
 import React from 'react';
 import '../../assets/index.less';
 import { useNotification } from '../../src';
+import motion from './motion';
 
 export default () => {
-  const [notification, contextHolder] = useNotification();
+  const [notice, contextHolder] = useNotification({ motion });
 
   return (
     <>
-      <button onClick={() => {}}>Show</button>
+      <div>
+        <button
+          onClick={() => {
+            notice.open({
+              content: 'Notification content',
+              // duration: 2,
+            });
+          }}
+        >
+          Show
+        </button>
+      </div>
       {contextHolder}
     </>
   );
