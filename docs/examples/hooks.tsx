@@ -10,15 +10,79 @@ export default () => {
   return (
     <>
       <div>
+        <div>
+          {/* Default */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `${new Date().toISOString()}`,
+              });
+            }}
+          >
+            Basic
+          </button>
+
+          {/* Not Close */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `${new Date().toISOString()}`,
+                duration: null,
+              });
+            }}
+          >
+            Not Auto Close
+          </button>
+        </div>
+
+        <div>
+          {/* No Closable */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `No Close! ${new Date().toISOString()}`,
+                duration: null,
+                closable: false,
+                key: 'No Close',
+                onClose: () => {
+                  console.log('Close!!!');
+                },
+              });
+            }}
+          >
+            No Closable
+          </button>
+
+          {/* Force Close */}
+          <button
+            onClick={() => {
+              notice.close('No Close');
+            }}
+          >
+            Force Close No Closable
+          </button>
+        </div>
+      </div>
+
+      <div>
+        {/* Destroy All */}
         <button
           onClick={() => {
-            notice.open({
-              content: 'Notification content',
-              // duration: 2,
-            });
+            notice.destroy();
           }}
         >
-          Show
+          Destroy All
+        </button>
+      </div>
+
+      <div>
+        {/* Top & Bottom */}
+        <button
+          onClick={() => {
+            notice.destroy();
+          }}
+        >
+          Destroy All
         </button>
       </div>
       {contextHolder}

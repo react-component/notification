@@ -4,8 +4,9 @@ import { CSSMotionList } from 'rc-motion';
 import type { CSSMotionProps } from 'rc-motion';
 import classNames from 'classnames';
 import Notice from './Notice';
+import type { NoticeConfig } from './Notice';
 
-export interface OpenConfig {
+export interface OpenConfig extends NoticeConfig {
   key: React.Key;
   placement?: Placement;
   content?: React.ReactNode;
@@ -26,6 +27,8 @@ type Placements = Partial<Record<Placement, OpenConfig[]>>;
 
 export interface NotificationsRef {
   open: (config: OpenConfig) => void;
+  close: (key: React.Key) => void;
+  destroy: () => void;
 }
 
 // ant-notification ant-notification-topRight
@@ -33,17 +36,39 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   const { prefixCls = 'rc-notification', container, motion } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
+  // ======================== Close =========================
+  const onNoticeClose = (key: React.Key) => {
+    // Trigger close event
+    const config = configList.find((item) => item.key === key);
+    config?.onClose?.();
+
+    setConfigList((list) => list.filter((item) => item.key !== key));
+  };
+
   // ========================= Refs =========================
   React.useImperativeHandle(ref, () => ({
     open: (config) => {
-      setConfigList([...configList, config]);
+      setConfigList((list) => {
+        const clone = [...list];
+
+        // Replace if exist
+        const index = clone.findIndex((item) => item.key === config.key);
+        if (index >= 0) {
+          clone[index] = config;
+        } else {
+          clone.push(config);
+        }
+
+        return clone;
+      });
+    },
+    close: (key) => {
+      onNoticeClose(key);
+    },
+    destroy: () => {
+      setConfigList([]);
     },
   }));
-
-  // ======================== Events ========================
-  const onNoticeClose = (key: React.Key) => {
-    setConfigList((list) => list.filter((item) => item.key !== key));
-  };
 
   // ====================== Placements ======================
   const [placements, setPlacements] = React.useState<Placements>({});
@@ -104,7 +129,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                   style={style}
                   key={key}
                   eventKey={key}
-                  onClose={onNoticeClose}
+                  onNoticeClose={onNoticeClose}
                 />
               );
             }}

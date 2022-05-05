@@ -16,12 +16,25 @@ export interface NotificationConfig {
 
 export interface NotificationAPI {
   open: (config: OptionalConfig) => void;
+  close: (key: React.Key) => void;
+  destroy: () => void;
 }
 
-interface Task {
+interface OpenTask {
   type: 'open';
   config: OpenConfig;
 }
+
+interface CloseTask {
+  type: 'close';
+  key: React.Key;
+}
+
+interface DestroyTask {
+  type: 'destroy';
+}
+
+type Task = OpenTask | CloseTask | DestroyTask;
 
 export default function useNotification(
   rootConfig: NotificationConfig = {},
@@ -52,6 +65,12 @@ export default function useNotification(
 
         setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
       },
+      close: (key) => {
+        setTaskQueue((queue) => [...queue, { type: 'close', key }]);
+      },
+      destroy: () => {
+        setTaskQueue((queue) => [...queue, { type: 'destroy' }]);
+      },
     };
   }, []);
 
@@ -67,7 +86,19 @@ export default function useNotification(
     // Flush task when node ready
     if (notificationsRef.current && taskQueue.length) {
       taskQueue.forEach((task) => {
-        notificationsRef.current.open(task.config);
+        switch (task.type) {
+          case 'open':
+            notificationsRef.current.open(task.config);
+            break;
+
+          case 'close':
+            notificationsRef.current.close(task.key);
+            break;
+
+          case 'destroy':
+            notificationsRef.current.destroy();
+            break;
+        }
       });
 
       setTaskQueue([]);
