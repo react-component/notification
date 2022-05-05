@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Notifications from './Notifications';
+import type { Placement } from './Notifications';
 import type { NotificationsRef, OpenConfig } from './Notifications';
 import type { CSSMotionProps } from 'rc-motion';
 
@@ -16,8 +17,8 @@ export interface NotificationConfig {
   closable?: boolean;
   maxCount?: number;
   duration?: number;
-  /** Config for notification holder style */
-  style?: React.CSSProperties;
+  /** @private. Config for notification holder style. Safe to remove if refactor */
+  style?: (placement: Placement) => React.CSSProperties;
 }
 
 export interface NotificationAPI {

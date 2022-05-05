@@ -479,9 +479,9 @@ describe('Notification.Basic', () => {
 
   it('should style work', () => {
     const { instance } = renderDemo({
-      style: {
+      style: () => ({
         content: 'little',
-      },
+      }),
     });
 
     act(() => {

@@ -15,15 +15,13 @@ export interface OpenConfig extends NoticeConfig {
 
 export interface NotificationsProps {
   prefixCls?: string;
-  style?: React.CSSProperties;
   motion?: CSSMotionProps;
   container?: HTMLElement;
   maxCount?: number;
-  top?: number;
-  bottom?: number;
+  style?: (placement: Placement) => React.CSSProperties;
 }
 
-type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
+export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 
 type Placements = Partial<Record<Placement, OpenConfig[]>>;
 
@@ -135,7 +133,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           <CSSMotionList
             key={placement}
             className={classNames(prefixCls, `${prefixCls}-topRight`)}
-            style={style}
+            style={style?.(placement)}
             keys={keys}
             motionAppear
             {...motion}
