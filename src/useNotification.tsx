@@ -16,8 +16,8 @@ export interface NotificationConfig {
   closable?: boolean;
   maxCount?: number;
   duration?: number;
-  top?: number;
-  bottom?: number;
+  /** Config for notification holder style */
+  style?: React.CSSProperties;
 }
 
 export interface NotificationAPI {
@@ -50,8 +50,7 @@ export default function useNotification(
     motion,
     prefixCls,
     maxCount,
-    top,
-    bottom,
+    style,
     ...shareConfig
   } = rootConfig;
 
@@ -64,8 +63,7 @@ export default function useNotification(
       prefixCls={prefixCls}
       motion={motion}
       maxCount={maxCount}
-      top={top}
-      bottom={bottom}
+      style={style}
     />
   );
 

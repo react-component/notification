@@ -476,4 +476,20 @@ describe('Notification.Basic', () => {
     expect(notice.length).toBe(1);
     expect(notice[0].getAttribute('role')).toBe('alert');
   });
+
+  it('should style work', () => {
+    const { instance } = renderDemo({
+      style: {
+        content: 'little',
+      },
+    });
+
+    act(() => {
+      instance.open({});
+    });
+
+    expect(document.querySelector('.rc-notification')).toHaveStyle({
+      content: 'little',
+    });
+  });
 });
