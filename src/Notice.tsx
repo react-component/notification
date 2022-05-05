@@ -6,9 +6,13 @@ export interface NoticeConfig {
   duration?: number | null;
   closeIcon?: React.ReactNode;
   closable?: boolean;
-  props?: React.HTMLAttributes<HTMLDivElement>;
+  className?: string;
+  style?: React.CSSProperties;
+  /** @private Internal usage. Do not override in your code */
+  props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
 
   onClose?: VoidFunction;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
@@ -17,6 +21,7 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   style?: React.CSSProperties;
   eventKey: React.Key;
 
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   onNoticeClose?: (key: React.Key) => void;
 }
 
@@ -33,6 +38,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
     closeIcon = 'x',
     props: divProps,
 
+    onClick,
     onNoticeClose,
   } = props;
   const [hovering, setHovering] = React.useState(false);
@@ -72,6 +78,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
       onMouseLeave={() => {
         setHovering(false);
       }}
+      onClick={onClick}
     >
       {/* Content */}
       <div className={`${noticePrefixCls}-content`}>{content}</div>
@@ -83,6 +90,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
           className={`${noticePrefixCls}-close`}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onInternalClose();
           }}
         >

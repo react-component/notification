@@ -5,7 +5,7 @@ import { useNotification } from '../../src';
 import motion from './motion';
 
 export default () => {
-  const [notice, contextHolder] = useNotification({ motion });
+  const [notice, contextHolder] = useNotification({ motion, closable: true });
 
   return (
     <>

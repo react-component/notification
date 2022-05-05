@@ -13,6 +13,8 @@ export interface NotificationConfig {
   getContainer?: () => HTMLElement;
   motion?: CSSMotionProps;
   closeIcon?: React.ReactNode;
+  closable?: boolean;
+  maxCount?: number;
 }
 
 export interface NotificationAPI {
@@ -40,7 +42,13 @@ type Task = OpenTask | CloseTask | DestroyTask;
 export default function useNotification(
   rootConfig: NotificationConfig = {},
 ): [NotificationAPI, React.ReactElement] {
-  const { getContainer = defaultGetContainer, motion, prefixCls, ...shareConfig } = rootConfig;
+  const {
+    getContainer = defaultGetContainer,
+    motion,
+    prefixCls,
+    maxCount,
+    ...shareConfig
+  } = rootConfig;
 
   const [container, setContainer] = React.useState<HTMLElement>();
   const notificationsRef = React.useRef<NotificationsRef>();
@@ -50,6 +58,7 @@ export default function useNotification(
       ref={notificationsRef}
       prefixCls={prefixCls}
       motion={motion}
+      maxCount={maxCount}
     />
   );
 

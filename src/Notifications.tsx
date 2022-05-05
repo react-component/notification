@@ -11,14 +11,13 @@ export interface OpenConfig extends NoticeConfig {
   placement?: Placement;
   content?: React.ReactNode;
   duration?: number | null;
-  closeIcon?: React.ReactNode;
-  closable?: boolean;
 }
 
 export interface NotificationsProps {
   prefixCls?: string;
   motion?: CSSMotionProps;
   container?: HTMLElement;
+  maxCount?: number;
 }
 
 type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
@@ -33,7 +32,7 @@ export interface NotificationsRef {
 
 // ant-notification ant-notification-topRight
 const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((props, ref) => {
-  const { prefixCls = 'rc-notification', container, motion } = props;
+  const { prefixCls = 'rc-notification', container, motion, maxCount } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
   // ======================== Close =========================
@@ -49,7 +48,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   React.useImperativeHandle(ref, () => ({
     open: (config) => {
       setConfigList((list) => {
-        const clone = [...list];
+        let clone = [...list];
 
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
@@ -57,6 +56,10 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           clone[index] = config;
         } else {
           clone.push(config);
+        }
+
+        if (maxCount > 0 && clone.length > maxCount) {
+          clone = clone.slice(-maxCount);
         }
 
         return clone;
@@ -93,6 +96,22 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     setPlacements(nextPlacements);
   }, [configList]);
 
+  // Clean up container if all notices fade out
+  const onAllNoticeRemoved = (placement: Placement) => {
+    setPlacements((originPlacements) => {
+      const clone = {
+        ...originPlacements,
+      };
+      const list = clone[placement] || [];
+
+      if (!list.length) {
+        delete clone[placement];
+      }
+
+      return clone;
+    });
+  };
+
   // ======================== Render ========================
   if (!container) {
     return null;
@@ -116,17 +135,24 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             keys={keys}
             motionAppear
             {...motion}
+            onAllRemoved={() => {
+              onAllNoticeRemoved(placement);
+            }}
           >
             {({ config, className, style }, nodeRef) => {
               const { key } = config as OpenConfig;
+              const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
                 <Notice
                   {...config}
                   ref={nodeRef}
                   prefixCls={prefixCls}
-                  className={className}
-                  style={style}
+                  className={classNames(className, configClassName)}
+                  style={{
+                    ...style,
+                    ...configStyle,
+                  }}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}

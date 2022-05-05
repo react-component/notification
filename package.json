@@ -72,7 +72,7 @@
   "dependencies": {
     "@babel/runtime": "^7.10.1",
     "classnames": "2.x",
-    "rc-motion": "^2.2.0",
+    "rc-motion": "^2.6.0",
     "rc-util": "^5.20.1"
   }
 }

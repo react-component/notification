@@ -144,443 +144,336 @@ describe('Notification.Basic', () => {
     document.body.removeChild(div);
   });
 
-  // it('remove notify works', (done) => {
-  //   let container;
+  it('remove notify works', () => {
+    const { instance, unmount } = renderDemo();
 
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       const key = Date.now();
-  //       const close = (k) => {
-  //         notification.removeNotice(k);
-  //       };
-  //       notification.notice({
-  //         content: (
-  //           <p className="test">
-  //             <button type="button" id="closeButton" onClick={close.bind(null, key)}>
-  //               close
-  //             </button>
-  //           </p>
-  //         ),
-  //         key,
-  //         duration: null,
-  //       });
+    const key = Math.random();
+    const close = (k: React.Key) => {
+      instance.close(k);
+    };
 
-  //       setTimeout(() => {
-  //         expect(container.querySelectorAll('.test')).toHaveLength(1);
-  //         fireEvent.click(container.querySelector('#closeButton'));
+    act(() => {
+      instance.open({
+        content: (
+          <p className="test">
+            <button type="button" id="closeButton" onClick={() => close(key)}>
+              close
+            </button>
+          </p>
+        ),
+        key,
+        duration: null,
+      });
+    });
 
-  //         setTimeout(() => {
-  //           expect(container.querySelectorAll('.test')).toHaveLength(0);
-  //           notification.destroy();
-  //           done();
-  //         }, 1000);
-  //       }, 10);
-  //     },
-  //   );
-  // });
+    expect(document.querySelectorAll('.test')).toHaveLength(1);
+    fireEvent.click(document.querySelector('#closeButton'));
 
-  // it('update notification by key with multi instance', (done) => {
-  //   let container;
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       const key = 'updatable';
-  //       const value = 'value';
-  //       const newValue = `new-${value}`;
-  //       const notUpdatableValue = 'not-updatable-value';
-  //       notification.notice({
-  //         content: (
-  //           <p id="not-updatable" className="not-updatable">
-  //             {notUpdatableValue}
-  //           </p>
-  //         ),
-  //         duration: null,
-  //       });
-  //       notification.notice({
-  //         content: (
-  //           <p id="updatable" className="updatable">
-  //             {value}
-  //           </p>
-  //         ),
-  //         key,
-  //         duration: null,
-  //       });
+    expect(document.querySelectorAll('.test')).toHaveLength(0);
+    unmount();
+  });
 
-  //       setTimeout(() => {
-  //         expect(container.querySelectorAll('.updatable')).toHaveLength(1);
-  //         expect(container.querySelector('.updatable').textContent).toEqual(value);
+  it('update notification by key with multi instance', () => {
+    const { instance } = renderDemo();
 
-  //         notification.notice({
-  //           content: (
-  //             <p id="updatable" className="updatable">
-  //               {newValue}
-  //             </p>
-  //           ),
-  //           key,
-  //           duration: 0.1,
-  //         });
+    const key = 'updatable';
+    const value = 'value';
+    const newValue = `new-${value}`;
+    const notUpdatableValue = 'not-updatable-value';
 
-  //         setTimeout(() => {
-  //           // Text updated successfully
-  //           expect(container.querySelectorAll('.updatable')).toHaveLength(1);
-  //           expect(container.querySelector('.updatable').textContent).toEqual(newValue);
+    act(() => {
+      instance.open({
+        content: (
+          <p id="not-updatable" className="not-updatable">
+            {notUpdatableValue}
+          </p>
+        ),
+        duration: null,
+      });
+    });
 
-  //           setTimeout(() => {
-  //             // Other notices are not affected
-  //             expect(container.querySelectorAll('.not-updatable')).toHaveLength(1);
-  //             expect(container.querySelector('.not-updatable').textContent).toEqual(
-  //               notUpdatableValue,
-  //             );
-  //             // Duration updated successfully
-  //             expect(container.querySelectorAll('.updatable')).toHaveLength(0);
-  //             notification.destroy();
-  //             done();
-  //           }, 500);
-  //         }, 10);
-  //       }, 10);
-  //     },
-  //   );
-  // });
+    act(() => {
+      instance.open({
+        content: (
+          <p id="updatable" className="updatable">
+            {value}
+          </p>
+        ),
+        key,
+        duration: null,
+      });
+    });
 
-  // it('freeze notification layer when mouse over', (done) => {
-  //   let container;
+    expect(document.querySelectorAll('.updatable')).toHaveLength(1);
+    expect(document.querySelector('.updatable').textContent).toEqual(value);
 
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       notification.notice({
-  //         content: (
-  //           <p id="freeze" className="freeze">
-  //             freeze
-  //           </p>
-  //         ),
-  //         duration: 0.3,
-  //       });
-  //       setTimeout(() => {
-  //         expect(container.querySelectorAll('.freeze')).toHaveLength(1);
-  //         fireEvent.mouseEnter(container.querySelector('.rc-notification-notice'));
+    act(() => {
+      instance.open({
+        content: (
+          <p id="updatable" className="updatable">
+            {newValue}
+          </p>
+        ),
+        key,
+        duration: 0.1,
+      });
+    });
 
-  //         setTimeout(() => {
-  //           expect(container.querySelectorAll('.freeze')).toHaveLength(1);
-  //           fireEvent.mouseLeave(container.querySelector('.rc-notification-notice'));
+    // Text updated successfully
+    expect(document.querySelectorAll('.updatable')).toHaveLength(1);
+    expect(document.querySelector('.updatable').textContent).toEqual(newValue);
 
-  //           setTimeout(() => {
-  //             expect(container.querySelectorAll('.freeze')).toHaveLength(0);
-  //             notification.destroy();
-  //             done();
-  //           }, 400);
-  //         }, 500);
-  //       }, 10);
-  //     },
-  //   );
-  // });
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  // it('should work in lifecycle of React component', () => {
-  //   class Test extends React.Component {
-  //     componentDidMount() {
-  //       Notification.newInstance({}, (notification) => {
-  //         notification.notice({
-  //           content: <span>In lifecycle</span>,
-  //         });
-  //       });
-  //     }
+    // Other notices are not affected
+    expect(document.querySelectorAll('.not-updatable')).toHaveLength(1);
+    expect(document.querySelector('.not-updatable').textContent).toEqual(notUpdatableValue);
 
-  //     render() {
-  //       return null;
-  //     }
-  //   }
+    // Duration updated successfully
+    expect(document.querySelectorAll('.updatable')).toHaveLength(0);
+  });
 
-  //   const container = document.createElement('div');
-  //   render(<Test />, {
-  //     container,
-  //   });
-  // });
+  it('freeze notification layer when mouse over', () => {
+    const { instance } = renderDemo();
 
-  // describe('maxCount', () => {
-  //   it('remove work when maxCount set', (done) => {
-  //     let container;
+    act(() => {
+      instance.open({
+        content: (
+          <p id="freeze" className="freeze">
+            freeze
+          </p>
+        ),
+        duration: 0.3,
+      });
+    });
 
-  //     Notification.newInstance(
-  //       {
-  //         TEST_RENDER: (node) => {
-  //           ({ container } = render(<div>{node}</div>));
-  //         },
-  //         maxCount: 1,
-  //       },
-  //       (notification) => {
-  //         // First
-  //         notification.notice({
-  //           content: <div className="max-count">bamboo</div>,
-  //           key: 'bamboo',
-  //           duration: 0,
-  //         });
+    expect(document.querySelectorAll('.freeze')).toHaveLength(1);
 
-  //         // Next
-  //         notification.notice({
-  //           content: <div className="max-count">bamboo</div>,
-  //           key: 'bamboo',
-  //           duration: 0,
-  //         });
+    // Mouse in should not remove
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelectorAll('.freeze')).toHaveLength(1);
 
-  //         setTimeout(() => {
-  //           expect(container.querySelectorAll('.max-count')).toHaveLength(1);
-  //           notification.removeNotice('bamboo');
+    // Mouse out will remove
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelectorAll('.freeze')).toHaveLength(0);
+  });
 
-  //           setTimeout(() => {
-  //             expect(container.querySelectorAll('.max-count')).toHaveLength(0);
-  //             notification.destroy();
-  //             done();
-  //           }, 500);
-  //         }, 10);
-  //       },
-  //     );
-  //   });
+  describe('maxCount', () => {
+    it('remove work when maxCount set', () => {
+      const { instance } = renderDemo({
+        maxCount: 1,
+      });
 
-  //   it('drop first notice when items limit exceeds', () => {
-  //     jest.useFakeTimers();
+      // First
+      act(() => {
+        instance.open({
+          content: <div className="max-count">bamboo</div>,
+          key: 'bamboo',
+          duration: 0,
+        });
+      });
 
-  //     let container;
+      // Next
+      act(() => {
+        instance.open({
+          content: <div className="max-count">bamboo</div>,
+          key: 'bamboo',
+          duration: 0,
+        });
+      });
+      expect(document.querySelectorAll('.max-count')).toHaveLength(1);
 
-  //     let notificationInstance;
-  //     Notification.newInstance(
-  //       {
-  //         maxCount: 1,
-  //         TEST_RENDER: (node) => {
-  //           ({ container } = render(<div>{node}</div>));
-  //         },
-  //       },
-  //       (notification) => {
-  //         notificationInstance = notification;
-  //       },
-  //     );
+      act(() => {
+        instance.close('bamboo');
+      });
+      expect(document.querySelectorAll('.max-count')).toHaveLength(0);
+    });
 
-  //     const value = 'updated last';
-  //     act(() => {
-  //       notificationInstance.notice({
-  //         content: <span className="test-maxcount">simple show</span>,
-  //         duration: 0,
-  //       });
+    it('drop first notice when items limit exceeds', () => {
+      const { instance } = renderDemo({
+        maxCount: 1,
+      });
 
-  //       jest.runAllTimers();
-  //     });
+      const value = 'updated last';
+      act(() => {
+        instance.open({
+          content: <span className="test-maxcount">simple show</span>,
+          duration: 0,
+        });
+      });
 
-  //     act(() => {
-  //       notificationInstance.notice({
-  //         content: <span className="test-maxcount">simple show</span>,
-  //         duration: 0,
-  //       });
-  //       jest.runAllTimers();
-  //     });
+      act(() => {
+        instance.open({
+          content: <span className="test-maxcount">simple show</span>,
+          duration: 0,
+        });
+      });
 
-  //     act(() => {
-  //       notificationInstance.notice({
-  //         content: <span className="test-maxcount">{value}</span>,
-  //         duration: 0,
-  //       });
-  //       jest.runAllTimers();
-  //     });
+      act(() => {
+        instance.open({
+          content: <span className="test-maxcount">{value}</span>,
+          duration: 0,
+        });
+      });
 
-  //     act(() => {
-  //       jest.runAllTimers();
-  //     });
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  //     expect(container.querySelectorAll('.test-maxcount')).toHaveLength(1);
-  //     expect(container.querySelector('.test-maxcount').textContent).toEqual(value);
+      expect(document.querySelectorAll('.test-maxcount')).toHaveLength(1);
+      expect(document.querySelector('.test-maxcount').textContent).toEqual(value);
+    });
 
-  //     jest.useRealTimers();
-  //   });
+    it('duration should work', () => {
+      const { instance } = renderDemo({
+        maxCount: 1,
+      });
 
-  //   it('duration should work', (done) => {
-  //     let container;
+      act(() => {
+        instance.open({
+          content: <span className="auto-remove">bamboo</span>,
+          duration: 99,
+        });
+      });
+      expect(document.querySelector('.auto-remove').textContent).toEqual('bamboo');
 
-  //     let notificationInstance;
-  //     Notification.newInstance(
-  //       {
-  //         maxCount: 1,
-  //         TEST_RENDER: (node) => {
-  //           ({ container } = render(<div>{node}</div>));
-  //         },
-  //       },
-  //       (notification) => {
-  //         notificationInstance = notification;
+      act(() => {
+        instance.open({
+          content: <span className="auto-remove">light</span>,
+          duration: 0.5,
+        });
+      });
+      expect(document.querySelector('.auto-remove').textContent).toEqual('light');
 
-  //         notificationInstance.notice({
-  //           content: <span className="auto-remove">bamboo</span>,
-  //           duration: 99,
-  //         });
+      act(() => {
+        jest.runAllTimers();
+      });
+      expect(document.querySelectorAll('.auto-remove')).toHaveLength(0);
+    });
+  });
 
-  //         setTimeout(() => {
-  //           expect(container.querySelector('.auto-remove').textContent).toEqual('bamboo');
+  it('onClick trigger', () => {
+    const { instance } = renderDemo();
+    let clicked = 0;
 
-  //           notificationInstance.notice({
-  //             content: <span className="auto-remove">light</span>,
-  //             duration: 0.5,
-  //           });
+    const key = Date.now();
+    const close = (k: React.Key) => {
+      instance.close(k);
+    };
 
-  //           setTimeout(() => {
-  //             expect(container.querySelector('.auto-remove').textContent).toEqual('light');
+    act(() => {
+      instance.open({
+        content: (
+          <p className="test">
+            <button type="button" id="closeButton" onClick={close.bind(null, key)}>
+              close
+            </button>
+          </p>
+        ),
+        key,
+        duration: null,
+        onClick: () => {
+          clicked += 1;
+        },
+      });
+    });
 
-  //             setTimeout(() => {
-  //               expect(container.querySelectorAll('.auto-remove')).toHaveLength(0);
-  //               notification.destroy();
-  //               done();
-  //             }, 500);
-  //           }, 10);
-  //         }, 10);
-  //       },
-  //     );
-  //   });
-  // });
+    fireEvent.click(document.querySelector('.rc-notification-notice')); // origin latest
+    expect(clicked).toEqual(1);
+  });
 
-  // it('onClick trigger', (done) => {
-  //   let container;
-  //   let clicked = 0;
+  it('Close Notification only trigger onClose', () => {
+    const { instance } = renderDemo();
+    let clickCount = 0;
+    let closeCount = 0;
 
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       const key = Date.now();
-  //       const close = (k) => {
-  //         notification.removeNotice(k);
-  //       };
-  //       notification.notice({
-  //         content: (
-  //           <p className="test">
-  //             <button type="button" id="closeButton" onClick={close.bind(null, key)}>
-  //               close
-  //             </button>
-  //           </p>
-  //         ),
-  //         key,
-  //         duration: null,
-  //         onClick: () => {
-  //           clicked += 1;
-  //         },
-  //       });
+    act(() => {
+      instance.open({
+        content: <p className="test">1</p>,
+        closable: true,
+        onClick: () => {
+          clickCount += 1;
+        },
+        onClose: () => {
+          closeCount += 1;
+        },
+      });
+    });
 
-  //       setTimeout(() => {
-  //         fireEvent.click(container.querySelector('.rc-notification-notice')); // origin latest
-  //         expect(clicked).toEqual(1);
-  //         notification.destroy();
-  //         done();
-  //       }, 10);
-  //     },
-  //   );
-  // });
+    fireEvent.click(document.querySelector('.rc-notification-notice-close')); // origin latest
+    expect(clickCount).toEqual(0);
+    expect(closeCount).toEqual(1);
+  });
 
-  // it('Close Notification only trigger onClose', (done) => {
-  //   let container;
-  //   let clickCount = 0;
-  //   let closeCount = 0;
-  //   Notification.newInstance(
-  //     {
-  //       TEST_RENDER: (node) => {
-  //         ({ container } = render(<div>{node}</div>));
-  //       },
-  //     },
-  //     (notification) => {
-  //       notification.notice({
-  //         content: <p className="test">1</p>,
-  //         closable: true,
-  //         onClick: () => {
-  //           clickCount += 1;
-  //         },
-  //         onClose: () => {
-  //           closeCount += 1;
-  //         },
-  //       });
+  it('sets data attributes', () => {
+    const { instance } = renderDemo();
 
-  //       setTimeout(() => {
-  //         fireEvent.click(container.querySelector('.rc-notification-notice-close')); // origin latest
-  //         expect(clickCount).toEqual(0);
-  //         expect(closeCount).toEqual(1);
-  //         notification.destroy();
-  //         done();
-  //       }, 10);
-  //     },
-  //   );
-  // });
+    act(() => {
+      instance.open({
+        content: <span className="test-data-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: {
+          'data-test': 'data-test-value',
+          'data-testid': 'data-testid-value',
+        },
+      });
+    });
 
-  // it('sets data attributes', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-data-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: {
-  //         'data-test': 'data-test-value',
-  //         'data-testid': 'data-testid-value',
-  //       },
-  //     });
+    const notice = document.querySelectorAll('.notice-class');
+    expect(notice.length).toBe(1);
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('data-test')).toBe('data-test-value');
-  //       expect(notice[0].getAttribute('data-testid')).toBe('data-testid-value');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+    expect(notice[0].getAttribute('data-test')).toBe('data-test-value');
+    expect(notice[0].getAttribute('data-testid')).toBe('data-testid-value');
+  });
 
-  // it('sets aria attributes', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-aria-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: {
-  //         'aria-describedby': 'aria-describedby-value',
-  //         'aria-labelledby': 'aria-labelledby-value',
-  //       },
-  //     });
+  it('sets aria attributes', () => {
+    const { instance } = renderDemo();
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('aria-describedby')).toBe('aria-describedby-value');
-  //       expect(notice[0].getAttribute('aria-labelledby')).toBe('aria-labelledby-value');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+    act(() => {
+      instance.open({
+        content: <span className="test-aria-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: {
+          'aria-describedby': 'aria-describedby-value',
+          'aria-labelledby': 'aria-labelledby-value',
+        },
+      });
+    });
 
-  // it('sets role attribute', (done) => {
-  //   Notification.newInstance({}, (notification) => {
-  //     notification.notice({
-  //       content: <span className="test-aria-attributes">simple show</span>,
-  //       duration: 3,
-  //       className: 'notice-class',
-  //       props: { role: 'alert' },
-  //     });
+    const notice = document.querySelectorAll('.notice-class');
+    expect(notice.length).toBe(1);
+    expect(notice[0].getAttribute('aria-describedby')).toBe('aria-describedby-value');
+    expect(notice[0].getAttribute('aria-labelledby')).toBe('aria-labelledby-value');
+  });
 
-  //     setTimeout(() => {
-  //       const notice = document.querySelectorAll('.notice-class');
-  //       expect(notice.length).toBe(1);
-  //       expect(notice[0].getAttribute('role')).toBe('alert');
-  //       notification.destroy();
-  //       done();
-  //     }, 10);
-  //   });
-  // });
+  it('sets role attribute', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        content: <span className="test-aria-attributes">simple show</span>,
+        duration: 3,
+        className: 'notice-class',
+        props: { role: 'alert' },
+      });
+    });
+
+    const notice = document.querySelectorAll('.notice-class');
+    expect(notice.length).toBe(1);
+    expect(notice[0].getAttribute('role')).toBe('alert');
+  });
 });
