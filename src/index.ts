@@ -1,3 +1,5 @@
-import Notification from './Notification';
+import useNotification from './useNotification';
+import type { NotificationAPI, NotificationConfig } from './useNotification';
 
-export default Notification;
+export { useNotification };
+export type { NotificationAPI, NotificationConfig };

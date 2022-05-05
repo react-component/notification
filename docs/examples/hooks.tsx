@@ -1,48 +1,91 @@
 /* eslint-disable no-console */
 import React from 'react';
-import Notification from 'rc-notification';
 import '../../assets/index.less';
-import { NotificationInstance } from 'rc-notification/Notification';
+import { useNotification } from '../../src';
+import motion from './motion';
 
-let notificationInstance: NotificationInstance = null;
-Notification.newInstance({}, n => {
-  notificationInstance = n;
-});
-
-const Context = React.createContext({ name: 'light' });
-
-const NOTICE = {
-  content: <span>simple show</span>,
-  onClose() {
-    console.log('simple close');
-  },
-  // duration: null,
-};
-
-const Demo = () => {
-  const [notice, holder] = notificationInstance.useNotification();
+export default () => {
+  const [notice, contextHolder] = useNotification({ motion, closable: true });
 
   return (
-    <Context.Provider value={{ name: 'bamboo' }}>
-      <button
-        type="button"
-        onClick={() => {
-          notificationInstance.notice({ ...NOTICE });
-          notice({
-            ...NOTICE,
-            content: <Context.Consumer>{({ name }) => `Hi ${name}!`}</Context.Consumer>,
-            props: {
-              'data-testid': 'my-data-testid',
-            },
-          });
-          notificationInstance.notice({ ...NOTICE });
-        }}
-      >
-        simple show
-      </button>
-      {holder}
-    </Context.Provider>
+    <>
+      <div>
+        <div>
+          {/* Default */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `${new Date().toISOString()}`,
+              });
+            }}
+          >
+            Basic
+          </button>
+
+          {/* Not Close */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `${new Date().toISOString()}`,
+                duration: null,
+              });
+            }}
+          >
+            Not Auto Close
+          </button>
+        </div>
+
+        <div>
+          {/* No Closable */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `No Close! ${new Date().toISOString()}`,
+                duration: null,
+                closable: false,
+                key: 'No Close',
+                onClose: () => {
+                  console.log('Close!!!');
+                },
+              });
+            }}
+          >
+            No Closable
+          </button>
+
+          {/* Force Close */}
+          <button
+            onClick={() => {
+              notice.close('No Close');
+            }}
+          >
+            Force Close No Closable
+          </button>
+        </div>
+      </div>
+
+      <div>
+        {/* Destroy All */}
+        <button
+          onClick={() => {
+            notice.destroy();
+          }}
+        >
+          Destroy All
+        </button>
+      </div>
+
+      <div>
+        {/* Top & Bottom */}
+        <button
+          onClick={() => {
+            notice.destroy();
+          }}
+        >
+          Destroy All
+        </button>
+      </div>
+      {contextHolder}
+    </>
   );
 };
-
-export default Demo;
