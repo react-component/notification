@@ -18,6 +18,8 @@ export interface NotificationsProps {
   motion?: CSSMotionProps;
   container?: HTMLElement;
   maxCount?: number;
+  top?: number;
+  bottom?: number;
 }
 
 type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
@@ -32,7 +34,7 @@ export interface NotificationsRef {
 
 // ant-notification ant-notification-topRight
 const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((props, ref) => {
-  const { prefixCls = 'rc-notification', container, motion, maxCount } = props;
+  const { prefixCls = 'rc-notification', container, motion, maxCount, top, bottom } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
   // ======================== Close =========================
@@ -132,6 +134,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           <CSSMotionList
             key={placement}
             className={classNames(prefixCls, `${prefixCls}-topRight`)}
+            style={{ top, bottom }}
             keys={keys}
             motionAppear
             {...motion}

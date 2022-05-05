@@ -15,6 +15,9 @@ export interface NotificationConfig {
   closeIcon?: React.ReactNode;
   closable?: boolean;
   maxCount?: number;
+  duration?: number;
+  top?: number;
+  bottom?: number;
 }
 
 export interface NotificationAPI {
@@ -47,6 +50,8 @@ export default function useNotification(
     motion,
     prefixCls,
     maxCount,
+    top,
+    bottom,
     ...shareConfig
   } = rootConfig;
 
@@ -59,6 +64,8 @@ export default function useNotification(
       prefixCls={prefixCls}
       motion={motion}
       maxCount={maxCount}
+      top={top}
+      bottom={bottom}
     />
   );
 

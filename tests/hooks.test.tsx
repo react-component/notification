@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { useNotification } from '../src';
+import type { NotificationAPI, NotificationConfig } from '../src';
 
 require('../assets/index.less');
 
@@ -12,6 +13,21 @@ describe('Notification.Hooks', () => {
   afterEach(() => {
     jest.useRealTimers();
   });
+
+  function renderDemo(config?: NotificationConfig) {
+    let instance: NotificationAPI;
+
+    const Demo = () => {
+      const [api, holder] = useNotification(config);
+      instance = api;
+
+      return holder;
+    };
+
+    const renderResult = render(<Demo />);
+
+    return { ...renderResult, instance };
+  }
 
   it('works', async () => {
     const Context = React.createContext({ name: 'light' });
@@ -52,23 +68,6 @@ describe('Notification.Hooks', () => {
   });
 
   it('key replace', async () => {
-    //   let instance: NotificationInstance;
-
-    //   let container: HTMLElement;
-    //   let unmount: () => void;
-    //   Notification.newInstance(
-    //     {
-    //       TEST_RENDER: (node: React.ReactElement) => {
-    //         ({ container, unmount } = render(<div>{node}</div>));
-    //       },
-    //     } as any,
-    //     (notification) => {
-    //       instance = notification;
-    //     },
-    //   );
-
-    //   await timeout(0);
-
     const Demo = () => {
       const [api, holder] = useNotification();
       return (
@@ -107,5 +106,24 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
     unmount();
+  });
+
+  it('duration config', () => {
+    const { instance } = renderDemo({
+      duration: 0,
+    });
+
+    act(() => {
+      instance.open({
+        content: <div className="bamboo" />,
+      });
+    });
+
+    expect(document.querySelector('.bamboo')).toBeTruthy();
+
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelector('.bamboo')).toBeTruthy();
   });
 });
