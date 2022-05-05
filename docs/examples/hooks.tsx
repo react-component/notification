@@ -75,16 +75,6 @@ export default () => {
         </button>
       </div>
 
-      <div>
-        {/* Top & Bottom */}
-        <button
-          onClick={() => {
-            notice.destroy();
-          }}
-        >
-          Destroy All
-        </button>
-      </div>
       {contextHolder}
     </>
   );
