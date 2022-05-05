@@ -29,7 +29,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
 
     eventKey,
     content,
-    closable = true,
+    closable,
     closeIcon = 'x',
     props: divProps,
 

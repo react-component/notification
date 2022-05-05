@@ -12,6 +12,7 @@ export interface NotificationConfig {
   /** Customize container. It will repeat call which means you should return same container element. */
   getContainer?: () => HTMLElement;
   motion?: CSSMotionProps;
+  closeIcon?: React.ReactNode;
 }
 
 export interface NotificationAPI {
@@ -39,7 +40,7 @@ type Task = OpenTask | CloseTask | DestroyTask;
 export default function useNotification(
   rootConfig: NotificationConfig = {},
 ): [NotificationAPI, React.ReactElement] {
-  const { getContainer = defaultGetContainer, motion, prefixCls } = rootConfig;
+  const { getContainer = defaultGetContainer, motion, prefixCls, ...shareConfig } = rootConfig;
 
   const [container, setContainer] = React.useState<HTMLElement>();
   const notificationsRef = React.useRef<NotificationsRef>();
@@ -59,6 +60,7 @@ export default function useNotification(
     return {
       open: (config) => {
         const mergedConfig = {
+          ...shareConfig,
           ...config,
           key: config.key ?? Date.now(),
         };
