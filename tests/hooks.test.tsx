@@ -1,44 +1,29 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import Notification from '../src';
-import type { NotificationInstance } from '../src/Notification';
+import { render, fireEvent, act } from '@testing-library/react';
+import { useNotification } from '../src';
 
 require('../assets/index.less');
 
-async function timeout(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
-
 describe('Notification.Hooks', () => {
-  it('works', async () => {
-    let instance: NotificationInstance;
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('works', async () => {
     const Context = React.createContext({ name: 'light' });
 
-    let container: HTMLElement;
-    Notification.newInstance(
-      {
-        TEST_RENDER: (node: React.ReactElement) => {
-          ({ container } = render(<div>{node}</div>));
-        },
-      } as any,
-      (notification) => {
-        instance = notification;
-      },
-    );
-
-    await timeout(0);
-
     const Demo = () => {
-      const [notify, holder] = instance.useNotification();
+      const [api, holder] = useNotification();
       return (
         <Context.Provider value={{ name: 'bamboo' }}>
           <button
             type="button"
             onClick={() => {
-              notify({
+              api.open({
                 duration: 0.1,
                 content: (
                   <Context.Consumer>
@@ -53,51 +38,52 @@ describe('Notification.Hooks', () => {
       );
     };
 
-    const { container: demoContainer } = render(<Demo />);
+    const { container: demoContainer, unmount } = render(<Demo />);
     fireEvent.click(demoContainer.querySelector('button'));
 
-    await timeout(10);
-    expect(container.querySelector('.context-content').textContent).toEqual('bamboo');
+    expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
-    await timeout(1000);
-    expect(container.querySelectorAll('.rc-notification-notice')).toHaveLength(0);
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(0);
 
-    instance.destroy();
+    unmount();
   });
 
   it('key replace', async () => {
-    let instance: NotificationInstance;
+    //   let instance: NotificationInstance;
 
-    let container: HTMLElement;
-    let unmount: () => void;
-    Notification.newInstance(
-      {
-        TEST_RENDER: (node: React.ReactElement) => {
-          ({ container, unmount } = render(<div>{node}</div>));
-        },
-      } as any,
-      (notification) => {
-        instance = notification;
-      },
-    );
+    //   let container: HTMLElement;
+    //   let unmount: () => void;
+    //   Notification.newInstance(
+    //     {
+    //       TEST_RENDER: (node: React.ReactElement) => {
+    //         ({ container, unmount } = render(<div>{node}</div>));
+    //       },
+    //     } as any,
+    //     (notification) => {
+    //       instance = notification;
+    //     },
+    //   );
 
-    await timeout(0);
+    //   await timeout(0);
 
     const Demo = () => {
-      const [notify, holder] = instance.useNotification();
+      const [api, holder] = useNotification();
       return (
         <>
           <button
             type="button"
             onClick={() => {
-              notify({
+              api.open({
                 key: 'little',
                 duration: 1000,
                 content: <div className="context-content">light</div>,
               });
 
               setTimeout(() => {
-                notify({
+                api.open({
                   key: 'little',
                   duration: 1000,
                   content: <div className="context-content">bamboo</div>,
@@ -110,16 +96,15 @@ describe('Notification.Hooks', () => {
       );
     };
 
-    const { container: demoContainer } = render(<Demo />);
+    const { container: demoContainer, unmount } = render(<Demo />);
     fireEvent.click(demoContainer.querySelector('button'));
 
-    await timeout(10);
-    expect(container.querySelector('.context-content').textContent).toEqual('light');
+    expect(document.querySelector('.context-content').textContent).toEqual('light');
 
-    await timeout(600);
-    expect(container.querySelector('.context-content').textContent).toEqual('bamboo');
-
-    instance.destroy();
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
     unmount();
   });
