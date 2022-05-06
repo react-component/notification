@@ -492,4 +492,16 @@ describe('Notification.Basic', () => {
       content: 'little',
     });
   });
+
+  it('placement', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        placement: 'bottomLeft',
+      });
+    });
+
+    expect(document.querySelector('.rc-notification')).toHaveClass('rc-notification-bottomLeft');
+  });
 });

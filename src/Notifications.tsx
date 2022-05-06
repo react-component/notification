@@ -132,7 +132,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
         return (
           <CSSMotionList
             key={placement}
-            className={classNames(prefixCls, `${prefixCls}-topRight`)}
+            className={classNames(prefixCls, `${prefixCls}-${placement}`)}
             style={style?.(placement)}
             keys={keys}
             motionAppear
