@@ -504,4 +504,20 @@ describe('Notification.Basic', () => {
 
     expect(document.querySelector('.rc-notification')).toHaveClass('rc-notification-bottomLeft');
   });
+
+  it('motion as function', () => {
+    const motionFn = jest.fn();
+
+    const { instance } = renderDemo({
+      motion: motionFn,
+    });
+
+    act(() => {
+      instance.open({
+        placement: 'bottomLeft',
+      });
+    });
+
+    expect(motionFn).toHaveBeenCalledWith('bottomLeft');
+  });
 });

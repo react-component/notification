@@ -15,7 +15,7 @@ export interface OpenConfig extends NoticeConfig {
 
 export interface NotificationsProps {
   prefixCls?: string;
-  motion?: CSSMotionProps;
+  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   container?: HTMLElement;
   maxCount?: number;
   style?: (placement: Placement) => React.CSSProperties;
@@ -129,6 +129,8 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           key: config.key,
         }));
 
+        const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
+
         return (
           <CSSMotionList
             key={placement}
@@ -136,7 +138,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             style={style?.(placement)}
             keys={keys}
             motionAppear
-            {...motion}
+            {...placementMotion}
             onAllRemoved={() => {
               onAllNoticeRemoved(placement);
             }}
