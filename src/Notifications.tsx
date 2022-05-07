@@ -18,6 +18,7 @@ export interface NotificationsProps {
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   container?: HTMLElement;
   maxCount?: number;
+  className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
 }
 
@@ -33,7 +34,7 @@ export interface NotificationsRef {
 
 // ant-notification ant-notification-topRight
 const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((props, ref) => {
-  const { prefixCls = 'rc-notification', container, motion, maxCount, style } = props;
+  const { prefixCls = 'rc-notification', container, motion, maxCount, className, style } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
   // ======================== Close =========================
@@ -134,7 +135,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
         return (
           <CSSMotionList
             key={placement}
-            className={classNames(prefixCls, `${prefixCls}-${placement}`)}
+            className={classNames(prefixCls, `${prefixCls}-${placement}`, className?.(placement))}
             style={style?.(placement)}
             keys={keys}
             motionAppear
@@ -143,7 +144,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
               onAllNoticeRemoved(placement);
             }}
           >
-            {({ config, className, style: motionStyle }, nodeRef) => {
+            {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
               const { key } = config as OpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
@@ -152,7 +153,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                   {...config}
                   ref={nodeRef}
                   prefixCls={prefixCls}
-                  className={classNames(className, configClassName)}
+                  className={classNames(motionClassName, configClassName)}
                   style={{
                     ...motionStyle,
                     ...configStyle,

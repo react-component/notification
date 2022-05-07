@@ -493,6 +493,18 @@ describe('Notification.Basic', () => {
     });
   });
 
+  it('should className work', () => {
+    const { instance } = renderDemo({
+      className: (placement) => `bamboo-${placement}`,
+    });
+
+    act(() => {
+      instance.open({});
+    });
+
+    expect(document.querySelector('.bamboo-topRight')).toBeTruthy();
+  });
+
   it('placement', () => {
     const { instance } = renderDemo();
 

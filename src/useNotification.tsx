@@ -18,6 +18,8 @@ export interface NotificationConfig {
   maxCount?: number;
   duration?: number;
   /** @private. Config for notification holder style. Safe to remove if refactor */
+  className?: (placement: Placement) => string;
+  /** @private. Config for notification holder style. Safe to remove if refactor */
   style?: (placement: Placement) => React.CSSProperties;
 }
 
@@ -51,6 +53,7 @@ export default function useNotification(
     motion,
     prefixCls,
     maxCount,
+    className,
     style,
     ...shareConfig
   } = rootConfig;
@@ -64,6 +67,7 @@ export default function useNotification(
       prefixCls={prefixCls}
       motion={motion}
       maxCount={maxCount}
+      className={className}
       style={style}
     />
   );
