@@ -20,6 +20,7 @@ export interface NotificationsProps {
   maxCount?: number;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
+  onAllRemoved?: VoidFunction;
 }
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
@@ -34,7 +35,15 @@ export interface NotificationsRef {
 
 // ant-notification ant-notification-topRight
 const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((props, ref) => {
-  const { prefixCls = 'rc-notification', container, motion, maxCount, className, style } = props;
+  const {
+    prefixCls = 'rc-notification',
+    container,
+    motion,
+    maxCount,
+    className,
+    style,
+    onAllRemoved,
+  } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
   // ======================== Close =========================
@@ -113,6 +122,18 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
       return clone;
     });
   };
+
+  // Effect tell that placements is empty now
+  const emptyRef = React.useRef(false);
+  React.useEffect(() => {
+    if (Object.keys(placements).length > 0) {
+      emptyRef.current = true;
+    } else if (emptyRef.current) {
+      // Trigger only when from exist to empty
+      onAllRemoved?.();
+      emptyRef.current = false;
+    }
+  }, [placements]);
 
   // ======================== Render ========================
   if (!container) {

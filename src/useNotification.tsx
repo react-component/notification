@@ -21,6 +21,8 @@ export interface NotificationConfig {
   className?: (placement: Placement) => string;
   /** @private. Config for notification holder style. Safe to remove if refactor */
   style?: (placement: Placement) => React.CSSProperties;
+  /** @private Trigger when all the notification closed. */
+  onAllRemoved?: VoidFunction;
 }
 
 export interface NotificationAPI {
@@ -55,6 +57,7 @@ export default function useNotification(
     maxCount,
     className,
     style,
+    onAllRemoved,
     ...shareConfig
   } = rootConfig;
 
@@ -69,6 +72,7 @@ export default function useNotification(
       maxCount={maxCount}
       className={className}
       style={style}
+      onAllRemoved={onAllRemoved}
     />
   );
 

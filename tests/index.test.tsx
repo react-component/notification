@@ -532,4 +532,59 @@ describe('Notification.Basic', () => {
 
     expect(motionFn).toHaveBeenCalledWith('bottomLeft');
   });
+
+  it('notice when empty', () => {
+    const onAllRemoved = jest.fn();
+
+    const { instance } = renderDemo({
+      onAllRemoved,
+    });
+
+    expect(onAllRemoved).not.toHaveBeenCalled();
+
+    // Open!
+    act(() => {
+      instance.open({
+        duration: 0.1,
+      });
+    });
+    expect(onAllRemoved).not.toHaveBeenCalled();
+
+    // Hide
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(onAllRemoved).toHaveBeenCalled();
+
+    // Open again
+    onAllRemoved.mockReset();
+
+    act(() => {
+      instance.open({
+        duration: 0,
+        key: 'first',
+      });
+    });
+
+    act(() => {
+      instance.open({
+        duration: 0,
+        key: 'second',
+      });
+    });
+
+    expect(onAllRemoved).not.toHaveBeenCalled();
+
+    // Close first
+    act(() => {
+      instance.close('first');
+    });
+    expect(onAllRemoved).not.toHaveBeenCalled();
+
+    // Close second
+    act(() => {
+      instance.close('second');
+    });
+    expect(onAllRemoved).toHaveBeenCalled();
+  });
 });
