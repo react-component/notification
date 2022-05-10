@@ -47,6 +47,8 @@ interface DestroyTask {
 
 type Task = OpenTask | CloseTask | DestroyTask;
 
+let uniqueKey = 0;
+
 function mergeConfig<T>(...objList: Partial<T>[]): T {
   const clone: T = {} as T;
 
@@ -100,9 +102,11 @@ export default function useNotification(
   const api = React.useMemo<NotificationAPI>(() => {
     return {
       open: (config) => {
-        const mergedConfig = mergeConfig(shareConfig, config, {
-          key: config.key ?? Date.now(),
-        });
+        const mergedConfig = mergeConfig(shareConfig, config);
+        if (mergedConfig.key === null || mergedConfig.key === undefined) {
+          mergedConfig.key = `rc-notification-${uniqueKey}`;
+          uniqueKey += 1;
+        }
 
         setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
       },
