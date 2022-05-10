@@ -125,5 +125,31 @@ describe('Notification.Hooks', () => {
       jest.runAllTimers();
     });
     expect(document.querySelector('.bamboo')).toBeTruthy();
+
+    // Can be override
+    act(() => {
+      instance.open({
+        content: <div className="little" />,
+        duration: 1,
+      });
+    });
+
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelector('.little')).toBeFalsy();
+
+    // Can be undefined
+    act(() => {
+      instance.open({
+        content: <div className="light" />,
+        duration: undefined,
+      });
+    });
+
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(document.querySelector('.light')).toBeTruthy();
   });
 });
