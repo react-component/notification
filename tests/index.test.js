@@ -573,4 +573,42 @@ describe('Notification.Basic', () => {
       }, 10);
     });
   });
+
+  it('should work properly when the key is zero', (done) => {
+    let container;
+
+    let notificationInstance;
+    const key = 0;
+    Notification.newInstance(
+      {
+        TEST_RENDER: (node) => {
+          ({ container } = render(<div>{node}</div>));
+        },
+      },
+      (notification) => {
+        notificationInstance = notification;
+
+        notificationInstance.notice({
+          content: <span className="content first">bamboo</span>,
+          duration: 0.3,
+          key,
+        });
+
+        setTimeout(() => {
+          notificationInstance.notice({
+            content: <span className="content second">bamboo</span>,
+            duration: 0.3,
+            key,
+          });
+          setTimeout(() => {
+            expect(container.querySelectorAll('.content')).toHaveLength(1);
+            expect(container.querySelectorAll('.first')).toHaveLength(0);
+            expect(container.querySelectorAll('.second')).toHaveLength(1);
+            notification.destroy();
+            done();
+          }, 10);
+        }, 200);
+      },
+    );
+  });
 });

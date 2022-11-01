@@ -96,7 +96,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
   }
 
   add = (originNotice: NoticeContent, holderCallback?: HolderReadyCallback) => {
-    const key = originNotice.key || getUuid();
+    const key = originNotice.key ?? getUuid();
     const notice: NoticeContent & { key: React.Key; userPassKey?: React.Key } = {
       ...originNotice,
       key,
@@ -139,7 +139,7 @@ class Notification extends Component<NotificationProps, NotificationState> {
   remove = (removeKey: React.Key) => {
     this.setState(({ notices }: NotificationState) => ({
       notices: notices.filter(({ notice: { key, userPassKey } }) => {
-        const mergedKey = userPassKey || key;
+        const mergedKey = userPassKey ?? key;
         return mergedKey !== removeKey;
       }),
     }));
