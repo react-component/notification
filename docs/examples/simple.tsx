@@ -120,6 +120,29 @@ function customCloseIconFn() {
   });
 }
 
+
+function callWithKey0() {
+  const key = 0;
+  notification.notice({
+    duration: 3,
+    content: <span>first call with key 0</span>,
+    onClose() {
+      console.log('simple close');
+    },
+    key
+  });
+  setTimeout(() => {
+    notification.notice({
+      duration: 3,
+      content: <span>second call with key 0</span>,
+      onClose() {
+        console.log('simple close');
+      },
+      key
+    });
+  }, 2000);
+}
+
 const Demo = () => (
   <div>
     <button type="button" onClick={simpleFn}>
@@ -139,6 +162,9 @@ const Demo = () => (
     </button>
     <button type="button" onClick={customCloseIconFn}>
       custom close icon
+    </button>
+    <button type="button" onClick={callWithKey0}>
+      call with key 0
     </button>
   </div>
 );
