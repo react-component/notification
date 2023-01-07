@@ -1,3 +1,3 @@
 ## maxCount
 
-<code src="../examples/maxCount.tsx">
+<code src="../examples/maxCount.tsx"></code>

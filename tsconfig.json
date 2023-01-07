@@ -12,5 +12,6 @@
       "@@/*": ["src/.umi/*"],
       "rc-notification": ["src/index.ts"]
     }
-  }
+  },
+  "include": [".dumi/**/*", ".dumirc.ts", "./src/**/*.ts", "./src/**/*.tsx"]
 }
