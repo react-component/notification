@@ -67,7 +67,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
     }
   }, [duration, hovering, eventKey]);
 
-  // when open a same key notice, we should reset auto close notice countdown
+  // when open a same key notice, we should reset auto close notice timer
   React.useEffect(() => {
     clearTimeout(closeTimers.current[eventKey]);
     autoClose();
