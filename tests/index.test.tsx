@@ -587,4 +587,28 @@ describe('Notification.Basic', () => {
     });
     expect(onAllRemoved).toHaveBeenCalled();
   });
+  it('when the same key message is closing, dont open new until it closed', () => {
+    const onAllRemoved = jest.fn();
+    const { instance } = renderDemo({
+      onAllRemoved,
+    });
+    act(() => {
+      instance.open({
+        content: 'test',
+        key: 'success',
+        duration: 0.01,
+      });
+    });
+
+    let cnt = 100;
+    while (--cnt) {
+      fireEvent.click(document.querySelector('.rc-notification-notice'));
+    }
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    expect(onAllRemoved).toHaveBeenCalled();
+  });
 });

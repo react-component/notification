@@ -23,6 +23,7 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
 
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onNoticeClose?: (key: React.Key) => void;
+  openCnt?: Record<React.Key, number>;
 }
 
 const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
@@ -40,26 +41,37 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
 
     onClick,
     onNoticeClose,
+    openCnt = {},
   } = props;
   const [hovering, setHovering] = React.useState(false);
 
   // ======================== Close =========================
   const onInternalClose = () => {
-    onNoticeClose(eventKey);
+    onNoticeClose?.(eventKey);
   };
 
   // ======================== Effect ========================
+  const closeTimers = React.useRef<Record<React.Key, NodeJS.Timeout>>({});
+  const autoClose = () => {
+    if (hovering || duration <= 0) return;
+    closeTimers.current[eventKey] = setTimeout(() => {
+      onInternalClose();
+    }, duration * 1000);
+  };
   React.useEffect(() => {
     if (!hovering && duration > 0) {
-      const timeout = setTimeout(() => {
-        onInternalClose();
-      }, duration * 1000);
-
+      autoClose();
       return () => {
-        clearTimeout(timeout);
+        clearTimeout(closeTimers.current[eventKey]);
       };
     }
-  }, [duration, hovering]);
+  }, [duration, hovering, eventKey]);
+
+  // when open a same key notice, we should reset auto close notice countdown
+  React.useEffect(() => {
+    clearTimeout(closeTimers.current[eventKey]);
+    autoClose();
+  }, [openCnt[eventKey]]);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;

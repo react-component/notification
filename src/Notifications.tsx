@@ -45,6 +45,8 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     onAllRemoved,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
+  // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
+  const [openCnt, setOpenCnt] = React.useState<Record<React.Key, number>>({});
 
   // ======================== Close =========================
   const onNoticeClose = (key: React.Key) => {
@@ -58,6 +60,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   // ========================= Refs =========================
   React.useImperativeHandle(ref, () => ({
     open: (config) => {
+      setOpenCnt((prev) => ({ ...prev, [config.key]: (prev[config.key] || 0) + 1 }));
       setConfigList((list) => {
         let clone = [...list];
 
@@ -182,6 +185,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
+                  openCnt={openCnt}
                 />
               );
             }}
