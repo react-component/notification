@@ -23,7 +23,7 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
 
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onNoticeClose?: (key: React.Key) => void;
-  openCnt: Record<React.Key, number>;
+  openCnt: number;
 }
 
 const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
