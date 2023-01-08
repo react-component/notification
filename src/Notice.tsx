@@ -37,14 +37,12 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
     content,
     closable,
     closeIcon = 'x',
-    props: divProps = {},
+    props: divProps,
 
     onClick,
     onNoticeClose,
   } = props;
   const [hovering, setHovering] = React.useState(false);
-
-  const { openCnt, ...restDivProps } = divProps;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -72,14 +70,14 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
   React.useEffect(() => {
     clearTimeout(closeTimers.current[eventKey]);
     autoClose();
-  }, [openCnt]);
+  }, [divProps?.openCnt]);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
 
   return (
     <div
-      {...restDivProps}
+      {...divProps}
       ref={ref}
       className={classNames(noticePrefixCls, className, {
         [`${noticePrefixCls}-closable`]: closable,
