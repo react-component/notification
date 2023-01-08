@@ -11,6 +11,8 @@ export interface OpenConfig extends NoticeConfig {
   placement?: Placement;
   content?: React.ReactNode;
   duration?: number | null;
+  // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
+  openCnt: number;
 }
 
 export interface NotificationsProps {
@@ -45,8 +47,6 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     onAllRemoved,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
-  // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
-  const [openCnt, setOpenCnt] = React.useState<Record<React.Key, number>>({});
 
   // ======================== Close =========================
   const onNoticeClose = (key: React.Key) => {
@@ -60,15 +60,16 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   // ========================= Refs =========================
   React.useImperativeHandle(ref, () => ({
     open: (config) => {
-      setOpenCnt((prev) => ({ ...prev, [config.key]: (prev[config.key] || 0) + 1 }));
       setConfigList((list) => {
         let clone = [...list];
 
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
         if (index >= 0) {
+          config.openCnt = (config.openCnt || 0) + 1;
           clone[index] = config;
         } else {
+          config.openCnt = 0;
           clone.push(config);
         }
 
@@ -169,7 +170,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key } = config as OpenConfig;
+              const { key, openCnt, props: divProps } = config as OpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
@@ -182,10 +183,13 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
+                  props={{
+                    ...divProps,
+                    openCnt,
+                  }}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
-                  openCnt={openCnt}
                 />
               );
             }}
