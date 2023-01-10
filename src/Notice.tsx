@@ -47,31 +47,21 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
 
   // ======================== Close =========================
   const onInternalClose = () => {
-    onNoticeClose?.(eventKey);
+    onNoticeClose(eventKey);
   };
 
   // ======================== Effect ========================
-  const closeTimers = React.useRef<Record<React.Key, NodeJS.Timeout>>({});
-  const autoClose = () => {
-    if (hovering || duration <= 0) return;
-    closeTimers.current[eventKey] = setTimeout(() => {
-      onInternalClose();
-    }, duration * 1000);
-  };
   React.useEffect(() => {
     if (!hovering && duration > 0) {
-      autoClose();
+      const timeout = setTimeout(() => {
+        onInternalClose();
+      }, duration * 1000);
+
       return () => {
-        clearTimeout(closeTimers.current[eventKey]);
+        clearTimeout(timeout);
       };
     }
-  }, [duration, hovering, eventKey]);
-
-  // when open a same key notice, we should reset auto close notice timer
-  React.useEffect(() => {
-    clearTimeout(closeTimers.current[eventKey]);
-    autoClose();
-  }, [openCnt]);
+  }, [duration, hovering, openCnt]);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
