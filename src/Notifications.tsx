@@ -170,7 +170,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, openCnt, props: divProps } = config as OpenConfig;
+              const { key, openCnt } = config as OpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
@@ -183,7 +183,6 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
-                  props={divProps}
                   openCnt={openCnt}
                   key={key}
                   eventKey={key}
