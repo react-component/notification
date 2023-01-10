@@ -183,10 +183,8 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
-                  props={{
-                    ...divProps,
-                    openCnt,
-                  }}
+                  props={divProps}
+                  openCnt={openCnt}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}

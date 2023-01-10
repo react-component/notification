@@ -13,6 +13,7 @@ export interface NoticeConfig {
 
   onClose?: VoidFunction;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  openCnt: number;
 }
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
@@ -23,7 +24,6 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
 
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onNoticeClose?: (key: React.Key) => void;
-  openCnt: number;
 }
 
 const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
@@ -41,6 +41,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
 
     onClick,
     onNoticeClose,
+    openCnt,
   } = props;
   const [hovering, setHovering] = React.useState(false);
 
@@ -70,7 +71,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
   React.useEffect(() => {
     clearTimeout(closeTimers.current[eventKey]);
     autoClose();
-  }, [divProps?.openCnt]);
+  }, [openCnt]);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
