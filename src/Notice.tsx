@@ -13,7 +13,7 @@ export interface NoticeConfig {
 
   onClose?: VoidFunction;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  openCnt: number;
+  openCount: number;
 }
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
