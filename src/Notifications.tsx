@@ -12,7 +12,7 @@ export interface OpenConfig extends NoticeConfig {
   content?: React.ReactNode;
   duration?: number | null;
   // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
-  openCnt: number;
+  time: number;
 }
 
 export interface NotificationsProps {
@@ -66,10 +66,10 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
         if (index >= 0) {
-          config.openCnt = (config.openCnt || 0) + 1;
+          config.time = (config.time || 0) + 1;
           clone[index] = config;
         } else {
-          config.openCnt = 0;
+          config.time = 0;
           clone.push(config);
         }
 
@@ -170,7 +170,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, openCnt } = config as OpenConfig;
+              const { key, time } = config as OpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
@@ -183,7 +183,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
-                  openCnt={openCnt}
+                  time={time}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
