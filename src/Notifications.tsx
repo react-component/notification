@@ -11,8 +11,6 @@ export interface OpenConfig extends NoticeConfig {
   placement?: Placement;
   content?: React.ReactNode;
   duration?: number | null;
-  // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
-  times: number;
 }
 
 export interface NotificationsProps {
@@ -28,6 +26,8 @@ export interface NotificationsProps {
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 
 type Placements = Partial<Record<Placement, OpenConfig[]>>;
+
+type InnerOpenConfig = OpenConfig & { times?: number };
 
 export interface NotificationsRef {
   open: (config: OpenConfig) => void;
@@ -65,12 +65,13 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
 
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
+        const innerConfig: InnerOpenConfig = { ...config };
         if (index >= 0) {
-          config.times = (config.times || 0) + 1;
-          clone[index] = config;
+          innerConfig.times = ((list[index] as InnerOpenConfig)?.times || 0) + 1;
+          clone[index] = innerConfig;
         } else {
-          config.times = 0;
-          clone.push(config);
+          innerConfig.times = 0;
+          clone.push(innerConfig);
         }
 
         if (maxCount > 0 && clone.length > maxCount) {
@@ -170,7 +171,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, times } = config as OpenConfig;
+              const { key, times } = config as InnerOpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (

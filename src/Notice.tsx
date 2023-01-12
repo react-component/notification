@@ -13,7 +13,6 @@ export interface NoticeConfig {
 
   onClose?: VoidFunction;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  times: number;
 }
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
@@ -26,7 +25,7 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   onNoticeClose?: (key: React.Key) => void;
 }
 
-const Notify = React.forwardRef<HTMLDivElement, NoticeProps>((props, ref) => {
+const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }>((props, ref) => {
   const {
     prefixCls,
     style,
