@@ -27,7 +27,7 @@ export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft'
 
 type Placements = Partial<Record<Placement, OpenConfig[]>>;
 
-type InnerOpenConfig = OpenConfig & { __times: number };
+type InnerOpenConfig = OpenConfig & { __times?: number };
 
 export interface NotificationsRef {
   open: (config: InnerOpenConfig) => void;
