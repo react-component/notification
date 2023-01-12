@@ -33,7 +33,7 @@ export interface NotificationAPI {
 
 interface OpenTask {
   type: 'open';
-  config: OpenConfig & { __times?: number };
+  config: OpenConfig & { times?: number };
 }
 
 interface CloseTask {

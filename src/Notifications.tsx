@@ -27,7 +27,7 @@ export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft'
 
 type Placements = Partial<Record<Placement, OpenConfig[]>>;
 
-type InnerOpenConfig = OpenConfig & { __times?: number };
+type InnerOpenConfig = OpenConfig & { times?: number };
 
 export interface NotificationsRef {
   open: (config: InnerOpenConfig) => void;
@@ -66,10 +66,10 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
         if (index >= 0) {
-          config.__times = (config.__times || 0) + 1;
+          config.times = (config.times || 0) + 1;
           clone[index] = config;
         } else {
-          config.__times = 0;
+          config.times = 0;
           clone.push(config);
         }
 
@@ -170,7 +170,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, __times } = config as InnerOpenConfig;
+              const { key, times } = config as InnerOpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
@@ -183,7 +183,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
-                  times={__times}
+                  times={times}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
