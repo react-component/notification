@@ -30,7 +30,7 @@ type Placements = Partial<Record<Placement, OpenConfig[]>>;
 type InnerOpenConfig = OpenConfig & { times?: number };
 
 export interface NotificationsRef {
-  open: (config: InnerOpenConfig) => void;
+  open: (config: OpenConfig) => void;
   close: (key: React.Key) => void;
   destroy: () => void;
 }
@@ -65,12 +65,13 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
 
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
+        const innerConfig: InnerOpenConfig = { ...config };
         if (index >= 0) {
-          config.times = (config.times || 0) + 1;
-          clone[index] = config;
+          innerConfig.times = ((list[index] as InnerOpenConfig)?.times || 0) + 1;
+          clone[index] = innerConfig;
         } else {
-          config.times = 0;
-          clone.push(config);
+          innerConfig.times = 0;
+          clone.push(innerConfig);
         }
 
         if (maxCount > 0 && clone.length > maxCount) {
