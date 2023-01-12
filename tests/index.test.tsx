@@ -587,4 +587,46 @@ describe('Notification.Basic', () => {
     });
     expect(onAllRemoved).toHaveBeenCalled();
   });
+  it('when the same key message is closing, dont open new until it closed', () => {
+    const onClose = jest.fn();
+    const Demo = () => {
+      const [api, holder] = useNotification();
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              api.open({
+                key: 'little',
+                duration: 1,
+                content: <div className="context-content">light</div>,
+              });
+
+              setTimeout(() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">bamboo</div>,
+                  onClose,
+                });
+              }, 1100);
+            }}
+          />
+          {holder}
+        </>
+      );
+    };
+    const { container: demoContainer, unmount } = render(<Demo />);
+    fireEvent.click(demoContainer.querySelector('button'));
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(onClose).not.toHaveBeenCalled();
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(onClose).toHaveBeenCalled();
+
+    unmount();
+  });
 });
