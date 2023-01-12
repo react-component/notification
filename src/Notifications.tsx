@@ -11,8 +11,6 @@ export interface OpenConfig extends NoticeConfig {
   placement?: Placement;
   content?: React.ReactNode;
   duration?: number | null;
-  // open notice count, to record same key notice's open quantity that we can use as unique id flag to clean auto close timer
-  times: number;
 }
 
 export interface NotificationsProps {
@@ -29,8 +27,10 @@ export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft'
 
 type Placements = Partial<Record<Placement, OpenConfig[]>>;
 
+type InnerOpenConfig = OpenConfig & { __times: number };
+
 export interface NotificationsRef {
-  open: (config: OpenConfig) => void;
+  open: (config: InnerOpenConfig) => void;
   close: (key: React.Key) => void;
   destroy: () => void;
 }
@@ -66,10 +66,10 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
         // Replace if exist
         const index = clone.findIndex((item) => item.key === config.key);
         if (index >= 0) {
-          config.times = (config.times || 0) + 1;
+          config.__times = (config.__times || 0) + 1;
           clone[index] = config;
         } else {
-          config.times = 0;
+          config.__times = 0;
           clone.push(config);
         }
 
@@ -170,7 +170,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, times } = config as OpenConfig;
+              const { key, __times } = config as InnerOpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
               return (
@@ -183,7 +183,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
                     ...motionStyle,
                     ...configStyle,
                   }}
-                  times={times}
+                  times={__times}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
