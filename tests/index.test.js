@@ -611,4 +611,40 @@ describe('Notification.Basic', () => {
       },
     );
   });
+
+  it('closes via keyboard Enter key', (done) => {
+    let container;
+
+    Notification.newInstance(
+      {
+        TEST_RENDER: (node) => {
+          ({ container } = render(<div>{node}</div>));
+        },
+      },
+      (notification) => {
+        notification.notice({
+          content: <p className="test">1</p>,
+          closable: true,
+          duration: null,
+        });
+
+        setTimeout(() => {
+          expect(container.querySelectorAll('.test')).toHaveLength(1);
+          expect(container.querySelector('a')).toBeTruthy();
+
+          setTimeout(() => {
+            fireEvent.keyDown(container.querySelector('a'), {
+              key: 'Enter',
+              code: 'Enter',
+              charCode: 13,
+            });
+
+            expect(container.querySelectorAll('.test')).toHaveLength(0);
+            notification.destroy();
+            done();
+          }, 1000);
+        }, 10);
+      },
+    );
+  });
 });
