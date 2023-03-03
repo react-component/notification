@@ -57,6 +57,12 @@ export default class Notice extends Component<NoticeProps> {
     this.clearCloseTimer();
   }
 
+  keyDown = (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+    if (e.key === 'Enter' || e.code === 'Enter' || e.charCode === 13) {
+      this.close();
+    }
+  };
+
   close = (e?: React.MouseEvent<HTMLAnchorElement>) => {
     if (e) {
       e.stopPropagation();
@@ -89,8 +95,16 @@ export default class Notice extends Component<NoticeProps> {
   }
 
   render() {
-    const { prefixCls, className, closable, closeIcon, style, onClick, children, holder } =
-      this.props;
+    const {
+      prefixCls,
+      className,
+      closable,
+      closeIcon,
+      style,
+      onClick,
+      children,
+      holder,
+    } = this.props;
     const componentClass = `${prefixCls}-notice`;
     const dataOrAriaAttributeProps = Object.keys(this.props).reduce(
       (acc: Record<string, string>, key: string) => {
@@ -114,7 +128,12 @@ export default class Notice extends Component<NoticeProps> {
       >
         <div className={`${componentClass}-content`}>{children}</div>
         {closable ? (
-          <a tabIndex={0} onClick={this.close} className={`${componentClass}-close`}>
+          <a
+            tabIndex={0}
+            onClick={this.close}
+            onKeyDown={this.keyDown}
+            className={`${componentClass}-close`}
+          >
             {closeIcon || <span className={`${componentClass}-close-x`} />}
           </a>
         ) : null}
