@@ -1,8 +1,8 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { useNotification } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
+import { useNotification } from '../src';
 
 require('../assets/index.less');
 
@@ -587,6 +587,7 @@ describe('Notification.Basic', () => {
     });
     expect(onAllRemoved).toHaveBeenCalled();
   });
+
   it('when the same key message is closing, dont open new until it closed', () => {
     const onClose = jest.fn();
     const Demo = () => {
@@ -628,5 +629,23 @@ describe('Notification.Basic', () => {
     expect(onClose).toHaveBeenCalled();
 
     unmount();
+  });
+
+  it('closes via keyboard Enter key', () => {
+    const { instance } = renderDemo();
+    let closeCount = 0;
+
+    act(() => {
+      instance.open({
+        content: <p className="test">1</p>,
+        closable: true,
+        onClose: () => {
+          closeCount += 1;
+        },
+      });
+    });
+
+    fireEvent.keyDown(document.querySelector('.rc-notification-notice-close'), { key: 'Enter' }); // origin latest
+    expect(closeCount).toEqual(1);
   });
 });

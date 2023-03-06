@@ -49,6 +49,14 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onNoticeClose(eventKey);
   };
 
+  const handleCloseKeydown: React.KeyboardEventHandler<HTMLAnchorElement> = closable
+    ? (e) => {
+        if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
+          onInternalClose();
+        }
+      }
+    : undefined;
+
   // ======================== Effect ========================
   React.useEffect(() => {
     if (!hovering && duration > 0) {
@@ -60,6 +68,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         clearTimeout(timeout);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, hovering, times]);
 
   // ======================== Render ========================
@@ -89,6 +98,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         <a
           tabIndex={0}
           className={`${noticePrefixCls}-close`}
+          onKeyDown={handleCloseKeydown}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
