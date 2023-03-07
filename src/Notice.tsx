@@ -1,4 +1,5 @@
 import * as React from 'react';
+import KeyCode from 'rc-util/lib/KeyCode';
 import classNames from 'classnames';
 
 export interface NoticeConfig {
@@ -51,7 +52,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   const handleCloseKeydown: React.KeyboardEventHandler<HTMLAnchorElement> = closable
     ? (e) => {
-        if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
+        if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === KeyCode.ENTER) {
           onInternalClose();
         }
       }
