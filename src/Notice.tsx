@@ -1,6 +1,6 @@
-import * as React from 'react';
-import KeyCode from 'rc-util/lib/KeyCode';
 import classNames from 'classnames';
+import KeyCode from 'rc-util/lib/KeyCode';
+import * as React from 'react';
 
 export interface NoticeConfig {
   content?: React.ReactNode;
@@ -50,13 +50,11 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onNoticeClose(eventKey);
   };
 
-  const handleCloseKeydown: React.KeyboardEventHandler<HTMLAnchorElement> = closable
-    ? (e) => {
-        if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === KeyCode.ENTER) {
-          onInternalClose();
-        }
-      }
-    : undefined;
+  const onCloseKeyDown: React.KeyboardEventHandler<HTMLAnchorElement> = (e) => {
+    if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === KeyCode.ENTER) {
+      onInternalClose();
+    }
+  };
 
   // ======================== Effect ========================
   React.useEffect(() => {
@@ -99,7 +97,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         <a
           tabIndex={0}
           className={`${noticePrefixCls}-close`}
-          onKeyDown={handleCloseKeydown}
+          onKeyDown={onCloseKeyDown}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
