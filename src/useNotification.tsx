@@ -11,7 +11,7 @@ type OptionalConfig = Partial<OpenConfig>;
 export interface NotificationConfig {
   prefixCls?: string;
   /** Customize container. It will repeat call which means you should return same container element. */
-  getContainer?: () => HTMLElement;
+  getContainer?: () => HTMLElement | ShadowRoot;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   closeIcon?: React.ReactNode;
   closable?: boolean;
