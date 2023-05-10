@@ -16,7 +16,7 @@ export interface OpenConfig extends NoticeConfig {
 export interface NotificationsProps {
   prefixCls?: string;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  container?: HTMLElement;
+  container?: HTMLElement | ShadowRoot;
   maxCount?: number;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
