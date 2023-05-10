@@ -81,7 +81,7 @@ export default function useNotification(
     ...shareConfig
   } = rootConfig;
 
-  const [container, setContainer] = React.useState<HTMLElement>();
+  const [container, setContainer] = React.useState<HTMLElement | ShadowRoot>();
   const notificationsRef = React.useRef<NotificationsRef>();
   const contextHolder = (
     <Notifications
