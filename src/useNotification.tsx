@@ -1,8 +1,7 @@
-import * as React from 'react';
-import Notifications from './Notifications';
-import type { Placement } from './Notifications';
-import type { NotificationsRef, OpenConfig } from './Notifications';
 import type { CSSMotionProps } from 'rc-motion';
+import * as React from 'react';
+import type { NotificationsRef, OpenConfig, Placement } from './Notifications';
+import Notifications from './Notifications';
 
 const defaultGetContainer = () => document.body;
 
@@ -146,7 +145,12 @@ export default function useNotification(
         }
       });
 
-      setTaskQueue([]);
+      // React 17 will mix order of effect & setState in async
+      // - open: setState[0]
+      // - effect[0]
+      // - open: setState[1]
+      // - effect setState([]) * here will clean up [0, 1] in React 17
+      setTaskQueue((oriQueue) => oriQueue.filter((task) => !taskQueue.includes(task)));
     }
   }, [taskQueue]);
 
