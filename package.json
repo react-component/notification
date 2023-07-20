@@ -1,6 +1,6 @@
 {
   "name": "rc-notification",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "description": "notification ui component for react",
   "engines": {
     "node": ">=8.x"
