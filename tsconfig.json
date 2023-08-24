@@ -11,7 +11,7 @@
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
       "rc-notification": ["src/index.tsx"]
-    }
-  },
-  "include": [".dumi/**/*", ".dumirc.ts", "./src/**/*.ts", "./src/**/*.tsx", "./docs/**/*.tsx"]
+    },
+    "types": ["vitest/globals"]
+  }
 }
