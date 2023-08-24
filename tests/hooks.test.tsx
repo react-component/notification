@@ -7,11 +7,11 @@ require('../assets/index.less');
 
 describe('Notification.Hooks', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   function renderDemo(config?: NotificationConfig) {
@@ -60,7 +60,7 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(0);
 
@@ -101,7 +101,7 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.context-content').textContent).toEqual('light');
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
@@ -122,7 +122,7 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.bamboo')).toBeTruthy();
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelector('.bamboo')).toBeTruthy();
 
@@ -135,7 +135,7 @@ describe('Notification.Hooks', () => {
     });
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelector('.little')).toBeFalsy();
 
@@ -148,7 +148,7 @@ describe('Notification.Hooks', () => {
     });
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelector('.light')).toBeTruthy();
   });

@@ -10,11 +10,11 @@ require('../assets/index.less');
 // This only test for hooks usage.
 describe('Notification.Basic', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   function renderDemo(config?: NotificationConfig) {
@@ -44,7 +44,7 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.test')).toBeTruthy();
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelector('.test')).toBeFalsy();
 
@@ -87,7 +87,7 @@ describe('Notification.Basic', () => {
     expect(document.querySelectorAll('.test')).toHaveLength(2);
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelectorAll('.test')).toHaveLength(0);
   });
@@ -170,7 +170,7 @@ describe('Notification.Basic', () => {
     fireEvent.click(document.querySelector('#closeButton'));
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     expect(document.querySelectorAll('.test')).toHaveLength(0);
@@ -228,7 +228,7 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.updatable').textContent).toEqual(newValue);
 
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     // Other notices are not affected
@@ -258,14 +258,14 @@ describe('Notification.Basic', () => {
     // Mouse in should not remove
     fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelectorAll('.freeze')).toHaveLength(1);
 
     // Mouse out will remove
     fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(document.querySelectorAll('.freeze')).toHaveLength(0);
   });
@@ -329,7 +329,7 @@ describe('Notification.Basic', () => {
       });
 
       act(() => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
 
       expect(document.querySelectorAll('.test-maxcount')).toHaveLength(1);
@@ -358,7 +358,7 @@ describe('Notification.Basic', () => {
       expect(document.querySelector('.auto-remove').textContent).toEqual('light');
 
       act(() => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
       expect(document.querySelectorAll('.auto-remove')).toHaveLength(0);
     });
@@ -518,7 +518,7 @@ describe('Notification.Basic', () => {
   });
 
   it('motion as function', () => {
-    const motionFn = jest.fn();
+    const motionFn = vi.fn();
 
     const { instance } = renderDemo({
       motion: motionFn,
@@ -534,7 +534,7 @@ describe('Notification.Basic', () => {
   });
 
   it('notice when empty', () => {
-    const onAllRemoved = jest.fn();
+    const onAllRemoved = vi.fn();
 
     const { instance } = renderDemo({
       onAllRemoved,
@@ -552,7 +552,7 @@ describe('Notification.Basic', () => {
 
     // Hide
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(onAllRemoved).toHaveBeenCalled();
 
@@ -589,7 +589,7 @@ describe('Notification.Basic', () => {
   });
 
   it('when the same key message is closing, dont open new until it closed', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const Demo = () => {
       const [api, holder] = useNotification();
       return (
@@ -620,11 +620,11 @@ describe('Notification.Basic', () => {
     const { container: demoContainer, unmount } = render(<Demo />);
     fireEvent.click(demoContainer.querySelector('button'));
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(onClose).not.toHaveBeenCalled();
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(onClose).toHaveBeenCalled();
 
