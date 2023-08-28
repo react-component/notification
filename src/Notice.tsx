@@ -81,11 +81,13 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         [`${noticePrefixCls}-closable`]: closable,
       })}
       style={style}
-      onMouseEnter={() => {
+      onMouseEnter={(e) => {
         setHovering(true);
+        divProps?.onMouseEnter?.(e);
       }}
-      onMouseLeave={() => {
+      onMouseLeave={(e) => {
         setHovering(false);
+        divProps?.onMouseLeave?.(e);
       }}
       onClick={onClick}
     >

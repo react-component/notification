@@ -22,6 +22,11 @@ export interface NotificationConfig {
   style?: (placement: Placement) => React.CSSProperties;
   /** @private Trigger when all the notification closed. */
   onAllRemoved?: VoidFunction;
+  stack?:
+    | boolean
+    | {
+        threshold?: number;
+      };
 }
 
 export interface NotificationAPI {
@@ -77,6 +82,7 @@ export default function useNotification(
     className,
     style,
     onAllRemoved,
+    stack,
     ...shareConfig
   } = rootConfig;
 
@@ -92,6 +98,7 @@ export default function useNotification(
       className={className}
       style={style}
       onAllRemoved={onAllRemoved}
+      stack={stack}
     />
   );
 

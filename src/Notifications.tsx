@@ -5,6 +5,7 @@ import type { CSSMotionProps } from 'rc-motion';
 import classNames from 'classnames';
 import Notice from './Notice';
 import type { NoticeConfig } from './Notice';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 
 export interface OpenConfig extends NoticeConfig {
   key: React.Key;
@@ -21,6 +22,11 @@ export interface NotificationsProps {
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
+  stack?:
+    | boolean
+    | {
+        threshold?: number;
+      };
 }
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
@@ -45,6 +51,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     className,
     style,
     onAllRemoved,
+    stack,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
@@ -140,6 +147,9 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     }
   }, [placements]);
 
+  const listRef = useRef<HTMLDivElement[]>([]);
+  const [latestNotice, setLatestNotice] = useState<HTMLDivElement>(null);
+  const [hoverCount, setHoverCount] = useState(0);
   // ======================== Render ========================
   if (!container) {
     return null;
@@ -156,12 +166,21 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           key: config.key,
         }));
 
+        const expanded =
+          !!stack &&
+          (hoverCount > 0 ||
+            keys.length <=
+              (typeof stack === 'object' && 'threshold' in stack ? stack.threshold : 3));
+
         const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
 
         return (
           <CSSMotionList
             key={placement}
-            className={classNames(prefixCls, `${prefixCls}-${placement}`, className?.(placement))}
+            className={classNames(prefixCls, `${prefixCls}-${placement}`, className?.(placement), {
+              [`${prefixCls}-stack`]: !!stack,
+              [`${prefixCls}-stack-expanded`]: expanded,
+            })}
             style={style?.(placement)}
             keys={keys}
             motionAppear
@@ -169,25 +188,55 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             onAllRemoved={() => {
               onAllNoticeRemoved(placement);
             }}
+            onAppearPrepare={async (element) => {
+              if (element.parentNode.lastElementChild === element) {
+                setLatestNotice(element as HTMLDivElement);
+              }
+            }}
           >
             {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
               const { key, times } = config as InnerOpenConfig;
               const { className: configClassName, style: configStyle } = config as NoticeConfig;
 
+              const index = keys.length - 1 - keys.findIndex((item) => item.key === key);
+              const stackStyle: CSSProperties = {};
+              if (stack) {
+                if (index > 0) {
+                  stackStyle.height = expanded ? '' : latestNotice.offsetHeight;
+                  stackStyle.transform = `translateY(${
+                    index * 8 +
+                    (expanded
+                      ? listRef.current.reduce(
+                          (acc, item, refIndex) => acc + (refIndex < index ? item.offsetHeight : 0),
+                          0,
+                        )
+                      : 0)
+                  }px)`;
+                }
+              }
+
               return (
                 <Notice
                   {...config}
-                  ref={nodeRef}
+                  ref={(node) => {
+                    nodeRef(node);
+                    listRef.current[index] = node;
+                  }}
                   prefixCls={prefixCls}
                   className={classNames(motionClassName, configClassName)}
                   style={{
                     ...motionStyle,
                     ...configStyle,
+                    ...stackStyle,
                   }}
                   times={times}
                   key={key}
                   eventKey={key}
                   onNoticeClose={onNoticeClose}
+                  props={{
+                    onMouseEnter: () => setHoverCount((c) => c + 1),
+                    onMouseLeave: () => setHoverCount((c) => c - 1),
+                  }}
                 />
               );
             }}
