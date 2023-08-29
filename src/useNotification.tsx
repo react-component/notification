@@ -24,7 +24,7 @@ export interface NotificationConfig {
   style?: (placement: Placement) => React.CSSProperties;
   /** @private Trigger when all the notification closed. */
   onAllRemoved?: VoidFunction;
-  /** @private Slot for hook in Notifications */
+  /** @private Slot for style in Notifications */
   useStyle?: NoticeListProps['useStyle'];
 }
 
