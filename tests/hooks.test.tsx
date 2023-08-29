@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { useNotification } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
+import NotificationProvider from '../src/NotificationProvider';
 
 require('../assets/index.less');
 
@@ -151,5 +152,33 @@ describe('Notification.Hooks', () => {
       vi.runAllTimers();
     });
     expect(document.querySelector('.light')).toBeTruthy();
+  });
+
+  it('support renderNotifications', () => {
+    const Wrapper = ({ children }) => {
+      return (
+        <NotificationProvider classNames={{ notice: 'apple', list: 'banana' }}>
+          {children}
+        </NotificationProvider>
+      );
+    };
+
+    const renderNotifications = (node: ReactElement) => {
+      return <Wrapper>{node}</Wrapper>;
+    };
+    const { instance } = renderDemo({
+      renderNotifications,
+    });
+
+    act(() => {
+      instance.open({
+        content: <div className="bamboo" />,
+        style: { color: 'red' },
+        className: 'custom-notice',
+      });
+    });
+
+    expect(document.querySelector('.rc-notification')).toHaveClass('banana');
+    expect(document.querySelector('.custom-notice')).toHaveClass('apple');
   });
 });

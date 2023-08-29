@@ -1,7 +1,8 @@
 import type { CSSMotionProps } from 'rc-motion';
 import * as React from 'react';
-import type { NotificationsRef, OpenConfig, Placement } from './Notifications';
+import type { NotificationsProps, NotificationsRef } from './Notifications';
 import Notifications from './Notifications';
+import type { OpenConfig, Placement } from './interface';
 
 const defaultGetContainer = () => document.body;
 
@@ -27,6 +28,8 @@ export interface NotificationConfig {
     | {
         threshold?: number;
       };
+  /** @private Slot for style in Notifications */
+  renderNotifications?: NotificationsProps['renderNotifications'];
 }
 
 export interface NotificationAPI {
@@ -83,6 +86,7 @@ export default function useNotification(
     style,
     onAllRemoved,
     stack,
+    renderNotifications,
     ...shareConfig
   } = rootConfig;
 
@@ -99,6 +103,7 @@ export default function useNotification(
       style={style}
       onAllRemoved={onAllRemoved}
       stack={stack}
+      renderNotifications={renderNotifications}
     />
   );
 
