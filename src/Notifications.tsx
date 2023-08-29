@@ -13,7 +13,10 @@ export interface NotificationsProps {
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
-  renderNotifications?: (node: ReactElement, info: { prefixCls: string }) => ReactElement;
+  renderNotifications?: (
+    node: ReactElement,
+    info: { prefixCls: string; key: React.Key },
+  ) => ReactElement;
 }
 
 export interface NotificationsRef {
@@ -154,7 +157,9 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
           />
         );
 
-        return renderNotifications ? renderNotifications(list, { prefixCls }) : list;
+        return renderNotifications
+          ? renderNotifications(list, { prefixCls, key: placement })
+          : list;
       })}
     </>,
     container,
