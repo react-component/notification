@@ -1,10 +1,11 @@
 import type { CSSProperties, FC } from 'react';
-import React from 'react';
-import classNames from 'classnames';
+import React, { useContext } from 'react';
+import clsx from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import { CSSMotionList } from 'rc-motion';
 import type { InnerOpenConfig, NoticeConfig, OpenConfig, Placement } from './interface';
 import Notice from './Notice';
+import { NotificationContext } from './NotificationProvider';
 
 export interface NoticeListProps {
   configList?: OpenConfig[];
@@ -15,9 +16,6 @@ export interface NoticeListProps {
   // Events
   onAllNoticeRemoved?: (placement: Placement) => void;
   onNoticeClose?: (key: React.Key) => void;
-
-  // Hook Slots
-  useStyle?: (prefixCls: string) => { notice?: string; list?: string };
 
   // Common
   className?: string;
@@ -31,13 +29,12 @@ const NoticeList: FC<NoticeListProps> = (props) => {
     prefixCls,
     className,
     style,
-    useStyle,
     motion,
     onAllNoticeRemoved,
     onNoticeClose,
   } = props;
 
-  const styles = useStyle?.(prefixCls);
+  const { classNames: ctxCls } = useContext(NotificationContext);
 
   const keys = configList.map((config) => ({
     config,
@@ -49,7 +46,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   return (
     <CSSMotionList
       key={placement}
-      className={classNames(prefixCls, `${prefixCls}-${placement}`, styles?.list, className)}
+      className={clsx(prefixCls, `${prefixCls}-${placement}`, ctxCls?.list, className)}
       style={style}
       keys={keys}
       motionAppear
@@ -67,7 +64,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             {...config}
             ref={nodeRef}
             prefixCls={prefixCls}
-            className={classNames(motionClassName, configClassName, styles?.notice)}
+            className={clsx(motionClassName, configClassName, ctxCls?.notice)}
             style={{
               ...motionStyle,
               ...configStyle,

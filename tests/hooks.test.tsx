@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { useNotification } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
+import NotificationProvider from '../src/NotificationProvider';
 
 require('../assets/index.less');
 
@@ -153,12 +154,20 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.light')).toBeTruthy();
   });
 
-  it('support style slot', () => {
-    const useStyle = () => {
-      return { notice: 'apple', list: 'banana' };
+  it('support renderNotifications', () => {
+    const Wrapper = ({ children }) => {
+      return (
+        <NotificationProvider classNames={{ notice: 'apple', list: 'banana' }}>
+          {children}
+        </NotificationProvider>
+      );
+    };
+
+    const renderNotifications = (node: ReactElement) => {
+      return <Wrapper>{node}</Wrapper>;
     };
     const { instance } = renderDemo({
-      useStyle,
+      renderNotifications,
     });
 
     act(() => {
