@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { CSSMotionProps } from 'rc-motion';
 import type { InnerOpenConfig, OpenConfig, Placement, Placements } from './interface';
-import NoticeList, { NoticeListProps } from './NoticeList';
+import NoticeList from './NoticeList';
 
 export interface NotificationsProps {
   prefixCls?: string;
@@ -12,7 +13,7 @@ export interface NotificationsProps {
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
-  useStyle?: NoticeListProps['useStyle'];
+  renderNotifications?: (node: ReactElement) => ReactElement;
 }
 
 export interface NotificationsRef {
@@ -31,7 +32,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     className,
     style,
     onAllRemoved,
-    useStyle,
+    renderNotifications,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
@@ -139,7 +140,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
       {placementList.map((placement) => {
         const placementConfigList = placements[placement];
 
-        return (
+        const list = (
           <NoticeList
             key={placement}
             configList={placementConfigList}
@@ -150,9 +151,10 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             motion={motion}
             onNoticeClose={onNoticeClose}
             onAllNoticeRemoved={onAllNoticeRemoved}
-            useStyle={useStyle}
           />
         );
+
+        return renderNotifications ? renderNotifications(list) : list;
       })}
     </>,
     container,

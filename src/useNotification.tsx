@@ -1,6 +1,6 @@
 import type { CSSMotionProps } from 'rc-motion';
 import * as React from 'react';
-import type { NotificationsRef } from './Notifications';
+import type { NotificationsProps, NotificationsRef } from './Notifications';
 import Notifications from './Notifications';
 import type { OpenConfig, Placement } from './interface';
 import type { NoticeListProps } from './NoticeList';
@@ -25,7 +25,7 @@ export interface NotificationConfig {
   /** @private Trigger when all the notification closed. */
   onAllRemoved?: VoidFunction;
   /** @private Slot for style in Notifications */
-  useStyle?: NoticeListProps['useStyle'];
+  renderNotifications?: NotificationsProps['renderNotifications'];
 }
 
 export interface NotificationAPI {
@@ -81,7 +81,7 @@ export default function useNotification(
     className,
     style,
     onAllRemoved,
-    useStyle,
+    renderNotifications,
     ...shareConfig
   } = rootConfig;
 
@@ -97,7 +97,7 @@ export default function useNotification(
       className={className}
       style={style}
       onAllRemoved={onAllRemoved}
-      useStyle={useStyle}
+      renderNotifications={renderNotifications}
     />
   );
 
