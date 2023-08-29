@@ -1,17 +1,8 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { CSSMotionList } from 'rc-motion';
 import type { CSSMotionProps } from 'rc-motion';
-import classNames from 'classnames';
-import Notice from './Notice';
-import type { NoticeConfig } from './Notice';
-
-export interface OpenConfig extends NoticeConfig {
-  key: React.Key;
-  placement?: Placement;
-  content?: React.ReactNode;
-  duration?: number | null;
-}
+import type { InnerOpenConfig, OpenConfig, Placement, Placements } from './interface';
+import NoticeList, { NoticeListProps } from './NoticeList';
 
 export interface NotificationsProps {
   prefixCls?: string;
@@ -21,13 +12,8 @@ export interface NotificationsProps {
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
+  useStyle?: NoticeListProps['useStyle'];
 }
-
-export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
-
-type Placements = Partial<Record<Placement, OpenConfig[]>>;
-
-type InnerOpenConfig = OpenConfig & { times?: number };
 
 export interface NotificationsRef {
   open: (config: OpenConfig) => void;
@@ -45,6 +31,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     className,
     style,
     onAllRemoved,
+    useStyle,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
 
@@ -151,47 +138,20 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     <>
       {placementList.map((placement) => {
         const placementConfigList = placements[placement];
-        const keys = placementConfigList.map((config) => ({
-          config,
-          key: config.key,
-        }));
-
-        const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
 
         return (
-          <CSSMotionList
+          <NoticeList
             key={placement}
-            className={classNames(prefixCls, `${prefixCls}-${placement}`, className?.(placement))}
+            configList={placementConfigList}
+            placement={placement}
+            prefixCls={prefixCls}
+            className={className?.(placement)}
             style={style?.(placement)}
-            keys={keys}
-            motionAppear
-            {...placementMotion}
-            onAllRemoved={() => {
-              onAllNoticeRemoved(placement);
-            }}
-          >
-            {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-              const { key, times } = config as InnerOpenConfig;
-              const { className: configClassName, style: configStyle } = config as NoticeConfig;
-
-              return (
-                <Notice
-                  {...config}
-                  ref={nodeRef}
-                  prefixCls={prefixCls}
-                  className={classNames(motionClassName, configClassName)}
-                  style={{
-                    ...motionStyle,
-                    ...configStyle,
-                  }}
-                  times={times}
-                  key={key}
-                  eventKey={key}
-                  onNoticeClose={onNoticeClose}
-                />
-              );
-            }}
-          </CSSMotionList>
+            motion={motion}
+            onNoticeClose={onNoticeClose}
+            onAllNoticeRemoved={onAllNoticeRemoved}
+            useStyle={useStyle}
+          />
         );
       })}
     </>,

@@ -1,20 +1,7 @@
 import classNames from 'classnames';
 import KeyCode from 'rc-util/lib/KeyCode';
 import * as React from 'react';
-
-export interface NoticeConfig {
-  content?: React.ReactNode;
-  duration?: number | null;
-  closeIcon?: React.ReactNode;
-  closable?: boolean;
-  className?: string;
-  style?: React.CSSProperties;
-  /** @private Internal usage. Do not override in your code */
-  props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
-
-  onClose?: VoidFunction;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-}
+import type { NoticeConfig } from './interface';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
