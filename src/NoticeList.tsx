@@ -20,10 +20,6 @@ export interface NoticeListProps {
   // Common
   className?: string;
   style?: CSSProperties;
-  classNames?: {
-    list?: string;
-    notice?: string;
-  };
 }
 
 const NoticeList: FC<NoticeListProps> = (props) => {
@@ -33,7 +29,6 @@ const NoticeList: FC<NoticeListProps> = (props) => {
     prefixCls,
     className,
     style,
-    classNames,
     motion,
     onAllNoticeRemoved,
     onNoticeClose,
@@ -51,13 +46,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   return (
     <CSSMotionList
       key={placement}
-      className={clsx(
-        prefixCls,
-        `${prefixCls}-${placement}`,
-        classNames?.list,
-        ctxCls?.list,
-        className,
-      )}
+      className={clsx(prefixCls, `${prefixCls}-${placement}`, ctxCls?.list, className)}
       style={style}
       keys={keys}
       motionAppear
@@ -75,7 +64,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             {...config}
             ref={nodeRef}
             prefixCls={prefixCls}
-            className={clsx(motionClassName, configClassName, classNames?.notice, ctxCls?.notice)}
+            className={clsx(motionClassName, configClassName, ctxCls?.notice)}
             style={{
               ...motionStyle,
               ...configStyle,

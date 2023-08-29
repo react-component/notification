@@ -154,7 +154,7 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.light')).toBeTruthy();
   });
 
-  it('support style slot', () => {
+  it('support renderNotifications', () => {
     const Wrapper = ({ children }) => {
       return (
         <NotificationProvider classNames={{ notice: 'apple', list: 'banana' }}>

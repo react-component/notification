@@ -3,7 +3,6 @@ import * as React from 'react';
 import type { NotificationsProps, NotificationsRef } from './Notifications';
 import Notifications from './Notifications';
 import type { OpenConfig, Placement } from './interface';
-import type { NoticeListProps } from './NoticeList';
 
 const defaultGetContainer = () => document.body;
 
