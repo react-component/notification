@@ -152,4 +152,24 @@ describe('Notification.Hooks', () => {
     });
     expect(document.querySelector('.light')).toBeTruthy();
   });
+
+  it('support style slot', () => {
+    const useStyle = () => {
+      return { notice: 'apple', list: 'banana' };
+    };
+    const { instance } = renderDemo({
+      useStyle,
+    });
+
+    act(() => {
+      instance.open({
+        content: <div className="bamboo" />,
+        style: { color: 'red' },
+        className: 'custom-notice',
+      });
+    });
+
+    expect(document.querySelector('.rc-notification')).toHaveClass('banana');
+    expect(document.querySelector('.custom-notice')).toHaveClass('apple');
+  });
 });
