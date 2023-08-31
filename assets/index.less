@@ -8,6 +8,12 @@
   max-height: 100vh;
   padding: 10px;
   align-items: flex-end;
+  width: 340px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+  pointer-events: none;
 
   // Position
   &-top,
@@ -30,6 +36,7 @@
     width: 100%;
 
     &-wrapper {
+      pointer-events: auto;
       position: relative;
       display: block;
       box-sizing: border-box;
