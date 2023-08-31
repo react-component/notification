@@ -12,7 +12,7 @@ import type {
 } from './interface';
 import Notice from './Notice';
 import { NotificationContext } from './NotificationProvider';
-import useStack from '@/hooks/useStack';
+import useStack from './hooks/useStack';
 
 export interface NoticeListProps {
   configList?: OpenConfig[];
