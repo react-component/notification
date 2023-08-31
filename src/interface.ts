@@ -26,3 +26,22 @@ export interface OpenConfig extends NoticeConfig {
 export type InnerOpenConfig = OpenConfig & { times?: number };
 
 export type Placements = Partial<Record<Placement, OpenConfig[]>>;
+
+export type StackConfig =
+  | boolean
+  | {
+      /**
+       * When number is greater than threshold, notifications will be stacked together.
+       * @default 3
+       */
+      threshold?: number;
+      /**
+       * Offset when notifications are stacked together.
+       * @default 8
+       */
+      offset?: number;
+      /**
+       * Spacing between each notification when expanded.
+       */
+      gap?: number;
+    };

@@ -3,20 +3,23 @@ import React, { useContext, useRef, useState } from 'react';
 import clsx from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import { CSSMotionList } from 'rc-motion';
-import type { InnerOpenConfig, NoticeConfig, OpenConfig, Placement } from './interface';
+import type {
+  InnerOpenConfig,
+  NoticeConfig,
+  OpenConfig,
+  Placement,
+  StackConfig,
+} from './interface';
 import Notice from './Notice';
 import { NotificationContext } from './NotificationProvider';
+import useStack from '@/hooks/useStack';
 
 export interface NoticeListProps {
   configList?: OpenConfig[];
   placement?: Placement;
   prefixCls?: string;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  stack?:
-    | boolean
-    | {
-        threshold?: number;
-      };
+  stack?: StackConfig;
 
   // Events
   onAllNoticeRemoved?: (placement: Placement) => void;
@@ -37,7 +40,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
     motion,
     onAllNoticeRemoved,
     onNoticeClose,
-    stack,
+    stack: stackConfig,
   } = props;
 
   const { classNames: ctxCls } = useContext(NotificationContext);
@@ -51,10 +54,9 @@ const NoticeList: FC<NoticeListProps> = (props) => {
     key: config.key,
   }));
 
-  const expanded =
-    !!stack &&
-    (hoverCount > 0 ||
-      keys.length <= (typeof stack === 'object' && 'threshold' in stack ? stack.threshold : 3));
+  const [stack, { offset, threshold, gap }] = useStack(stackConfig);
+
+  const expanded = stack && (hoverCount > 0 || keys.length <= threshold);
 
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
 
@@ -90,15 +92,13 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               ? listRef.current[index]?.offsetHeight
               : latestNotice?.offsetHeight;
             stackStyle.transform = `translateY(${
-              (index * 8 +
-                (expanded
-                  ? listRef.current.reduce(
-                      (acc, item, refIndex) =>
-                        acc + (refIndex < index ? item?.offsetHeight ?? 0 : 0),
-                      0,
-                    )
-                  : 0)) *
-              (placement.startsWith('top') ? 1 : -1)
+              (expanded
+                ? listRef.current.reduce(
+                    (acc, item, refIndex) => acc + (refIndex < index ? item?.offsetHeight ?? 0 : 0),
+                    0,
+                  ) +
+                  index * gap
+                : index * offset) * (placement.startsWith('top') ? 1 : -1)
             }px)`;
           }
         }
