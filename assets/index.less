@@ -14,15 +14,22 @@
   height: 100vh;
   box-sizing: border-box;
   pointer-events: none;
+  flex-direction: column;
 
   // Position
   &-top,
   &-topLeft,
   &-topRight {
     top: 0;
-    flex-direction: column;
   }
 
+  &-bottom,
+  &-bottomRight,
+  &-bottomLeft {
+    bottom: 0;
+  }
+
+  &-bottomRight,
   &-topRight {
     right: 0;
   }
@@ -207,14 +214,21 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: -16px;
+            top: -8px;
             width: 100%;
-            height: 16px;
+            height: calc(100% + 16px);
             background: transparent;
             pointer-events: auto;
             color: rgb(0,0,0);
           }
         }
+      }
+    }
+
+    &.@{notificationPrefixCls}-bottomRight {
+      & > .@{notificationPrefixCls}-notice-wrapper {
+        top: unset;
+        bottom: 12px;
       }
     }
   }
