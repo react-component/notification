@@ -105,6 +105,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
         return (
           <div
+            ref={nodeRef}
             className={clsx(`${prefixCls}-notice-wrapper`, motionClassName)}
             style={{
               ...motionStyle,
@@ -116,7 +117,6 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             <Notice
               {...config}
               ref={(node) => {
-                nodeRef(node);
                 listRef.current[index] = node;
               }}
               prefixCls={prefixCls}
