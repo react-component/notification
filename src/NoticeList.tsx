@@ -61,7 +61,10 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   return (
     <CSSMotionList
       key={placement}
-      className={clsx(prefixCls, `${prefixCls}-${placement}`, ctxCls?.list, className)}
+      className={clsx(prefixCls, `${prefixCls}-${placement}`, ctxCls?.list, className, {
+        [`${prefixCls}-stack`]: !!stack,
+        [`${prefixCls}-stack-expanded`]: expanded,
+      })}
       style={style}
       keys={keys}
       motionAppear
@@ -83,12 +86,14 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         const stackStyle: CSSProperties = {};
         if (stack) {
           if (index > 0) {
-            stackStyle.height = expanded ? '' : latestNotice.offsetHeight;
+            stackStyle.height = expanded
+              ? listRef.current[index]?.offsetHeight
+              : latestNotice.offsetHeight;
             stackStyle.transform = `translateY(${
               index * 8 +
               (expanded
                 ? listRef.current.reduce(
-                    (acc, item, refIndex) => acc + (refIndex < index ? item.offsetHeight : 0),
+                    (acc, item, refIndex) => acc + (refIndex < index ? item.offsetHeight ?? 0 : 0),
                     0,
                   )
                 : 0)
@@ -97,28 +102,32 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         }
 
         return (
-          <Notice
-            {...config}
-            ref={(node) => {
-              nodeRef(node);
-              listRef.current[index] = node;
-            }}
-            prefixCls={prefixCls}
-            className={clsx(motionClassName, configClassName, ctxCls?.notice)}
+          <div
+            className={clsx(`${prefixCls}-notice-wrapper`, motionClassName)}
             style={{
               ...motionStyle,
-              ...configStyle,
               ...stackStyle,
             }}
-            times={times}
-            key={key}
-            eventKey={key}
-            onNoticeClose={onNoticeClose}
-            props={{
-              onMouseEnter: () => setHoverCount((c) => c + 1),
-              onMouseLeave: () => setHoverCount((c) => c - 1),
-            }}
-          />
+            onMouseEnter={() => setHoverCount((c) => c + 1)}
+            onMouseLeave={() => setHoverCount((c) => c - 1)}
+          >
+            <Notice
+              {...config}
+              ref={(node) => {
+                nodeRef(node);
+                listRef.current[index] = node;
+              }}
+              prefixCls={prefixCls}
+              className={clsx(configClassName, ctxCls?.notice)}
+              style={{
+                ...configStyle,
+              }}
+              times={times}
+              key={key}
+              eventKey={key}
+              onNoticeClose={onNoticeClose}
+            />
+          </div>
         );
       }}
     </CSSMotionList>

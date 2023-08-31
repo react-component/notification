@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { CSSMotionProps } from 'rc-motion';
 import type { InnerOpenConfig, OpenConfig, Placement, Placements } from './interface';
@@ -159,6 +159,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             motion={motion}
             onNoticeClose={onNoticeClose}
             onAllNoticeRemoved={onAllNoticeRemoved}
+            stack={stack}
           />
         );
 
