@@ -88,12 +88,12 @@ const NoticeList: FC<NoticeListProps> = (props) => {
           if (index > 0) {
             stackStyle.height = expanded
               ? listRef.current[index]?.offsetHeight
-              : latestNotice.offsetHeight;
+              : latestNotice?.offsetHeight;
             stackStyle.transform = `translateY(${
               index * 8 +
               (expanded
                 ? listRef.current.reduce(
-                    (acc, item, refIndex) => acc + (refIndex < index ? item.offsetHeight ?? 0 : 0),
+                    (acc, item, refIndex) => acc + (refIndex < index ? item?.offsetHeight ?? 0 : 0),
                     0,
                   )
                 : 0)
