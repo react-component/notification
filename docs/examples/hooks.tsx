@@ -4,7 +4,7 @@ import '../../assets/index.less';
 import { useNotification } from '../../src';
 import motion from './motion';
 
-export default () => {
+const App = () => {
   const [notice, contextHolder] = useNotification({ motion, closable: true, stack: true });
 
   return (
@@ -97,3 +97,9 @@ export default () => {
     </>
   );
 };
+
+export default () => (
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

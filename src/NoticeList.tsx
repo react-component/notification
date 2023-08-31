@@ -73,6 +73,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         onAllNoticeRemoved(placement);
       }}
       onAppearPrepare={async (element) => {
+        console.log('Latest Notice Prepare: ', element);
         if (element.parentNode.lastElementChild === element) {
           setLatestNotice(element as HTMLDivElement);
         }
