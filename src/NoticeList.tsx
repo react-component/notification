@@ -126,6 +126,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               key={key}
               eventKey={key}
               onNoticeClose={onNoticeClose}
+              hovering={hoverCount > 0}
             />
           </div>
         );

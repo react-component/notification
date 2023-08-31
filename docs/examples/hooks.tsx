@@ -5,7 +5,7 @@ import { useNotification } from '../../src';
 import motion from './motion';
 
 const App = () => {
-  const [notice, contextHolder] = useNotification({ motion, closable: true, stack: true });
+  const [notice, contextHolder] = useNotification({ motion, closable: true });
 
   return (
     <>
