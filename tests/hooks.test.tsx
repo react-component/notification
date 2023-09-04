@@ -204,7 +204,7 @@ describe('Notification.Hooks', () => {
       );
     };
 
-    const { container, unmount } = render(<Demo />);
+    const { container } = render(<Demo />);
     for (let i = 0; i < 3; i++) {
       fireEvent.click(container.querySelector('button'));
     }
