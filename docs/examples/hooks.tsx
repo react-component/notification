@@ -4,7 +4,7 @@ import '../../assets/index.less';
 import { useNotification } from '../../src';
 import motion from './motion';
 
-export default () => {
+const App = () => {
   const [notice, contextHolder] = useNotification({ motion, closable: true });
 
   return (
@@ -26,7 +26,25 @@ export default () => {
           <button
             onClick={() => {
               notice.open({
-                content: `${new Date().toISOString()}`,
+                content: `${Array(Math.round(Math.random() * 5) + 1)
+                  .fill(1)
+                  .map(() => new Date().toISOString())
+                  .join('\n')}`,
+                duration: null,
+              });
+            }}
+          >
+            Not Auto Close
+          </button>
+
+          {/* Not Close */}
+          <button
+            onClick={() => {
+              notice.open({
+                content: `${Array(5)
+                  .fill(1)
+                  .map(() => new Date().toISOString())
+                  .join('\n')}`,
                 duration: null,
               });
             }}
@@ -79,3 +97,9 @@ export default () => {
     </>
   );
 };
+
+export default () => (
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

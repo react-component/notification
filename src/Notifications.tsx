@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { CSSMotionProps } from 'rc-motion';
-import type { InnerOpenConfig, OpenConfig, Placement, Placements } from './interface';
+import type { InnerOpenConfig, OpenConfig, Placement, Placements, StackConfig } from './interface';
 import NoticeList from './NoticeList';
 
 export interface NotificationsProps {
@@ -13,6 +13,7 @@ export interface NotificationsProps {
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
+  stack?: StackConfig;
   renderNotifications?: (
     node: ReactElement,
     info: { prefixCls: string; key: React.Key },
@@ -35,6 +36,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     className,
     style,
     onAllRemoved,
+    stack,
     renderNotifications,
   } = props;
   const [configList, setConfigList] = React.useState<OpenConfig[]>([]);
@@ -130,7 +132,6 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
       emptyRef.current = false;
     }
   }, [placements]);
-
   // ======================== Render ========================
   if (!container) {
     return null;
@@ -154,6 +155,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             motion={motion}
             onNoticeClose={onNoticeClose}
             onAllNoticeRemoved={onAllNoticeRemoved}
+            stack={stack}
           />
         );
 

@@ -11,6 +11,7 @@ export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
 
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onNoticeClose?: (key: React.Key) => void;
+  hovering?: boolean;
 }
 
 const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }>((props, ref) => {
@@ -29,8 +30,10 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onClick,
     onNoticeClose,
     times,
+    hovering: forcedHovering,
   } = props;
   const [hovering, setHovering] = React.useState(false);
+  const mergedHovering = forcedHovering || hovering;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -45,7 +48,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   // ======================== Effect ========================
   React.useEffect(() => {
-    if (!hovering && duration > 0) {
+    if (!mergedHovering && duration > 0) {
       const timeout = setTimeout(() => {
         onInternalClose();
       }, duration * 1000);
@@ -55,7 +58,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, hovering, times]);
+  }, [duration, mergedHovering, times]);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
@@ -68,11 +71,13 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         [`${noticePrefixCls}-closable`]: closable,
       })}
       style={style}
-      onMouseEnter={() => {
+      onMouseEnter={(e) => {
         setHovering(true);
+        divProps?.onMouseEnter?.(e);
       }}
-      onMouseLeave={() => {
+      onMouseLeave={(e) => {
         setHovering(false);
+        divProps?.onMouseLeave?.(e);
       }}
       onClick={onClick}
     >

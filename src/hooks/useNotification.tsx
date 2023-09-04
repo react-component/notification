@@ -1,8 +1,8 @@
 import type { CSSMotionProps } from 'rc-motion';
 import * as React from 'react';
-import type { NotificationsProps, NotificationsRef } from './Notifications';
-import Notifications from './Notifications';
-import type { OpenConfig, Placement } from './interface';
+import type { NotificationsProps, NotificationsRef } from '../Notifications';
+import Notifications from '../Notifications';
+import type { OpenConfig, Placement, StackConfig } from '../interface';
 
 const defaultGetContainer = () => document.body;
 
@@ -23,6 +23,7 @@ export interface NotificationConfig {
   style?: (placement: Placement) => React.CSSProperties;
   /** @private Trigger when all the notification closed. */
   onAllRemoved?: VoidFunction;
+  stack?: StackConfig;
   /** @private Slot for style in Notifications */
   renderNotifications?: NotificationsProps['renderNotifications'];
 }
@@ -80,6 +81,7 @@ export default function useNotification(
     className,
     style,
     onAllRemoved,
+    stack,
     renderNotifications,
     ...shareConfig
   } = rootConfig;
@@ -96,6 +98,7 @@ export default function useNotification(
       className={className}
       style={style}
       onAllRemoved={onAllRemoved}
+      stack={stack}
       renderNotifications={renderNotifications}
     />
   );

@@ -7,17 +7,29 @@
   display: flex;
   max-height: 100vh;
   padding: 10px;
-  overflow-y: auto;
   align-items: flex-end;
+  width: 340px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+  pointer-events: none;
+  flex-direction: column;
 
   // Position
   &-top,
   &-topLeft,
   &-topRight {
     top: 0;
-    flex-direction: column;
   }
 
+  &-bottom,
+  &-bottomRight,
+  &-bottomLeft {
+    bottom: 0;
+  }
+
+  &-bottomRight,
   &-topRight {
     right: 0;
   }
@@ -27,14 +39,22 @@
     position: relative;
     display: block;
     box-sizing: border-box;
-    width: auto;
-    margin: 12px 0;
     line-height: 1.5;
-    background: #fff;
-    border: 1px solid #999;
-    border: 0px solid rgba(0, 0, 0, 0);
-    border-radius: 3px 3px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+
+    &-wrapper {
+      pointer-events: auto;
+      position: relative;
+      display: block;
+      box-sizing: border-box;
+      border-radius: 3px 3px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 0 0 16px;
+      border: 1px solid #999;
+      border: 0px solid rgba(0, 0, 0, 0);
+      background: #fff;
+      width: 300px;
+    }
 
     // Content
     &-content {
@@ -75,6 +95,11 @@
   &-fade {
     overflow: hidden;
     transition: all 0.3s;
+  }
+
+  &-fade-appear-prepare {
+    pointer-events: none;
+    opacity: 0 !important;
   }
 
   &-fade-appear-start {
@@ -133,4 +158,78 @@
   //     opacity: 0;
   //   }
   // }
+
+  // ========================= Stack =========================
+  &-stack {
+    & > .@{notificationPrefixCls}-notice {
+      &-wrapper {
+        transition: all 0.3s;
+        position: absolute;
+        top: 12px;
+        opacity: 1;
+
+        &:not(:nth-last-child(-n + 3)) {
+          opacity: 0;
+          right: 34px;
+          width: 252px;
+          overflow: hidden;
+          color: transparent;
+          pointer-events: none;
+        }
+
+        &:nth-last-child(1) {
+          right: 10px;
+        }
+
+        &:nth-last-child(2) {
+          right: 18px;
+          width: 284px;
+          color: transparent;
+          overflow: hidden;
+        }
+
+        &:nth-last-child(3) {
+          right: 26px;
+          width: 268px;
+          color: transparent;
+          overflow: hidden;
+        }
+      }
+    }
+
+    &&-expanded {
+      & > .@{notificationPrefixCls}-notice {
+        &-wrapper {
+          &:not(:nth-last-child(-n + 1)) {
+            opacity: 1;
+            width: 300px;
+            right: 10px;
+            overflow: unset;
+            color: inherit;
+            pointer-events: auto;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -16px;
+            width: 100%;
+            height: calc(100% + 32px);
+            background: transparent;
+            pointer-events: auto;
+            color: rgb(0,0,0);
+          }
+        }
+      }
+    }
+
+    &.@{notificationPrefixCls}-bottomRight {
+      & > .@{notificationPrefixCls}-notice-wrapper {
+        top: unset;
+        bottom: 12px;
+      }
+    }
+  }
 }
