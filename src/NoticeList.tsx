@@ -104,7 +104,12 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             }
             stackStyle.transform = `translateY(${
               (expanded ? verticalOffset : index * offset) * (placement.startsWith('top') ? 1 : -1)
-            }px)`;
+            }px) scaleX(${
+              !expanded && latestNotice?.offsetWidth && dictRef.current[key]?.offsetWidth
+                ? (latestNotice?.offsetWidth - offset * 2 * (index < 3 ? index : 3)) /
+                  dictRef.current[key]?.offsetWidth
+                : 1
+            })`;
           }
         }
 
@@ -115,6 +120,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             style={{
               ...motionStyle,
               ...stackStyle,
+              ...configStyle,
             }}
             onMouseEnter={() => setHoverCount((c) => c + 1)}
             onMouseLeave={() => setHoverCount((c) => c - 1)}
@@ -130,9 +136,6 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               }}
               prefixCls={prefixCls}
               className={clsx(configClassName, ctxCls?.notice)}
-              style={{
-                ...configStyle,
-              }}
               times={times}
               key={key}
               eventKey={key}
