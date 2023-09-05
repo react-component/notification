@@ -91,6 +91,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         // If dataIndex is -1, that means this notice has been removed in data, but still in dom
         // Should minus (motionIndex - 1) to get the correct index because keys.length is not the same as dom length
         const index = keys.length - 1 - (dataIndex > -1 ? dataIndex : motionIndex - 1);
+        const transformX = placement === 'top' || placement === 'bottom' ? '-50%' : '0';
         const stackStyle: CSSProperties = {};
         if (stack) {
           if (index > 0) {
@@ -102,14 +103,16 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             for (let i = 0; i < index; i++) {
               verticalOffset += dictRef.current[keys[keys.length - 1 - i].key]?.offsetHeight + gap;
             }
-            stackStyle.transform = `translateY(${
+            stackStyle.transform = `translate3d(${transformX}, ${
               (expanded ? verticalOffset : index * offset) * (placement.startsWith('top') ? 1 : -1)
-            }px) scaleX(${
+            }px, 0) scaleX(${
               !expanded && latestNotice?.offsetWidth && dictRef.current[key]?.offsetWidth
                 ? (latestNotice?.offsetWidth - offset * 2 * (index < 3 ? index : 3)) /
                   dictRef.current[key]?.offsetWidth
                 : 1
             })`;
+          } else {
+            stackStyle.transform = `translate3d(${transformX}, 0, 0)`;
           }
         }
 
