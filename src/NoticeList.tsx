@@ -80,11 +80,17 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         }
       }}
     >
-      {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
+      {(
+        { config, className: motionClassName, style: motionStyle, index: motionIndex },
+        nodeRef,
+      ) => {
         const { key, times } = config as InnerOpenConfig;
         const { className: configClassName, style: configStyle } = config as NoticeConfig;
+        const dataIndex = keys.findIndex((item) => item.key === key);
 
-        const index = keys.length - 1 - keys.findIndex((item) => item.key === key);
+        // If dataIndex is -1, that means this notice has been removed in data, but still in dom
+        // Should minus (motionIndex - 1) to get the correct index because keys.length is not the same as dom length
+        const index = keys.length - 1 - (dataIndex > -1 ? dataIndex : motionIndex - 1);
         const stackStyle: CSSProperties = {};
         if (stack) {
           if (index > 0) {
@@ -117,7 +123,9 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             <Notice
               {...config}
               ref={(node) => {
-                listRef.current[index] = node;
+                if (dataIndex > -1) {
+                  listRef.current[index] = node;
+                }
               }}
               prefixCls={prefixCls}
               className={clsx(configClassName, ctxCls?.notice)}
