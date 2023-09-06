@@ -80,6 +80,8 @@ describe('stack', () => {
     fireEvent.click(document.querySelector('.rc-notification-notice-close'));
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(4);
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
+
+    // mouseleave will not triggerred if notice is closed
     fireEvent.mouseEnter(document.querySelector('.rc-notification-notice-wrapper'));
     fireEvent.mouseLeave(document.querySelector('.rc-notification-notice-wrapper'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
