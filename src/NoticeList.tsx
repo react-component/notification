@@ -1,5 +1,5 @@
 import type { CSSProperties, FC } from 'react';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import { CSSMotionList } from 'rc-motion';
@@ -47,7 +47,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
   const dictRef = useRef<Record<React.Key, HTMLDivElement>>({});
   const [latestNotice, setLatestNotice] = useState<HTMLDivElement>(null);
-  const [hoverCount, setHoverCount] = useState(0);
+  const [hoverKeys, setHoverKeys] = useState<React.Key[]>([]);
 
   const keys = configList.map((config) => ({
     config,
@@ -56,9 +56,18 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
   const [stack, { offset, threshold, gap }] = useStack(stackConfig);
 
-  const expanded = stack && (hoverCount > 0 || keys.length <= threshold);
+  const expanded = stack && (hoverKeys.length > 0 || keys.length <= threshold);
 
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
+
+  // Clean hover key
+  useEffect(() => {
+    if (hoverKeys.length > 1) {
+      setHoverKeys((prev) =>
+        prev.filter((key) => keys.some(({ key: dataKey }) => key === dataKey)),
+      );
+    }
+  }, [hoverKeys, keys]);
 
   return (
     <CSSMotionList
@@ -127,8 +136,10 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               ...stackStyle,
               ...configStyle,
             }}
-            onMouseEnter={() => setHoverCount((c) => c + 1)}
-            onMouseLeave={() => setHoverCount((c) => c - 1)}
+            onMouseEnter={() =>
+              setHoverKeys((prev) => (prev.includes(key) ? prev : [...prev, key]))
+            }
+            onMouseLeave={() => setHoverKeys((prev) => prev.filter((k) => k !== key))}
           >
             <Notice
               {...config}
@@ -145,7 +156,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               key={key}
               eventKey={key}
               onNoticeClose={onNoticeClose}
-              hovering={hoverCount > 0}
+              hovering={hoverKeys.length > 0}
             />
           </div>
         );
