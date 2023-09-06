@@ -88,9 +88,6 @@ const NoticeList: FC<NoticeListProps> = (props) => {
           setLatestNotice(element as HTMLDivElement);
         }
       }}
-      // onVisibleChanged={(_, { key }) => {
-      //   setHoverKeys((prev) => prev.filter((k) => k !== key))
-      // }}
     >
       {(
         { config, className: motionClassName, style: motionStyle, index: motionIndex },
