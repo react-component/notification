@@ -67,14 +67,14 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         prev.filter((key) => keys.some(({ key: dataKey }) => key === dataKey)),
       );
     }
-  }, [hoverKeys, keys]);
+  }, [hoverKeys, keys, stack]);
 
   // Force update latest notice
   useEffect(() => {
     if (stack && dictRef.current[keys[keys.length - 1]?.key]) {
       setLatestNotice(dictRef.current[keys[keys.length - 1]?.key]);
     }
-  }, [keys]);
+  }, [keys, stack]);
 
   return (
     <CSSMotionList
