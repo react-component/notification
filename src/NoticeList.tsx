@@ -62,12 +62,19 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
   // Clean hover key
   useEffect(() => {
-    if (hoverKeys.length > 1) {
+    if (stack && hoverKeys.length > 1) {
       setHoverKeys((prev) =>
         prev.filter((key) => keys.some(({ key: dataKey }) => key === dataKey)),
       );
     }
-  }, [hoverKeys, keys]);
+  }, [hoverKeys, keys, stack]);
+
+  // Force update latest notice
+  useEffect(() => {
+    if (stack && dictRef.current[keys[keys.length - 1]?.key]) {
+      setLatestNotice(dictRef.current[keys[keys.length - 1]?.key]);
+    }
+  }, [keys, stack]);
 
   return (
     <CSSMotionList
@@ -83,11 +90,6 @@ const NoticeList: FC<NoticeListProps> = (props) => {
       onAllRemoved={() => {
         onAllNoticeRemoved(placement);
       }}
-      onAppearPrepare={(element) => {
-        if (element.parentNode.lastElementChild === element) {
-          setLatestNotice(element as HTMLDivElement);
-        }
-      }}
     >
       {(
         { config, className: motionClassName, style: motionStyle, index: motionIndex },
@@ -99,10 +101,10 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
         // If dataIndex is -1, that means this notice has been removed in data, but still in dom
         // Should minus (motionIndex - 1) to get the correct index because keys.length is not the same as dom length
-        const index = keys.length - 1 - (dataIndex > -1 ? dataIndex : motionIndex - 1);
-        const transformX = placement === 'top' || placement === 'bottom' ? '-50%' : '0';
         const stackStyle: CSSProperties = {};
         if (stack) {
+          const index = keys.length - 1 - (dataIndex > -1 ? dataIndex : motionIndex - 1);
+          const transformX = placement === 'top' || placement === 'bottom' ? '-50%' : '0';
           if (index > 0) {
             stackStyle.height = expanded
               ? dictRef.current[key]?.offsetHeight
@@ -156,7 +158,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
               key={key}
               eventKey={key}
               onNoticeClose={onNoticeClose}
-              hovering={hoverKeys.length > 0}
+              hovering={stack && hoverKeys.length > 0}
             />
           </div>
         );

@@ -5,7 +5,7 @@ import { useNotification } from '../../src';
 import motion from './motion';
 
 export default () => {
-  const [notice, contextHolder] = useNotification({ motion, maxCount: 3, top: 100 });
+  const [notice, contextHolder] = useNotification({ motion, maxCount: 3 });
 
   return (
     <>
