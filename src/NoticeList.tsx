@@ -45,13 +45,13 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
   const { classNames: ctxCls } = useContext(NotificationContext);
 
-  const dictRef = useRef<Record<React.Key, HTMLDivElement>>({});
+  const dictRef = useRef<Record<string, HTMLDivElement>>({});
   const [latestNotice, setLatestNotice] = useState<HTMLDivElement>(null);
-  const [hoverKeys, setHoverKeys] = useState<React.Key[]>([]);
+  const [hoverKeys, setHoverKeys] = useState<string[]>([]);
 
   const keys = configList.map((config) => ({
     config,
-    key: config.key,
+    key: String(config.key),
   }));
 
   const [stack, { offset, threshold, gap }] = useStack(stackConfig);
@@ -96,8 +96,15 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         nodeRef,
       ) => {
         const { key, times } = config as InnerOpenConfig;
-        const { className: configClassName, style: configStyle } = config as NoticeConfig;
-        const dataIndex = keys.findIndex((item) => item.key === key);
+        const strKey = String(key);
+        const {
+          className: configClassName,
+          style: configStyle,
+          classNames: configClassNames,
+          styles: configStyles,
+          ...restConfig
+        } = config as NoticeConfig;
+        const dataIndex = keys.findIndex((item) => item.key === strKey);
 
         // If dataIndex is -1, that means this notice has been removed in data, but still in dom
         // Should minus (motionIndex - 1) to get the correct index because keys.length is not the same as dom length
@@ -107,7 +114,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
           const transformX = placement === 'top' || placement === 'bottom' ? '-50%' : '0';
           if (index > 0) {
             stackStyle.height = expanded
-              ? dictRef.current[key]?.offsetHeight
+              ? dictRef.current[strKey]?.offsetHeight
               : latestNotice?.offsetHeight;
 
             // Transform
@@ -119,9 +126,9 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             const transformY =
               (expanded ? verticalOffset : index * offset) * (placement.startsWith('top') ? 1 : -1);
             const scaleX =
-              !expanded && latestNotice?.offsetWidth && dictRef.current[key]?.offsetWidth
+              !expanded && latestNotice?.offsetWidth && dictRef.current[strKey]?.offsetWidth
                 ? (latestNotice?.offsetWidth - offset * 2 * (index < 3 ? index : 3)) /
-                  dictRef.current[key]?.offsetWidth
+                  dictRef.current[strKey]?.offsetWidth
                 : 1;
             stackStyle.transform = `translate3d(${transformX}, ${transformY}px, 0) scaleX(${scaleX})`;
           } else {
@@ -132,28 +139,35 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         return (
           <div
             ref={nodeRef}
-            className={clsx(`${prefixCls}-notice-wrapper`, motionClassName)}
+            className={clsx(
+              `${prefixCls}-notice-wrapper`,
+              motionClassName,
+              configClassNames?.wrapper,
+            )}
             style={{
               ...motionStyle,
               ...stackStyle,
-              ...configStyle,
+              ...configStyles?.wrapper,
             }}
             onMouseEnter={() =>
-              setHoverKeys((prev) => (prev.includes(key) ? prev : [...prev, key]))
+              setHoverKeys((prev) => (prev.includes(strKey) ? prev : [...prev, strKey]))
             }
-            onMouseLeave={() => setHoverKeys((prev) => prev.filter((k) => k !== key))}
+            onMouseLeave={() => setHoverKeys((prev) => prev.filter((k) => k !== strKey))}
           >
             <Notice
-              {...config}
+              {...restConfig}
               ref={(node) => {
                 if (dataIndex > -1) {
-                  dictRef.current[key] = node;
+                  dictRef.current[strKey] = node;
                 } else {
-                  delete dictRef.current[key];
+                  delete dictRef.current[strKey];
                 }
               }}
               prefixCls={prefixCls}
+              classNames={configClassNames}
+              styles={configStyles}
               className={clsx(configClassName, ctxCls?.notice)}
+              style={configStyle}
               times={times}
               key={key}
               eventKey={key}

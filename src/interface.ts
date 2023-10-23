@@ -2,6 +2,8 @@ import type React from 'react';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 
+type NoticeSemanticProps = 'wrapper';
+
 export interface NoticeConfig {
   content?: React.ReactNode;
   duration?: number | null;
@@ -9,6 +11,12 @@ export interface NoticeConfig {
   closable?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  classNames?: {
+    [key in NoticeSemanticProps]?: string;
+  };
+  styles?: {
+    [key in NoticeSemanticProps]?: React.CSSProperties;
+  };
   /** @private Internal usage. Do not override in your code */
   props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
 

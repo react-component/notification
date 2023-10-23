@@ -493,6 +493,46 @@ describe('Notification.Basic', () => {
     });
   });
 
+  it('should open style and className work', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        style: {
+          content: 'little',
+        },
+        className: 'bamboo',
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice')).toHaveStyle({
+      content: 'little',
+    });
+    expect(document.querySelector('.rc-notification-notice')).toHaveClass('bamboo');
+  });
+
+  it('should open styles and classNames work', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        styles: {
+          wrapper: {
+            content: 'little',
+          },
+        },
+        classNames: {
+          wrapper: 'bamboo',
+        },
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveStyle({
+      content: 'little',
+    });
+    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
+  });
+
   it('should className work', () => {
     const { instance } = renderDemo({
       className: (placement) => `bamboo-${placement}`,
