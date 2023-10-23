@@ -146,7 +146,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             style={{
               ...motionStyle,
               ...stackStyle,
-              ...configStyles.wrapper,
+              ...configStyles?.wrapper,
             }}
             onMouseEnter={() =>
               setHoverKeys((prev) => (prev.includes(key) ? prev : [...prev, key]))
