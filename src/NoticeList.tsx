@@ -96,7 +96,13 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         nodeRef,
       ) => {
         const { key, times } = config as InnerOpenConfig;
-        const { className: configClassName, style: configStyle } = config as NoticeConfig;
+        const {
+          className: configClassName,
+          style: configStyle,
+          classNames: configClassNames,
+          styles: configStyles,
+          ...restConfig
+        } = config as NoticeConfig;
         const dataIndex = keys.findIndex((item) => item.key === key);
 
         // If dataIndex is -1, that means this notice has been removed in data, but still in dom
@@ -132,11 +138,15 @@ const NoticeList: FC<NoticeListProps> = (props) => {
         return (
           <div
             ref={nodeRef}
-            className={clsx(`${prefixCls}-notice-wrapper`, motionClassName)}
+            className={clsx(
+              `${prefixCls}-notice-wrapper`,
+              motionClassName,
+              configClassNames?.wrapper,
+            )}
             style={{
               ...motionStyle,
               ...stackStyle,
-              ...configStyle,
+              ...configStyles.wrapper,
             }}
             onMouseEnter={() =>
               setHoverKeys((prev) => (prev.includes(key) ? prev : [...prev, key]))
@@ -144,7 +154,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             onMouseLeave={() => setHoverKeys((prev) => prev.filter((k) => k !== key))}
           >
             <Notice
-              {...config}
+              {...restConfig}
               ref={(node) => {
                 if (dataIndex > -1) {
                   dictRef.current[key] = node;
@@ -153,7 +163,10 @@ const NoticeList: FC<NoticeListProps> = (props) => {
                 }
               }}
               prefixCls={prefixCls}
+              classNames={configClassNames}
+              styles={configStyles}
               className={clsx(configClassName, ctxCls?.notice)}
+              style={configStyle}
               times={times}
               key={key}
               eventKey={key}
