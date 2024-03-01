@@ -8,7 +8,7 @@ export interface NoticeConfig {
   content?: React.ReactNode;
   duration?: number | null;
   closeIcon?: React.ReactNode;
-  closable?: boolean;
+  closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
   className?: string;
   style?: React.CSSProperties;
   classNames?: {
