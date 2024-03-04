@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import KeyCode from 'rc-util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
+import pickAttrs from 'rc-util/lib/pickAttrs';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
@@ -60,6 +61,19 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, mergedHovering, times]);
 
+  // ======================== Closable ========================
+  const closableObj = React.useMemo(() => {
+    if (typeof closable === 'object' && closable !== null) {
+      return closable;
+    }
+    if (closable) {
+      return { closeIcon };
+    }
+    return {};
+  }, [closable, closeIcon]);
+
+  const ariaProps = pickAttrs(closableObj, true);
+
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
 
@@ -90,13 +104,15 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
           tabIndex={0}
           className={`${noticePrefixCls}-close`}
           onKeyDown={onCloseKeyDown}
+          aria-label="Close"
+          {...ariaProps}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             onInternalClose();
           }}
         >
-          {closeIcon}
+          {closableObj.closeIcon}
         </a>
       )}
     </div>
