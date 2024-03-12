@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import KeyCode from 'rc-util/lib/KeyCode';
 import * as React from 'react';
+import usePageActiveStatus from './hooks/usePageActiveStatus';
 import type { NoticeConfig } from './interface';
 import pickAttrs from 'rc-util/lib/pickAttrs';
 
@@ -21,6 +22,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     style,
     className,
     duration = 4.5,
+    pauseOnFocusLoss,
 
     eventKey,
     content,
@@ -35,6 +37,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   } = props;
   const [hovering, setHovering] = React.useState(false);
   const mergedHovering = forcedHovering || hovering;
+  const activeStauts = usePageActiveStatus();
+  const mergedStauts = pauseOnFocusLoss ? activeStauts : true;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -49,7 +53,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   // ======================== Effect ========================
   React.useEffect(() => {
-    if (!mergedHovering && duration > 0) {
+    if (mergedStauts && !mergedHovering && duration > 0) {
       const timeout = setTimeout(() => {
         onInternalClose();
       }, duration * 1000);
@@ -59,7 +63,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, mergedHovering, times]);
+  }, [duration, mergedHovering, times, mergedStauts]);
 
   // ======================== Closable ========================
   const closableObj = React.useMemo(() => {

@@ -93,6 +93,18 @@ const App = () => {
         </button>
       </div>
 
+      {/* pauseOnFocusLoss */}
+      <button
+        onClick={() => {
+          notice.open({
+            pauseOnFocusLoss: true,
+            content: `${new Date().toISOString()}`,
+          });
+        }}
+      >
+        pauseOnFocusLoss
+      </button>
+
       {contextHolder}
     </>
   );
