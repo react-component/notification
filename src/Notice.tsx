@@ -3,6 +3,7 @@ import KeyCode from 'rc-util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
 import pickAttrs from 'rc-util/lib/pickAttrs';
+import { Line } from 'rc-progress';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
@@ -21,6 +22,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     style,
     className,
     duration = 4.5,
+    showProgress,
 
     eventKey,
     content,
@@ -34,7 +36,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     hovering: forcedHovering,
   } = props;
   const [hovering, setHovering] = React.useState(false);
+  const [percent, setPercent] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
+  const mergedShowProgress = duration > 0 && showProgress;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -60,6 +64,32 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, mergedHovering, times]);
+
+  React.useEffect(() => {
+    if (!mergedHovering && mergedShowProgress) {
+      const start = performance.now();
+      let animationFrame: number;
+
+      const calculate = () => {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = requestAnimationFrame((timestamp) => {
+          const runtime = timestamp - start;
+          const progress = Math.min(runtime / (duration * 1000), 1);
+          setPercent(progress * 100);
+          if (progress < 1) {
+            calculate();
+          }
+        });
+      };
+
+      calculate();
+
+      return () => {
+        setPercent(0);
+        cancelAnimationFrame(animationFrame);
+      };
+    }
+  }, [duration, mergedHovering, mergedShowProgress, times]);
 
   // ======================== Closable ========================
   const closableObj = React.useMemo(() => {
@@ -95,6 +125,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       }}
       onClick={onClick}
     >
+      {/* Progress Bar */}
+      {mergedShowProgress && <Line className={`${noticePrefixCls}-progress`} percent={percent} />}
+
       {/* Content */}
       <div className={`${noticePrefixCls}-content`}>{content}</div>
 
