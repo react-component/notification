@@ -39,17 +39,17 @@ const App = () => {
             Not Auto Close
           </button>
 
-          {/* Show Progress */}
+          {/* Show With Progress */}
           <button
             onClick={() => {
               notice.open({
                 ...getConfig(),
-                duration: 30,
+                duration: 4.5,
                 showProgress: true,
               });
             }}
           >
-            Show Progress
+            Show With Progress
           </button>
         </div>
 

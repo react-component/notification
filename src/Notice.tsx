@@ -125,9 +125,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       }}
       onClick={onClick}
     >
-      {/* Progress Bar */}
-      {mergedShowProgress && <Line className={`${noticePrefixCls}-progress`} percent={percent} />}
-
       {/* Content */}
       <div className={`${noticePrefixCls}-content`}>{content}</div>
 
@@ -148,6 +145,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
           {closableObj.closeIcon}
         </a>
       )}
+
+      {/* Progress Bar */}
+      {mergedShowProgress && <Line className={`${noticePrefixCls}-progress`} percent={percent} />}
     </div>
   );
 });

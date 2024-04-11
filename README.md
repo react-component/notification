@@ -134,7 +134,7 @@ props details:
           <td>showProgress</td>
           <td>boolean</td>
           <td></td>
-          <td>show progress bar for auto-closing notification</td>
+          <td>show with progress bar for auto-closing notification</td>
         </tr>
         <tr>
           <td>style</td>

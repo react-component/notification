@@ -714,7 +714,7 @@ describe('Notification.Basic', () => {
     ).toEqual('close');
   });
 
-  it('show progress', () => {
+  it('show with progress', () => {
     const { instance } = renderDemo({
       duration: 1,
       showProgress: true,
