@@ -3,7 +3,6 @@ import KeyCode from 'rc-util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
 import pickAttrs from 'rc-util/lib/pickAttrs';
-import { Line } from 'rc-progress';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
@@ -104,6 +103,11 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   const ariaProps = pickAttrs(closableObj, true);
 
+  // ======================== Progress ========================
+  const percentStyle = {
+    width: `${!percent || percent < 0 ? 0 : percent > 100 ? 100 : percent}%`,
+  };
+
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
 
@@ -147,7 +151,11 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       )}
 
       {/* Progress Bar */}
-      {mergedShowProgress && <Line className={`${noticePrefixCls}-progress`} percent={percent} />}
+      {mergedShowProgress && (
+        <div className={`${noticePrefixCls}-progress`}>
+          <div className={`${noticePrefixCls}-progress-bar`} style={percentStyle}></div>
+        </div>
+      )}
     </div>
   );
 });
