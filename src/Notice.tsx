@@ -150,11 +150,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
       {/* Progress Bar */}
       {mergedShowProgress && (
-        <div className={`${noticePrefixCls}-progress-wrapper`}>
-          <progress className={`${noticePrefixCls}-progress`} max="100" value={validPercent}>
-            {validPercent + '%'}
-          </progress>
-        </div>
+        <progress className={`${noticePrefixCls}-progress`} max="100" value={validPercent}>
+          {validPercent + '%'}
+        </progress>
       )}
     </div>
   );
