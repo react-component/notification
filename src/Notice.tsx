@@ -104,9 +104,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const ariaProps = pickAttrs(closableObj, true);
 
   // ======================== Progress ========================
-  const percentStyle = {
-    width: `${!percent || percent < 0 ? 0 : percent > 100 ? 100 : percent}%`,
-  };
+  const validPercent = !percent || percent < 0 ? 0 : percent > 100 ? 100 : percent;
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
@@ -152,8 +150,10 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
       {/* Progress Bar */}
       {mergedShowProgress && (
-        <div className={`${noticePrefixCls}-progress`}>
-          <div className={`${noticePrefixCls}-progress-bar`} style={percentStyle}></div>
+        <div className={`${noticePrefixCls}-progress-wrapper`}>
+          <progress className={`${noticePrefixCls}-progress`} max="100" value={validPercent}>
+            {validPercent + '%'}
+          </progress>
         </div>
       )}
     </div>

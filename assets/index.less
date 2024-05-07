@@ -93,13 +93,30 @@
 
     // Progress
     &-progress {
-      position: absolute;
-      left: 3px;
-      right: 3px;
-      background-color: rgba(0, 0, 0, 0.04);
+      -webkit-appearance: none;
+      display: block;
+      inline-size: 100%;
+      block-size: 2px;
+      border: 0;
 
-      &-bar {
-        height: 2px;
+      &-wrapper {
+        position: absolute;
+        left: 3px;
+        right: 3px;
+        border-radius: 1px;
+        overflow: hidden;
+      }
+
+      &,
+      &::-webkit-progress-bar {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+
+      &::-moz-progress-bar {
+        background-color: #31afff;
+      }
+
+      &::-webkit-progress-value {
         background-color: #31afff;
       }
     }
