@@ -4,14 +4,6 @@ import '../../assets/index.less';
 import { useNotification } from '../../src';
 import motion from './motion';
 
-const getConfig = () => ({
-  content: `${Array(Math.round(Math.random() * 5) + 1)
-    .fill(1)
-    .map(() => new Date().toISOString())
-    .join('\n')}`,
-  duration: null,
-});
-
 const App = () => {
   const [notice, contextHolder] = useNotification({ motion, closable: true });
 
@@ -33,23 +25,31 @@ const App = () => {
           {/* Not Close */}
           <button
             onClick={() => {
-              notice.open(getConfig());
+              notice.open({
+                content: `${Array(Math.round(Math.random() * 5) + 1)
+                  .fill(1)
+                  .map(() => new Date().toISOString())
+                  .join('\n')}`,
+                duration: null,
+              });
             }}
           >
             Not Auto Close
           </button>
 
-          {/* Show With Progress */}
+          {/* Not Close */}
           <button
             onClick={() => {
               notice.open({
-                ...getConfig(),
-                duration: 4.5,
-                showProgress: true,
+                content: `${Array(5)
+                  .fill(1)
+                  .map(() => new Date().toISOString())
+                  .join('\n')}`,
+                duration: null,
               });
             }}
           >
-            Show With Progress
+            Not Auto Close
           </button>
         </div>
 
