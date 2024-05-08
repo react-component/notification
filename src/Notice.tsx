@@ -84,7 +84,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       calculate();
 
       return () => {
-        setPercent(0);
         cancelAnimationFrame(animationFrame);
       };
     }
@@ -104,7 +103,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const ariaProps = pickAttrs(closableObj, true);
 
   // ======================== Progress ========================
-  const validPercent = !percent || percent < 0 ? 0 : percent > 100 ? 100 : percent;
+  const validPercent = 100 - (!percent || percent < 0 ? 0 : percent > 100 ? 100 : percent);
 
   // ======================== Render ========================
   const noticePrefixCls = `${prefixCls}-notice`;
