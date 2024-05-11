@@ -36,6 +36,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   } = props;
   const [hovering, setHovering] = React.useState(false);
   const [percent, setPercent] = React.useState(0);
+  const [spentTime, setSpentTime] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
   const mergedShowProgress = duration > 0 && showProgress;
 
@@ -53,12 +54,14 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   // ======================== Effect ========================
   React.useEffect(() => {
     if (!mergedHovering && duration > 0) {
+      const start = performance.now() - spentTime;
       const timeout = setTimeout(() => {
         onInternalClose();
       }, duration * 1000);
 
       return () => {
         clearTimeout(timeout);
+        setSpentTime(performance.now() - start);
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +75,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       const calculate = () => {
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame((timestamp) => {
-          const runtime = timestamp - start;
+          const runtime = timestamp + spentTime - start;
           const progress = Math.min(runtime / (duration * 1000), 1);
           setPercent(progress * 100);
           if (progress < 1) {
@@ -87,6 +90,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         cancelAnimationFrame(animationFrame);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, mergedHovering, mergedShowProgress, times]);
 
   // ======================== Closable ========================
