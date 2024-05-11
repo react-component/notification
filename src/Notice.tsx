@@ -72,7 +72,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   React.useEffect(() => {
     if (!mergedHovering && mergedShowProgress) {
-      const start = Date.now();
+      const start = performance.now();
       let animationFrame: number;
 
       const calculate = () => {
