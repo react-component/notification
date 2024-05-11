@@ -270,6 +270,45 @@ describe('Notification.Basic', () => {
     expect(document.querySelectorAll('.freeze')).toHaveLength(0);
   });
 
+  it('continue timing after hover', () => {
+    const { instance } = renderDemo({
+      duration: 1,
+    });
+
+    act(() => {
+      instance.open({
+        content: <p className="test">1</p>,
+      });
+    });
+
+    expect(document.querySelector('.test')).toBeTruthy();
+
+    // Wait for 500ms
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(document.querySelector('.test')).toBeTruthy();
+
+    // Mouse in should not remove
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(document.querySelector('.test')).toBeTruthy();
+
+    // Mouse out should not remove until 500ms later
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
+    act(() => {
+      vi.advanceTimersByTime(450);
+    });
+    expect(document.querySelector('.test')).toBeTruthy();
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(document.querySelector('.test')).toBeFalsy();
+  });
+
   describe('maxCount', () => {
     it('remove work when maxCount set', () => {
       const { instance } = renderDemo({
@@ -688,6 +727,7 @@ describe('Notification.Basic', () => {
     fireEvent.keyDown(document.querySelector('.rc-notification-notice-close'), { key: 'Enter' }); // origin latest
     expect(closeCount).toEqual(1);
   });
+
   it('Support aria-* in closable', () => {
     const { instance } = renderDemo({
       closable: {
@@ -711,5 +751,34 @@ describe('Notification.Basic', () => {
     expect(
       document.querySelector('.rc-notification-notice-close').getAttribute('aria-labelledby'),
     ).toEqual('close');
+  });
+
+  describe('showProgress', () => {
+    it('show with progress', () => {
+      const { instance } = renderDemo({
+        duration: 1,
+        showProgress: true,
+      });
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+        });
+      });
+
+      expect(document.querySelector('.rc-notification-notice-progress')).toBeTruthy();
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      expect(document.querySelector('.rc-notification-notice-progress')).toBeTruthy();
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      expect(document.querySelector('.rc-notification-notice-progress')).toBeFalsy();
+    });
   });
 });
