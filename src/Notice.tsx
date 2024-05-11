@@ -54,14 +54,17 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   // ======================== Effect ========================
   React.useEffect(() => {
     if (!mergedHovering && duration > 0) {
-      const start = performance.now() - spentTime;
-      const timeout = setTimeout(() => {
-        onInternalClose();
-      }, duration * 1000);
+      const start = Date.now() - spentTime;
+      const timeout = setTimeout(
+        () => {
+          onInternalClose();
+        },
+        duration * 1000 - spentTime,
+      );
 
       return () => {
         clearTimeout(timeout);
-        setSpentTime(performance.now() - start);
+        setSpentTime(Date.now() - start);
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +72,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   React.useEffect(() => {
     if (!mergedHovering && mergedShowProgress) {
-      const start = performance.now();
+      const start = Date.now();
       let animationFrame: number;
 
       const calculate = () => {
