@@ -309,6 +309,74 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.test')).toBeFalsy();
   });
 
+  describe('pauseOnHover is false', () => {
+    it('does not freeze when pauseOnHover is false', () => {
+      const { instance } = renderDemo();
+
+      act(() => {
+        instance.open({
+          content: (
+            <p id="not-freeze" className="not-freeze">
+              not freeze
+            </p>
+          ),
+          duration: 0.3,
+          pauseOnHover: false,
+        });
+      });
+
+      expect(document.querySelectorAll('.not-freeze')).toHaveLength(1);
+
+      // Mouse in should remove
+      fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(document.querySelectorAll('.not-freeze')).toHaveLength(0);
+    });
+
+    it('continue timing after hover', () => {
+      const { instance } = renderDemo({
+        duration: 1,
+        pauseOnHover: false,
+      });
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+        });
+      });
+
+      expect(document.querySelector('.test')).toBeTruthy();
+
+      // Wait for 500ms
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('.test')).toBeTruthy();
+
+      // Mouse in should not remove
+      fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+      act(() => {
+        vi.advanceTimersByTime(200);
+      });
+      expect(document.querySelector('.test')).toBeTruthy();
+
+      // Mouse out should not remove until 500ms later
+      fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
+      act(() => {
+        vi.advanceTimersByTime(200);
+      });
+      expect(document.querySelector('.test')).toBeTruthy();
+
+      //
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(document.querySelector('.test')).toBeFalsy();
+    });
+  });
+
   describe('maxCount', () => {
     it('remove work when maxCount set', () => {
       const { instance } = renderDemo({

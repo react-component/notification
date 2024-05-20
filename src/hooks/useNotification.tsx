@@ -18,6 +18,7 @@ export interface NotificationConfig {
   maxCount?: number;
   duration?: number;
   showProgress?: boolean;
+  pauseOnHover?: boolean;
   /** @private. Config for notification holder style. Safe to remove if refactor */
   className?: (placement: Placement) => string;
   /** @private. Config for notification holder style. Safe to remove if refactor */

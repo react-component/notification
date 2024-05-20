@@ -18,6 +18,16 @@ export default () => {
       >
         Show With Progress
       </button>
+      <button
+        onClick={() => {
+          notice.open({
+            content: `${new Date().toISOString()}`,
+            pauseOnHover: false,
+          });
+        }}
+      >
+        Not Pause On Hover
+      </button>
       {contextHolder}
     </>
   );
