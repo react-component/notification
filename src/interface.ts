@@ -7,6 +7,8 @@ type NoticeSemanticProps = 'wrapper';
 export interface NoticeConfig {
   content?: React.ReactNode;
   duration?: number | null;
+  showProgress?: boolean;
+  pauseOnHover?: boolean;
   closeIcon?: React.ReactNode;
   closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
   className?: string;

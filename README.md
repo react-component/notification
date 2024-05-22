@@ -131,6 +131,18 @@ props details:
           <td>after duration of time, this notice will disappear.(seconds)</td>
         </tr>
         <tr>
+          <td>showProgress</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>show with progress bar for auto-closing notification</td>
+        </tr>
+        <tr>
+          <td>pauseOnHover</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>keep the timer running or not on hover</td>
+        </tr>
+        <tr>
           <td>style</td>
           <td>Object</td>
           <td> { right: '50%' } </td>
