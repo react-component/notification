@@ -22,6 +22,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     className,
     duration = 4.5,
     showProgress,
+    pauseOnHover = true,
 
     eventKey,
     content,
@@ -63,7 +64,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       );
 
       return () => {
-        clearTimeout(timeout);
+        if (pauseOnHover) {
+          clearTimeout(timeout);
+        }
         setSpentTime(Date.now() - start);
       };
     }
@@ -71,7 +74,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   }, [duration, mergedHovering, times]);
 
   React.useEffect(() => {
-    if (!mergedHovering && mergedShowProgress) {
+    if (!mergedHovering && mergedShowProgress && (pauseOnHover || spentTime === 0)) {
       const start = performance.now();
       let animationFrame: number;
 
@@ -90,11 +93,13 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       calculate();
 
       return () => {
-        cancelAnimationFrame(animationFrame);
+        if (pauseOnHover) {
+          cancelAnimationFrame(animationFrame);
+        }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, mergedHovering, mergedShowProgress, times]);
+  }, [duration, spentTime, mergedHovering, mergedShowProgress, times]);
 
   // ======================== Closable ========================
   const closableObj = React.useMemo(() => {
