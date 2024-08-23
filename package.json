@@ -41,7 +41,8 @@
     "compile": "father build && lessc assets/index.less assets/index.css",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
-    "test": "vitest",
+    "test": "vitest --watch=false",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "now-build": "npm run build",
     "prepare": "husky install"
