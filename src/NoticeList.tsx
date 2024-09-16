@@ -46,7 +46,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   const { classNames: ctxCls } = useContext(NotificationContext);
 
   const dictRef = useRef<Record<string, HTMLDivElement>>({});
-  const [latestNotice, setLatestNotice] = useState<HTMLDivElement>(null);
+  const latestNoticeRef = useRef<HTMLDivElement>(null);
   const [hoverKeys, setHoverKeys] = useState<string[]>([]);
 
   const keys = configList.map((config) => ({
@@ -72,7 +72,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   // Force update latest notice
   useEffect(() => {
     if (stack && dictRef.current[keys[keys.length - 1]?.key]) {
-      setLatestNotice(dictRef.current[keys[keys.length - 1]?.key]);
+      latestNoticeRef.current = dictRef.current[keys[keys.length - 1]?.key];
     }
   }, [keys, stack]);
 
@@ -115,7 +115,7 @@ const NoticeList: FC<NoticeListProps> = (props) => {
           if (index > 0) {
             stackStyle.height = expanded
               ? dictRef.current[strKey]?.offsetHeight
-              : latestNotice?.offsetHeight;
+              : latestNoticeRef.current?.offsetHeight;
 
             // Transform
             let verticalOffset = 0;
@@ -126,8 +126,8 @@ const NoticeList: FC<NoticeListProps> = (props) => {
             const transformY =
               (expanded ? verticalOffset : index * offset) * (placement.startsWith('top') ? 1 : -1);
             const scaleX =
-              !expanded && latestNotice?.offsetWidth && dictRef.current[strKey]?.offsetWidth
-                ? (latestNotice?.offsetWidth - offset * 2 * (index < 3 ? index : 3)) /
+              !expanded && latestNoticeRef.current?.offsetWidth && dictRef.current[strKey]?.offsetWidth
+                ? (latestNoticeRef.current?.offsetWidth - offset * 2 * (index < 3 ? index : 3)) /
                   dictRef.current[strKey]?.offsetWidth
                 : 1;
             stackStyle.transform = `translate3d(${transformX}, ${transformY}px, 0) scaleX(${scaleX})`;
