@@ -8,6 +8,7 @@ export interface NoticeConfig {
   content?: React.ReactNode;
   duration?: number | null;
   showProgress?: boolean;
+  progressBarColor?: string;
   pauseOnHover?: boolean;
   closeIcon?: React.ReactNode;
   closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);

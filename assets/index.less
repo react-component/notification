@@ -104,6 +104,7 @@
       inline-size: 100%;
       block-size: 2px;
       border: 0;
+      --progress-color: #31afff;
 
       &,
       &::-webkit-progress-bar {
@@ -111,11 +112,11 @@
       }
 
       &::-moz-progress-bar {
-        background-color: #31afff;
+        background: var(--progress-color);
       }
 
       &::-webkit-progress-value {
-        background-color: #31afff;
+        background: var(--progress-color);
       }
     }
   }
