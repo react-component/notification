@@ -849,4 +849,44 @@ describe('Notification.Basic', () => {
       expect(document.querySelector('.rc-notification-notice-progress')).toBeFalsy();
     });
   });
+
+  describe('custom progress bar color', () => {
+    it('should display progress bar with custom color', () => {
+      const { instance } = renderDemo({
+        duration: 1,
+        showProgress: true,
+        progressBarColor: 'red',
+      });
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+        });
+      });
+
+      expect(document.querySelector('.rc-notification-notice-progress')).toHaveStyle({
+        '--progress-color': 'red',
+      });
+    });
+
+    it('should display progress bar with line-gradient color', () => {
+      const { instance } = renderDemo({
+        duration: 1,
+        showProgress: true,
+        progressBarColor:
+          'linear-gradient(90deg, #ff0000 0%, #ff0000 50%, #00ff00 50%, #00ff00 100%)',
+      });
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+        });
+      });
+
+      expect(document.querySelector('.rc-notification-notice-progress')).toHaveStyle({
+        '--progress-color':
+          'linear-gradient(90deg, #ff0000 0%, #ff0000 50%, #00ff00 50%, #00ff00 100%)',
+      });
+    });
+  });
 });

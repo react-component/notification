@@ -23,6 +23,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     duration = 4.5,
     showProgress,
     pauseOnHover = true,
+    progressBarColor,
 
     eventKey,
     content,
@@ -40,6 +41,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const [spentTime, setSpentTime] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
   const mergedShowProgress = duration > 0 && showProgress;
+  const mergedProgressBarColor = mergedShowProgress && progressBarColor;
+  const progressRef = React.useRef<HTMLProgressElement>(null);
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -101,6 +104,12 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, spentTime, mergedHovering, mergedShowProgress, times]);
 
+  React.useEffect(() => {
+    if (mergedProgressBarColor) {
+      progressRef.current!.style.setProperty('--progress-color', mergedProgressBarColor);
+    }
+  }, [mergedProgressBarColor]);
+
   // ======================== Closable ========================
   const closableObj = React.useMemo(() => {
     if (typeof closable === 'object' && closable !== null) {
@@ -161,7 +170,12 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
       {/* Progress Bar */}
       {mergedShowProgress && (
-        <progress className={`${noticePrefixCls}-progress`} max="100" value={validPercent}>
+        <progress
+          ref={progressRef}
+          className={`${noticePrefixCls}-progress`}
+          max="100"
+          value={validPercent}
+        >
           {validPercent + '%'}
         </progress>
       )}
