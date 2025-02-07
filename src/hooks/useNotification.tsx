@@ -155,12 +155,26 @@ export default function useNotification(
         }
       });
 
+      // https://github.com/ant-design/ant-design/issues/52590
+      // React `startTransition` will run once `useEffect` but many times `setState`,
+      // So `setTaskQueue` with filtered array will cause infinite loop.
+      // We cache the first match queue instead.
+      let oriTaskQueue: Task[];
+      let tgtTaskQueue: Task[];
+
       // React 17 will mix order of effect & setState in async
       // - open: setState[0]
       // - effect[0]
       // - open: setState[1]
       // - effect setState([]) * here will clean up [0, 1] in React 17
-      setTaskQueue((oriQueue) => oriQueue.filter((task) => !taskQueue.includes(task)));
+      setTaskQueue((oriQueue) => {
+        if (oriTaskQueue !== oriQueue || !tgtTaskQueue) {
+          oriTaskQueue = oriQueue;
+          tgtTaskQueue = oriQueue.filter((task) => !taskQueue.includes(task));
+        }
+
+        return tgtTaskQueue;
+      });
     }
   }, [taskQueue]);
 
