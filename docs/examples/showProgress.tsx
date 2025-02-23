@@ -28,6 +28,16 @@ export default () => {
       >
         Not Pause On Hover
       </button>
+      <button
+        onClick={() => {
+          notice.open({
+            content: `${new Date().toISOString()}`,
+            progressBarColor: 'yellow',
+          });
+        }}
+      >
+        Show Progress Bar with custom color
+      </button>
       {contextHolder}
     </>
   );
