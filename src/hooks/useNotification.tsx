@@ -107,11 +107,19 @@ export default function useNotification(
 
   const [taskQueue, setTaskQueue] = React.useState<Task[]>([]);
 
+  // memorized shareConfig
+  const { closeIcon, closable, duration, showProgress, pauseOnHover } = shareConfig;
+  const memoShareConfig = React.useMemo<typeof shareConfig>(() => {
+    return {
+      ...shareConfig,
+    };
+  }, [closeIcon, closable, duration, showProgress, pauseOnHover]);
+
   // ========================= Refs =========================
   const api = React.useMemo<NotificationAPI>(() => {
     return {
       open: (config) => {
-        const mergedConfig = mergeConfig(shareConfig, config);
+        const mergedConfig = mergeConfig(memoShareConfig, config);
         if (mergedConfig.key === null || mergedConfig.key === undefined) {
           mergedConfig.key = `rc-notification-${uniqueKey}`;
           uniqueKey += 1;
@@ -126,7 +134,7 @@ export default function useNotification(
         setTaskQueue((queue) => [...queue, { type: 'destroy' }]);
       },
     };
-  }, []);
+  }, [memoShareConfig]);
 
   // ======================= Container ======================
   // React 18 should all in effect that we will check container in each render
