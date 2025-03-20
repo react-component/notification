@@ -52,14 +52,14 @@ describe('Notification.Basic', () => {
   });
 
   it('works with custom close icon', () => {
-    const { instance } = renderDemo({
-      closeIcon: <span className="test-icon">test-close-icon</span>,
-    });
+    const { instance } = renderDemo();
 
     act(() => {
       instance.open({
         content: <p className="test">1</p>,
-        closable: true,
+        closable: {
+          closeIcon: <span className="test-icon">test-close-icon</span>,
+        },
         duration: 0,
       });
     });
@@ -894,10 +894,10 @@ describe('Notification.Basic', () => {
   });
   it('notification close node ', () => {
     const Demo = () => {
-      const [duration, setDuration] = React.useState(null);
+      const [duration] = React.useState(null);
       const [api, holder] = useNotification({ duration });
       return (
-        <div>
+        <>
           <button
             data-testid="show-notification"
             onClick={() => {
@@ -910,7 +910,7 @@ describe('Notification.Basic', () => {
             show notification
           </button>
           {holder}
-        </div>
+        </>
       );
     };
     const { getByTestId } = render(<Demo />);

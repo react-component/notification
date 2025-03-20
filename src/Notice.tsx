@@ -27,7 +27,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     eventKey,
     content,
     closable,
-    closeIcon = 'x',
     props: divProps,
 
     onClick,
@@ -106,11 +105,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     if (typeof closable === 'object' && closable !== null) {
       return closable;
     }
-    if (closable) {
-      return { closeIcon };
-    }
     return {};
-  }, [closable, closeIcon]);
+  }, [closable]);
 
   const ariaProps = pickAttrs(closableObj, true);
 
@@ -154,7 +150,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
             onInternalClose();
           }}
         >
-          {closableObj.closeIcon}
+          {closableObj?.closeIcon || 'x'}
         </button>
       )}
 
