@@ -79,6 +79,8 @@
       cursor: pointer;
       opacity: 0.2;
       filter: alpha(opacity=20);
+      border: 0;
+      background-color: #fff;
 
       &-x:after {
         content: '×';
@@ -238,7 +240,7 @@
           }
 
           &::after {
-            content: "";
+            content: '';
             position: absolute;
             left: 0;
             right: 0;
@@ -247,7 +249,7 @@
             height: calc(100% + 32px);
             background: transparent;
             pointer-events: auto;
-            color: rgb(0,0,0);
+            color: rgb(0, 0, 0);
           }
         }
       }
