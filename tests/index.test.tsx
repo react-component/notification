@@ -894,7 +894,7 @@ describe('Notification.Basic', () => {
   });
   it('notification close node ', () => {
     const Demo = () => {
-      const [duration] = React.useState(null);
+      const [duration] = React.useState(0);
       const [api, holder] = useNotification({ duration });
       return (
         <>
