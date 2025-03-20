@@ -892,4 +892,32 @@ describe('Notification.Basic', () => {
       expect(document.querySelectorAll('.rc-notification-notice').length).toBe(1);
     });
   });
+  it('notification close node ', () => {
+    const Demo = () => {
+      const [duration, setDuration] = React.useState(null);
+      const [api, holder] = useNotification({ duration });
+      return (
+        <div>
+          <button
+            data-testid="show-notification"
+            onClick={() => {
+              api.open({
+                content: `Test Notification`,
+                closable: { 'aria-label': 'xxx' },
+              });
+            }}
+          >
+            show notification
+          </button>
+          {holder}
+        </div>
+      );
+    };
+    const { getByTestId } = render(<Demo />);
+    fireEvent.click(getByTestId('show-notification'));
+    expect(document.querySelector('button.rc-notification-notice-close')).toHaveAttribute(
+      'aria-label',
+      'xxx',
+    );
+  });
 });
