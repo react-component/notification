@@ -144,7 +144,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       {/* Close Icon */}
       {closable && (
         <button
-          tabIndex={0}
           className={`${noticePrefixCls}-close`}
           onKeyDown={onCloseKeyDown}
           aria-label="Close"
