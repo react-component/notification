@@ -150,7 +150,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
             onInternalClose();
           }}
         >
-          {closableObj?.closeIcon || 'x'}
+          {closableObj.closeIcon ?? 'x'}
         </button>
       )}
 
