@@ -52,14 +52,14 @@ describe('Notification.Basic', () => {
   });
 
   it('works with custom close icon', () => {
-    const { instance } = renderDemo({
-      closeIcon: <span className="test-icon">test-close-icon</span>,
-    });
+    const { instance } = renderDemo();
 
     act(() => {
       instance.open({
         content: <p className="test">1</p>,
-        closable: true,
+        closable: {
+          closeIcon: <span className="test-icon">test-close-icon</span>,
+        },
         duration: 0,
       });
     });
@@ -891,5 +891,33 @@ describe('Notification.Basic', () => {
 
       expect(document.querySelectorAll('.rc-notification-notice').length).toBe(1);
     });
+  });
+  it('notification close node ', () => {
+    const Demo = () => {
+      const [duration] = React.useState(0);
+      const [api, holder] = useNotification({ duration });
+      return (
+        <>
+          <button
+            data-testid="show-notification"
+            onClick={() => {
+              api.open({
+                content: `Test Notification`,
+                closable: { 'aria-label': 'xxx' },
+              });
+            }}
+          >
+            show notification
+          </button>
+          {holder}
+        </>
+      );
+    };
+    const { getByTestId } = render(<Demo />);
+    fireEvent.click(getByTestId('show-notification'));
+    expect(document.querySelector('button.rc-notification-notice-close')).toHaveAttribute(
+      'aria-label',
+      'xxx',
+    );
   });
 });

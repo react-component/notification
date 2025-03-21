@@ -27,7 +27,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     eventKey,
     content,
     closable,
-    closeIcon = 'x',
     props: divProps,
 
     onClick,
@@ -46,7 +45,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onNoticeClose(eventKey);
   };
 
-  const onCloseKeyDown: React.KeyboardEventHandler<HTMLAnchorElement> = (e) => {
+  const onCloseKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (e) => {
     if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === KeyCode.ENTER) {
       onInternalClose();
     }
@@ -106,11 +105,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     if (typeof closable === 'object' && closable !== null) {
       return closable;
     }
-    if (closable) {
-      return { closeIcon };
-    }
     return {};
-  }, [closable, closeIcon]);
+  }, [closable]);
 
   const ariaProps = pickAttrs(closableObj, true);
 
@@ -143,8 +139,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
       {/* Close Icon */}
       {closable && (
-        <a
-          tabIndex={0}
+        <button
           className={`${noticePrefixCls}-close`}
           onKeyDown={onCloseKeyDown}
           aria-label="Close"
@@ -155,8 +150,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
             onInternalClose();
           }}
         >
-          {closableObj.closeIcon}
-        </a>
+          {closableObj.closeIcon ?? 'x'}
+        </button>
       )}
 
       {/* Progress Bar */}

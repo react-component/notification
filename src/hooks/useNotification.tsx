@@ -14,7 +14,7 @@ export interface NotificationConfig {
   /** Customize container. It will repeat call which means you should return same container element. */
   getContainer?: () => HTMLElement | ShadowRoot;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  closeIcon?: React.ReactNode;
+
   closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
   maxCount?: number;
   duration?: number;
