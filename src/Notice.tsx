@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import KeyCode from 'rc-util/lib/KeyCode';
+import KeyCode from '@rc-component/util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
-import pickAttrs from 'rc-util/lib/pickAttrs';
+import pickAttrs from '@rc-component/util/lib/pickAttrs';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;

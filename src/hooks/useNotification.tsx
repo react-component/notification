@@ -1,9 +1,9 @@
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 import * as React from 'react';
 import type { NotificationsProps, NotificationsRef } from '../Notifications';
 import Notifications from '../Notifications';
 import type { OpenConfig, Placement, StackConfig } from '../interface';
-import { useEvent } from 'rc-util';
+import { useEvent } from '@rc-component/util';
 
 const defaultGetContainer = () => document.body;
 

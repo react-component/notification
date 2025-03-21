@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 import type { InnerOpenConfig, OpenConfig, Placement, Placements, StackConfig } from './interface';
 import NoticeList from './NoticeList';
 
