@@ -1,6 +1,6 @@
 {
   "name": "@rc-component/notification",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "notification ui component for react",
   "engines": {
     "node": ">=8.x"
