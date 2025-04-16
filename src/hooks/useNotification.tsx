@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { NotificationsProps, NotificationsRef } from '../Notifications';
 import Notifications from '../Notifications';
 import type { OpenConfig, Placement, StackConfig } from '../interface';
+import { useEvent } from 'rc-util';
 
 const defaultGetContainer = () => document.body;
 
@@ -107,26 +108,29 @@ export default function useNotification(
 
   const [taskQueue, setTaskQueue] = React.useState<Task[]>([]);
 
-  // ========================= Refs =========================
-  const api = React.useMemo<NotificationAPI>(() => {
-    return {
-      open: (config) => {
-        const mergedConfig = mergeConfig(shareConfig, config);
-        if (mergedConfig.key === null || mergedConfig.key === undefined) {
-          mergedConfig.key = `rc-notification-${uniqueKey}`;
-          uniqueKey += 1;
-        }
+  const open = useEvent<NotificationAPI['open']>((config) => {
+    const mergedConfig = mergeConfig(shareConfig, config);
+    if (mergedConfig.key === null || mergedConfig.key === undefined) {
+      mergedConfig.key = `rc-notification-${uniqueKey}`;
+      uniqueKey += 1;
+    }
 
-        setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
-      },
+    setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
+  });
+
+  // ========================= Refs =========================
+  const api = React.useMemo<NotificationAPI>(
+    () => ({
+      open: open,
       close: (key) => {
         setTaskQueue((queue) => [...queue, { type: 'close', key }]);
       },
       destroy: () => {
         setTaskQueue((queue) => [...queue, { type: 'destroy' }]);
       },
-    };
-  }, []);
+    }),
+    [],
+  );
 
   // ======================= Container ======================
   // React 18 should all in effect that we will check container in each render
