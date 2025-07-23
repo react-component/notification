@@ -15,7 +15,9 @@ export interface NotificationConfig {
   getContainer?: () => HTMLElement | ShadowRoot;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
 
-  closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
+  closable?:
+    | boolean
+    | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
   maxCount?: number;
   duration?: number;
   showProgress?: boolean;
