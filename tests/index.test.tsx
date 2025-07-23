@@ -778,7 +778,7 @@ describe('Notification.Basic', () => {
     unmount();
   });
 
-  describe.only('onClose and closable.onClose', () => {
+  describe('onClose and closable.onClose', () => {
     it('onClose', () => {
       const onClose = vi.fn();
       const Demo = () => {
