@@ -117,7 +117,7 @@ props details:
         </tr>
         <tr>
           <td>closable</td>
-          <td>Boolean</td>
+          <td>Boolean | { closeIcon: ReactNode, closeIcon: VoidFunction }</td>
           <td></td>
           <td>whether show close button</td>
         </tr>
