@@ -46,7 +46,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     // Trigger close event
     const config = configList.find((item) => item.key === key);
     const onClose =
-      typeof config?.closable === 'object' && config?.closable !== null
+      config?.closable && typeof config?.closable === 'object'
         ? config.closable?.onClose
         : config?.onClose;
     onClose?.();
