@@ -10,7 +10,9 @@ export interface NoticeConfig {
   showProgress?: boolean;
   pauseOnHover?: boolean;
 
-  closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
+  closable?:
+    | boolean
+    | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
   className?: string;
   style?: React.CSSProperties;
   classNames?: {

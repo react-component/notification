@@ -778,6 +778,104 @@ describe('Notification.Basic', () => {
     unmount();
   });
 
+  describe('onClose and closable.onClose', () => {
+    it('onClose', () => {
+      const onClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification();
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                  closable: { onClose },
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+    it('Both closableOnllose and onClose are called', () => {
+      const onClose = vi.fn();
+      const closableOnClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification();
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                  onClose,
+                  closable: { onClose: closableOnClose },
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(closableOnClose).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+    it('closable.onClose (config)', () => {
+      const onClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification({ closable: { onClose } });
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+  });
+
   it('closes via keyboard Enter key', () => {
     const { instance } = renderDemo();
     let closeCount = 0;
