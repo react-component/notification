@@ -810,7 +810,7 @@ describe('Notification.Basic', () => {
 
       unmount();
     });
-    it('onClose and closable.onClose', () => {
+    it('Both closableOnllose and onClose are called', () => {
       const onClose = vi.fn();
       const closableOnClose = vi.fn();
       const Demo = () => {
@@ -840,7 +840,7 @@ describe('Notification.Basic', () => {
         vi.runAllTimers();
       });
       expect(closableOnClose).toHaveBeenCalled();
-      expect(onClose).not.toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
 
       unmount();
     });

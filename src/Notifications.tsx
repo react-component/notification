@@ -45,12 +45,11 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   const onNoticeClose = (key: React.Key) => {
     // Trigger close event
     const config = configList.find((item) => item.key === key);
-    const onClose =
-      config?.closable && typeof config?.closable === 'object'
-        ? config.closable?.onClose
-        : config?.onClose;
-    onClose?.();
-
+    const closable = config?.closable;
+    const closableObj = closable && typeof closable === 'object' ? closable : {};
+    const { onClose: closableOnClose } = closableObj;
+    closableOnClose?.();
+    config?.onClose?.();
     setConfigList((list) => list.filter((item) => item.key !== key));
   };
 
