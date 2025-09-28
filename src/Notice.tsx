@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import KeyCode from '@rc-component/util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
@@ -120,9 +120,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     <div
       {...divProps}
       ref={ref}
-      className={classNames(noticePrefixCls, className, {
-        [`${noticePrefixCls}-closable`]: closable,
-      })}
+      className={clsx(noticePrefixCls, className, { [`${noticePrefixCls}-closable`]: closable })}
       style={style}
       onMouseEnter={(e) => {
         setHovering(true);

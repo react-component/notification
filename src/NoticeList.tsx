@@ -1,6 +1,6 @@
 import type { CSSProperties, FC } from 'react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import clsx from 'classnames';
+import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
 import { CSSMotionList } from '@rc-component/motion';
 import type {
