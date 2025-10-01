@@ -141,7 +141,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       {closable && (
         <button
           className={clsx(`${noticePrefixCls}-close`, classNames?.close)}
-          style={{ ...styles?.close }}
+          style={styles?.close}
           onKeyDown={onCloseKeyDown}
           aria-label="Close"
           {...ariaProps}

@@ -644,8 +644,9 @@ describe('Notification.Basic', () => {
     });
     expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
 
-    expect(document.querySelector('.rc-notification-notice-close')).toHaveClass('custom-close');
-    expect(document.querySelector('.rc-notification-notice-close')).toHaveStyle({
+    const closeButton = document.querySelector('.rc-notification-notice-close');
+    expect(closeButton).toHaveClass('custom-close');
+    expect(closeButton).toHaveStyle({
       color: 'rgb(255, 0, 0)',
     });
   });
