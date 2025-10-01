@@ -2,7 +2,7 @@ import type React from 'react';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 
-type NoticeSemanticProps = 'wrapper';
+type NoticeSemanticProps = 'wrapper' | 'close';
 
 export interface NoticeConfig {
   content?: React.ReactNode;
