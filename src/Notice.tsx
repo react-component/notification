@@ -33,6 +33,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onNoticeClose,
     times,
     hovering: forcedHovering,
+    classNames,
+    styles,
   } = props;
   const [hovering, setHovering] = React.useState(false);
   const [percent, setPercent] = React.useState(0);
@@ -138,7 +140,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       {/* Close Icon */}
       {closable && (
         <button
-          className={`${noticePrefixCls}-close`}
+          className={clsx(`${noticePrefixCls}-close`, classNames?.close)}
+          style={{ ...styles?.close }}
           onKeyDown={onCloseKeyDown}
           aria-label="Close"
           {...ariaProps}

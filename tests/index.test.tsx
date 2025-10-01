@@ -623,13 +623,18 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
+        closable: true,
         styles: {
           wrapper: {
             content: 'little',
           },
+          close: {
+            color: 'red',
+          },
         },
         classNames: {
           wrapper: 'bamboo',
+          close: 'custom-close',
         },
       });
     });
@@ -638,6 +643,11 @@ describe('Notification.Basic', () => {
       content: 'little',
     });
     expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
+
+    expect(document.querySelector('.rc-notification-notice-close')).toHaveClass('custom-close');
+    expect(document.querySelector('.rc-notification-notice-close')).toHaveStyle({
+      color: 'rgb(255, 0, 0)',
+    });
   });
 
   it('should className work', () => {
