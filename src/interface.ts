@@ -9,8 +9,10 @@ export interface NoticeConfig {
   duration?: number | null;
   showProgress?: boolean;
   pauseOnHover?: boolean;
-  closeIcon?: React.ReactNode;
-  closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
+
+  closable?:
+    | boolean
+    | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
   className?: string;
   style?: React.CSSProperties;
   classNames?: {

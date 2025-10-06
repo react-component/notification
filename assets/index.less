@@ -79,6 +79,8 @@
       cursor: pointer;
       opacity: 0.2;
       filter: alpha(opacity=20);
+      border: 0;
+      background-color: #fff;
 
       &-x:after {
         content: '×';
@@ -237,7 +239,7 @@
             pointer-events: auto;
           }
 
-          &::after {
+          &::before {
             content: "";
             position: absolute;
             left: 0;

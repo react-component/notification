@@ -30,13 +30,16 @@ es
 coverage
 yarn.lock
 package-lock.json
+pnpm-lock.yaml
 
 # umi
 .umi
 .umi-production
 .umi-test
-.env.local 
+.env.local
 
 # dumi
 .dumi/tmp
 .dumi/tmp-production
+
+bun.lockb

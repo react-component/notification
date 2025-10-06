@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 import type { InnerOpenConfig, OpenConfig, Placement, Placements, StackConfig } from './interface';
 import NoticeList from './NoticeList';
 
@@ -45,8 +45,11 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   const onNoticeClose = (key: React.Key) => {
     // Trigger close event
     const config = configList.find((item) => item.key === key);
+    const closable = config?.closable;
+    const closableObj = closable && typeof closable === 'object' ? closable : {};
+    const { onClose: closableOnClose } = closableObj;
+    closableOnClose?.();
     config?.onClose?.();
-
     setConfigList((list) => list.filter((item) => item.key !== key));
   };
 

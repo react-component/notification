@@ -1,8 +1,8 @@
-import classNames from 'classnames';
-import KeyCode from 'rc-util/lib/KeyCode';
+import { clsx } from 'clsx';
+import KeyCode from '@rc-component/util/lib/KeyCode';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
-import pickAttrs from 'rc-util/lib/pickAttrs';
+import pickAttrs from '@rc-component/util/lib/pickAttrs';
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
@@ -27,7 +27,6 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     eventKey,
     content,
     closable,
-    closeIcon = 'x',
     props: divProps,
 
     onClick,
@@ -46,7 +45,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     onNoticeClose(eventKey);
   };
 
-  const onCloseKeyDown: React.KeyboardEventHandler<HTMLAnchorElement> = (e) => {
+  const onCloseKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (e) => {
     if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === KeyCode.ENTER) {
       onInternalClose();
     }
@@ -106,11 +105,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     if (typeof closable === 'object' && closable !== null) {
       return closable;
     }
-    if (closable) {
-      return { closeIcon };
-    }
     return {};
-  }, [closable, closeIcon]);
+  }, [closable]);
 
   const ariaProps = pickAttrs(closableObj, true);
 
@@ -124,9 +120,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
     <div
       {...divProps}
       ref={ref}
-      className={classNames(noticePrefixCls, className, {
-        [`${noticePrefixCls}-closable`]: closable,
-      })}
+      className={clsx(noticePrefixCls, className, { [`${noticePrefixCls}-closable`]: closable })}
       style={style}
       onMouseEnter={(e) => {
         setHovering(true);
@@ -143,8 +137,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
       {/* Close Icon */}
       {closable && (
-        <a
-          tabIndex={0}
+        <button
           className={`${noticePrefixCls}-close`}
           onKeyDown={onCloseKeyDown}
           aria-label="Close"
@@ -155,8 +148,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
             onInternalClose();
           }}
         >
-          {closableObj.closeIcon}
-        </a>
+          {closableObj.closeIcon ?? 'x'}
+        </button>
       )}
 
       {/* Progress Bar */}
