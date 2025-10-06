@@ -15,7 +15,7 @@ const getConfig = () => ({
 });
 
 const Demo = () => {
-  const [{ open }, holder] = useNotification({ motion, stack: true });
+  const [{ open }, holder] = useNotification({ motion, stack: true, closable: true });
 
   return (
     <Context.Provider value={{ name: 'bamboo' }}>

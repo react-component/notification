@@ -1,4 +1,4 @@
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 
 const motion: CSSMotionProps = {
   motionName: 'rc-notification-fade',

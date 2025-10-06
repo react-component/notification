@@ -1,8 +1,9 @@
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 import * as React from 'react';
 import type { NotificationsProps, NotificationsRef } from '../Notifications';
 import Notifications from '../Notifications';
 import type { OpenConfig, Placement, StackConfig } from '../interface';
+import { useEvent } from '@rc-component/util';
 
 const defaultGetContainer = () => document.body;
 
@@ -13,8 +14,10 @@ export interface NotificationConfig {
   /** Customize container. It will repeat call which means you should return same container element. */
   getContainer?: () => HTMLElement | ShadowRoot;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  closeIcon?: React.ReactNode;
-  closable?: boolean | ({ closeIcon?: React.ReactNode } & React.AriaAttributes);
+
+  closable?:
+    | boolean
+    | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
   maxCount?: number;
   duration?: number;
   showProgress?: boolean;
@@ -107,26 +110,29 @@ export default function useNotification(
 
   const [taskQueue, setTaskQueue] = React.useState<Task[]>([]);
 
-  // ========================= Refs =========================
-  const api = React.useMemo<NotificationAPI>(() => {
-    return {
-      open: (config) => {
-        const mergedConfig = mergeConfig(shareConfig, config);
-        if (mergedConfig.key === null || mergedConfig.key === undefined) {
-          mergedConfig.key = `rc-notification-${uniqueKey}`;
-          uniqueKey += 1;
-        }
+  const open = useEvent<NotificationAPI['open']>((config) => {
+    const mergedConfig = mergeConfig(shareConfig, config);
+    if (mergedConfig.key === null || mergedConfig.key === undefined) {
+      mergedConfig.key = `rc-notification-${uniqueKey}`;
+      uniqueKey += 1;
+    }
 
-        setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
-      },
+    setTaskQueue((queue) => [...queue, { type: 'open', config: mergedConfig }]);
+  });
+
+  // ========================= Refs =========================
+  const api = React.useMemo<NotificationAPI>(
+    () => ({
+      open: open,
       close: (key) => {
         setTaskQueue((queue) => [...queue, { type: 'close', key }]);
       },
       destroy: () => {
         setTaskQueue((queue) => [...queue, { type: 'destroy' }]);
       },
-    };
-  }, []);
+    }),
+    [],
+  );
 
   // ======================= Container ======================
   // React 18 should all in effect that we will check container in each render
@@ -155,12 +161,26 @@ export default function useNotification(
         }
       });
 
+      // https://github.com/ant-design/ant-design/issues/52590
+      // React `startTransition` will run once `useEffect` but many times `setState`,
+      // So `setTaskQueue` with filtered array will cause infinite loop.
+      // We cache the first match queue instead.
+      let oriTaskQueue: Task[];
+      let tgtTaskQueue: Task[];
+
       // React 17 will mix order of effect & setState in async
       // - open: setState[0]
       // - effect[0]
       // - open: setState[1]
       // - effect setState([]) * here will clean up [0, 1] in React 17
-      setTaskQueue((oriQueue) => oriQueue.filter((task) => !taskQueue.includes(task)));
+      setTaskQueue((oriQueue) => {
+        if (oriTaskQueue !== oriQueue || !tgtTaskQueue) {
+          oriTaskQueue = oriQueue;
+          tgtTaskQueue = oriQueue.filter((task) => !taskQueue.includes(task));
+        }
+
+        return tgtTaskQueue;
+      });
     }
   }, [taskQueue]);
 

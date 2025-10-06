@@ -1,41 +1,44 @@
-# rc-notification
+# @rc-component/notification
 
 React Notification UI Component
 
 [![NPM version][npm-image]][npm-url] [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square)](https://github.com/umijs/dumi) [![build status][github-actions-image]][github-actions-url] [![Test coverage][coveralls-image]][coveralls-url] [![npm download][download-image]][download-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
 
-[npm-image]: http://img.shields.io/npm/v/rc-notification.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/rc-notification
+[npm-image]: http://img.shields.io/npm/v/@rc-component/notification.svg?style=flat-square
+[npm-url]: http://npmjs.org/package/@rc-component/notification
 [github-actions-image]: https://github.com/react-component/notification/workflows/CI/badge.svg
 [github-actions-url]: https://github.com/react-component/notification/actions
 [coveralls-image]: https://img.shields.io/coveralls/react-component/notification.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/react-component/notification?branch=master
-[download-image]: https://img.shields.io/npm/dm/rc-notification.svg?style=flat-square
-[download-url]: https://npmjs.org/package/rc-notification
-[bundlephobia-url]: https://bundlephobia.com/result?p=rc-notification
-[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-notification
+[download-image]: https://img.shields.io/npm/dm/@rc-component/notification.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@rc-component/notification
+[bundlephobia-url]: https://bundlephobia.com/result?p=@rc-component/notification
+[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/@rc-component/notification
 
 ## Install
 
-[![rc-notification](https://nodei.co/npm/rc-notification.png)](https://npmjs.org/package/rc-notification)
+[![@rc-component/notification](https://nodei.co/npm/@rc-component/notification.png)](https://npmjs.org/package/@rc-component/notification)
 
 ## Usage
 
 ```js
-import Notification from 'rc-notification';
+import Notification from '@rc-component/notification';
 
-Notification.newInstance({}, notification => {
+Notification.newInstance({}, (notification) => {
   notification.notice({
-    content: 'content'
+    content: 'content',
   });
 });
 ```
 
 ## Compatibility
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Electron |
-| --- | --- | --- | --- | --- |
-| IE11, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+| Browser                                                                                                                                                                   | Supported Version |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)<br>Firefox](http://godban.github.io/browsers-support-badges/)     | last 2 versions   |
+| [![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)<br>Chrome](http://godban.github.io/browsers-support-badges/)         | last 2 versions   |
+| [![Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png)<br>Safari](http://godban.github.io/browsers-support-badges/)         | last 2 versions   |
+| [![Electron](https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png)<br>Electron](http://godban.github.io/browsers-support-badges/) | last 2 versions   |
 
 ## Example
 
@@ -114,7 +117,7 @@ props details:
         </tr>
         <tr>
           <td>closable</td>
-          <td>Boolean</td>
+          <td>Boolean | { closeIcon: ReactNode, onClose: VoidFunction }</td>
           <td></td>
           <td>whether show close button</td>
         </tr>
@@ -188,4 +191,4 @@ open coverage/ dir
 
 ## License
 
-rc-notification is released under the MIT license.
+@rc-component/notification is released under the MIT license.

@@ -52,14 +52,14 @@ describe('Notification.Basic', () => {
   });
 
   it('works with custom close icon', () => {
-    const { instance } = renderDemo({
-      closeIcon: <span className="test-icon">test-close-icon</span>,
-    });
+    const { instance } = renderDemo();
 
     act(() => {
       instance.open({
         content: <p className="test">1</p>,
-        closable: true,
+        closable: {
+          closeIcon: <span className="test-icon">test-close-icon</span>,
+        },
         duration: 0,
       });
     });
@@ -778,6 +778,104 @@ describe('Notification.Basic', () => {
     unmount();
   });
 
+  describe('onClose and closable.onClose', () => {
+    it('onClose', () => {
+      const onClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification();
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                  closable: { onClose },
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+    it('Both closableOnllose and onClose are called', () => {
+      const onClose = vi.fn();
+      const closableOnClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification();
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                  onClose,
+                  closable: { onClose: closableOnClose },
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(closableOnClose).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+    it('closable.onClose (config)', () => {
+      const onClose = vi.fn();
+      const Demo = () => {
+        const [api, holder] = useNotification({ closable: { onClose } });
+        return (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                api.open({
+                  key: 'little',
+                  duration: 1,
+                  content: <div className="context-content">light</div>,
+                });
+              }}
+            />
+            {holder}
+          </>
+        );
+      };
+
+      const { container: demoContainer, unmount } = render(<Demo />);
+      fireEvent.click(demoContainer.querySelector('button'));
+      act(() => {
+        vi.runAllTimers();
+      });
+      expect(onClose).toHaveBeenCalled();
+
+      unmount();
+    });
+  });
+
   it('closes via keyboard Enter key', () => {
     const { instance } = renderDemo();
     let closeCount = 0;
@@ -848,5 +946,76 @@ describe('Notification.Basic', () => {
 
       expect(document.querySelector('.rc-notification-notice-progress')).toBeFalsy();
     });
+  });
+
+  describe('Modifying properties through useState can take effect', () => {
+    it('should show notification and disappear after 5 seconds', async () => {
+      const Demo: React.FC = () => {
+        const [duration, setDuration] = React.useState(0);
+        const [api, holder] = useNotification({ duration });
+
+        return (
+          <>
+            <button data-testid="change-duration" onClick={() => setDuration(5)}>
+              change duration
+            </button>
+            <button
+              data-testid="show-notification"
+              onClick={() => {
+                api.open({
+                  content: `Test Notification`,
+                });
+              }}
+            >
+              show notification
+            </button>
+            {holder}
+          </>
+        );
+      };
+
+      const { getByTestId } = render(<Demo />);
+
+      fireEvent.click(getByTestId('show-notification'));
+
+      expect(document.querySelectorAll('.rc-notification-notice').length).toBe(1);
+      fireEvent.click(getByTestId('change-duration'));
+      fireEvent.click(getByTestId('show-notification'));
+      expect(document.querySelectorAll('.rc-notification-notice').length).toBe(2);
+
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+
+      expect(document.querySelectorAll('.rc-notification-notice').length).toBe(1);
+    });
+  });
+  it('notification close node ', () => {
+    const Demo = () => {
+      const [duration] = React.useState(0);
+      const [api, holder] = useNotification({ duration });
+      return (
+        <>
+          <button
+            data-testid="show-notification"
+            onClick={() => {
+              api.open({
+                content: `Test Notification`,
+                closable: { 'aria-label': 'xxx' },
+              });
+            }}
+          >
+            show notification
+          </button>
+          {holder}
+        </>
+      );
+    };
+    const { getByTestId } = render(<Demo />);
+    fireEvent.click(getByTestId('show-notification'));
+    expect(document.querySelector('button.rc-notification-notice-close')).toHaveAttribute(
+      'aria-label',
+      'xxx',
+    );
   });
 });
