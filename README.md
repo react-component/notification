@@ -131,7 +131,7 @@ props details:
           <td>duration</td>
           <td>number | false</td>
           <td>4.5</td>
-          <td>after duration of time, this notice will disappear.(seconds)</td>
+          <td>The delay for automatic closing in seconds. Set to 0 or false to not close automatically.</td>
         </tr>
         <tr>
           <td>showProgress</td>
