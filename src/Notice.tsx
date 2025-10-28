@@ -38,7 +38,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const [percent, setPercent] = React.useState(0);
   const [spentTime, setSpentTime] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
-  const mergedShowProgress = duration > 0 && showProgress;
+  const mergedShowProgress = duration && showProgress;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -53,7 +53,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   // ======================== Effect ========================
   React.useEffect(() => {
-    if (!mergedHovering && duration > 0) {
+    if (!mergedHovering && duration) {
       const start = Date.now() - spentTime;
       const timeout = setTimeout(
         () => {

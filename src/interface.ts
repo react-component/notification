@@ -6,7 +6,7 @@ type NoticeSemanticProps = 'wrapper';
 
 export interface NoticeConfig {
   content?: React.ReactNode;
-  duration?: number | null;
+  duration?: number | false;
   showProgress?: boolean;
   pauseOnHover?: boolean;
 
@@ -32,7 +32,7 @@ export interface OpenConfig extends NoticeConfig {
   key: React.Key;
   placement?: Placement;
   content?: React.ReactNode;
-  duration?: number | null;
+  duration?: number | false;
 }
 
 export type InnerOpenConfig = OpenConfig & { times?: number };

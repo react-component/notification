@@ -162,7 +162,7 @@ describe('Notification.Basic', () => {
           </p>
         ),
         key,
-        duration: null,
+        duration: false,
       });
     });
 
@@ -192,7 +192,7 @@ describe('Notification.Basic', () => {
             {notUpdatableValue}
           </p>
         ),
-        duration: null,
+        duration: false,
       });
     });
 
@@ -204,7 +204,7 @@ describe('Notification.Basic', () => {
           </p>
         ),
         key,
-        duration: null,
+        duration: false,
       });
     });
 
@@ -490,7 +490,7 @@ describe('Notification.Basic', () => {
           </p>
         ),
         key,
-        duration: null,
+        duration: false,
         onClick: () => {
           clicked += 1;
         },
