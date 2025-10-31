@@ -19,7 +19,7 @@ export interface NotificationConfig {
     | boolean
     | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
   maxCount?: number;
-  duration?: number | false;
+  duration?: number | false | null;
   showProgress?: boolean;
   pauseOnHover?: boolean;
   /** @private. Config for notification holder style. Safe to remove if refactor */

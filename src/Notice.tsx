@@ -38,7 +38,8 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const [percent, setPercent] = React.useState(0);
   const [spentTime, setSpentTime] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
-  const mergedShowProgress = duration && showProgress;
+  const mergedDuration: number = typeof duration === 'number' ? duration : 0;
+  const mergedShowProgress = mergedDuration > 0 && showProgress;
 
   // ======================== Close =========================
   const onInternalClose = () => {
@@ -53,13 +54,13 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
 
   // ======================== Effect ========================
   React.useEffect(() => {
-    if (!mergedHovering && duration) {
+    if (!mergedHovering && mergedDuration > 0) {
       const start = Date.now() - spentTime;
       const timeout = setTimeout(
         () => {
           onInternalClose();
         },
-        duration * 1000 - spentTime,
+        mergedDuration * 1000 - spentTime,
       );
 
       return () => {
@@ -70,7 +71,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, mergedHovering, times]);
+  }, [mergedDuration, mergedHovering, times]);
 
   React.useEffect(() => {
     if (!mergedHovering && mergedShowProgress && (pauseOnHover || spentTime === 0)) {
@@ -81,7 +82,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame((timestamp) => {
           const runtime = timestamp + spentTime - start;
-          const progress = Math.min(runtime / (duration * 1000), 1);
+          const progress = Math.min(runtime / (mergedDuration * 1000), 1);
           setPercent(progress * 100);
           if (progress < 1) {
             calculate();
@@ -98,7 +99,7 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, spentTime, mergedHovering, mergedShowProgress, times]);
+  }, [mergedDuration, spentTime, mergedHovering, mergedShowProgress, times]);
 
   // ======================== Closable ========================
   const closableObj = React.useMemo(() => {
