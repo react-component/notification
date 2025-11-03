@@ -97,7 +97,7 @@ props details:
     <thead>
     <tr>
         <th style="width: 100px;">name</th>
-        <th style="width: 50px;">type</th>
+        <th style="width: 200px;">type</th>
         <th style="width: 50px;">default</th>
         <th>description</th>
     </tr>
@@ -129,9 +129,9 @@ props details:
         </tr>
         <tr>
           <td>duration</td>
-          <td>number</td>
-          <td>1.5</td>
-          <td>after duration of time, this notice will disappear.(seconds)</td>
+          <td>number | false</td>
+          <td>4.5</td>
+          <td>The delay for automatic closing in seconds. Set to 0 or false to not close automatically.</td>
         </tr>
         <tr>
           <td>showProgress</td>

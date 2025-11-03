@@ -17,7 +17,7 @@ describe('stack', () => {
             onClick={() => {
               api.open({
                 content: <div className="context-content">Test</div>,
-                duration: null,
+                duration: false,
               });
             }}
           />
@@ -56,7 +56,7 @@ describe('stack', () => {
             onClick={() => {
               api.open({
                 content: <div className="context-content">Test</div>,
-                duration: null,
+                duration: false,
                 closable: true,
               });
             }}
