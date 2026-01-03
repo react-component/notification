@@ -1,8 +1,15 @@
 import { clsx } from 'clsx';
 import KeyCode from '@rc-component/util/lib/KeyCode';
+import warning from '@rc-component/util/lib/warning';
 import * as React from 'react';
 import type { NoticeConfig } from './interface';
 import pickAttrs from '@rc-component/util/lib/pickAttrs';
+
+/**
+ * Maximum delay value for setTimeout in seconds (2^31 - 1 ms).
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout#maximum_delay_value
+ */
+const MAX_DURATION = 2147483647 / 1000;
 
 export interface NoticeProps extends Omit<NoticeConfig, 'onClose'> {
   prefixCls: string;
@@ -38,7 +45,9 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
   const [percent, setPercent] = React.useState(0);
   const [spentTime, setSpentTime] = React.useState(0);
   const mergedHovering = forcedHovering || hovering;
-  const mergedDuration: number = typeof duration === 'number' ? duration : 0;
+
+  const rawDuration: number = typeof duration === 'number' ? duration : 0;
+  const mergedDuration: number = Math.min(rawDuration, MAX_DURATION);
   const mergedShowProgress = mergedDuration > 0 && showProgress;
 
   // ======================== Close =========================
@@ -51,6 +60,14 @@ const Notify = React.forwardRef<HTMLDivElement, NoticeProps & { times?: number }
       onInternalClose();
     }
   };
+
+  // ========================= Warn =========================
+  React.useEffect(() => {
+    warning(
+      rawDuration <= MAX_DURATION,
+      `\`duration\` exceeds the maximum supported value (${MAX_DURATION}s) and has been clamped.`,
+    );
+  }, [rawDuration]);
 
   // ======================== Effect ========================
   React.useEffect(() => {

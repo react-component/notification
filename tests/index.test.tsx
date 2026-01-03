@@ -1018,4 +1018,51 @@ describe('Notification.Basic', () => {
       'xxx',
     );
   });
+
+  describe('MAX_DURATION', () => {
+    it('should not warn when duration is within limit', () => {
+      const { instance } = renderDemo();
+      const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+          duration: 0.1,
+        });
+      });
+
+      expect(document.querySelector('.test')).toBeTruthy();
+      expect(errSpy).not.toHaveBeenCalled();
+    });
+
+    it('should warn and clamp when duration exceeds limit', () => {
+      const { instance } = renderDemo();
+      const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const MAX_DURATION = 2147483647 / 1000;
+      const EXCEEDED_DURATION = (2147483647 + 1) / 1000;
+
+      act(() => {
+        instance.open({
+          content: <p className="test">1</p>,
+          duration: EXCEEDED_DURATION,
+        });
+      });
+
+      expect(document.querySelector('.test')).toBeTruthy();
+      expect(errSpy).toHaveBeenCalledWith(
+        `Warning: \`duration\` exceeds the maximum supported value (${MAX_DURATION}s) and has been clamped.`,
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(MAX_DURATION * 1000 - 1);
+      });
+      expect(document.querySelector('.test')).toBeTruthy();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(document.querySelector('.test')).toBeFalsy();
+    });
+  });
 });
