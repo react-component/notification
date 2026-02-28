@@ -46,7 +46,8 @@ const NoticeList: FC<NoticeListProps> = (props) => {
   const { classNames: ctxCls } = useContext(NotificationContext);
 
   const dictRef = useRef<Record<string, HTMLDivElement>>({});
-  const [latestNotice, setLatestNotice] = useState<HTMLDivElement>(null);
+  const mousePositionRef = useRef<{ x: number; y: number } | null>(null);
+  const [latestNotice, setLatestNotice] = useState<HTMLDivElement | null>(null);
   const [hoverKeys, setHoverKeys] = useState<string[]>([]);
 
   const keys = configList.map((config) => ({
@@ -60,14 +61,65 @@ const NoticeList: FC<NoticeListProps> = (props) => {
 
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
 
+  // Track mouse position globally when in stack mode
+  useEffect(() => {
+    if (!stack) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePositionRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [stack]);
+
   // Clean hover key
   useEffect(() => {
     if (stack && hoverKeys.length > 1) {
-      setHoverKeys((prev) =>
-        prev.filter((key) => keys.some(({ key: dataKey }) => key === dataKey)),
-      );
+      // Only update if there's a change to avoid unnecessary re-renders
+      setHoverKeys((prev) => {
+        const filtered = prev.filter((key) => keys.some(({ key: dataKey }) => key === dataKey));
+        return filtered.length === prev.length ? prev : filtered;
+      });
     }
   }, [hoverKeys, keys, stack]);
+
+  // Check mouse position when keys change (notification list updates)
+  useEffect(() => {
+    if (!stack || !mousePositionRef.current) return;
+
+    // Use requestAnimationFrame to wait for DOM updates
+    const rafId = requestAnimationFrame(() => {
+      const mousePos = mousePositionRef.current;
+      if (!mousePos) return;
+
+      const newHoverKeys: string[] = [];
+      keys.forEach(({ key: strKey }) => {
+        const element = dictRef.current[strKey];
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (
+            mousePos.x >= rect.left &&
+            mousePos.x <= rect.right &&
+            mousePos.y >= rect.top &&
+            mousePos.y <= rect.bottom
+          ) {
+            newHoverKeys.push(strKey);
+          }
+        }
+      });
+
+      // Only update if there's a change to avoid unnecessary re-renders
+      setHoverKeys((prev) => {
+        if (prev.length === newHoverKeys.length && prev.every((k, i) => k === newHoverKeys[i])) {
+          return prev;
+        }
+        return newHoverKeys;
+      });
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [keys, stack]);
 
   // Force update latest notice
   useEffect(() => {
