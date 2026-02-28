@@ -110,9 +110,12 @@ const NoticeList: FC<NoticeListProps> = (props) => {
       });
 
       // Only update if there's a change to avoid unnecessary re-renders
-      if (newHoverKeys.length > 0 || hoverKeys.length > 0) {
-        setHoverKeys(newHoverKeys);
-      }
+      setHoverKeys((prev) => {
+        if (prev.length === newHoverKeys.length && prev.every((k, i) => k === newHoverKeys[i])) {
+          return prev;
+        }
+        return newHoverKeys;
+      });
     });
 
     return () => cancelAnimationFrame(rafId);
