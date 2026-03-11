@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import { useNotification } from '../src';
+import { useNotification, NotificationProvider } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
-import NotificationProvider from '../src/NotificationProvider';
 
 require('../assets/index.less');
 
