@@ -20,11 +20,16 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   const onEventClose = useEvent(onClose);
 
   // ======================== Duration ========================
-  const [onResume, onPause] = useNoticeTimer(duration, onEventClose);
+  const [onResume, onPause] = useNoticeTimer(duration, onEventClose, () => {});
 
   // ========================= Render =========================
   return (
-    <div ref={ref} onClick={onClick} onMouseEnter={onPause} onMouseLeave={onResume}>
+    <div
+      ref={ref}
+      onClick={onClick}
+      onMouseEnter={pauseOnHover ? onPause : undefined}
+      onMouseLeave={pauseOnHover ? onResume : undefined}
+    >
       {content}
       {close && (
         <button

@@ -1,44 +1,63 @@
 import * as React from 'react';
+import raf from '@rc-component/util/es/raf';
+import useEvent from '@rc-component/util/es/hooks/useEvent';
 
-export default function useNoticeTimer(duration: number | false, onClose: VoidFunction) {
-  // Normalize: `false` means no auto-close
-  const mergedDuration: number = typeof duration === 'number' ? duration : 0;
+export default function useNoticeTimer(
+  duration: number | false,
+  onClose: VoidFunction,
+  onUpdate: (ptg: number) => void,
+) {
+  const mergedDuration = typeof duration === 'number' ? duration : 0;
+  const durationMs = Math.max(mergedDuration, 0) * 1000;
+  const onEventClose = useEvent(onClose);
+  const onEventUpdate = useEvent(onUpdate);
 
-  const startTimestampRef = React.useRef(0);
-  const leftTimeRef = React.useRef(mergedDuration * 1000);
-  const timerRef = React.useRef<NodeJS.Timeout>();
+  const [walking, setWalking] = React.useState(durationMs > 0);
+  const startTimestampRef = React.useRef<number | null>(null);
+  const passTimeRef = React.useRef(0);
 
-  const clear = () => {
-    clearTimeout(timerRef.current);
-  };
+  function onPause() {
+    setWalking(false);
+  }
 
-  const onResume = () => {
-    clear();
+  function onResume() {
+    setWalking(true);
+  }
 
-    // Only start timer when there is remaining time
-    if (leftTimeRef.current > 0) {
-      startTimestampRef.current = Date.now();
-      timerRef.current = setTimeout(() => {
-        onClose();
-      }, leftTimeRef.current);
+  function updateProgress() {
+    if (durationMs) {
+      const now = Date.now();
+      const passedTime = now - (startTimestampRef.current || now);
+      startTimestampRef.current = now;
+      passTimeRef.current += passedTime;
+      onEventUpdate(Math.min(passTimeRef.current / durationMs, 1));
+
+      // Return true if timesup
+      return passTimeRef.current >= durationMs;
     }
-  };
-
-  const onPause = () => {
-    clear();
-
-    // Record how much time is left so onResume can continue from here
-    leftTimeRef.current -= Date.now() - startTimestampRef.current;
-  };
+    return false;
+  }
 
   React.useEffect(() => {
-    // Reset remaining time whenever duration changes, then (re)start the timer
-    leftTimeRef.current = mergedDuration * 1000;
-    onResume();
+    if (walking && durationMs > 0) {
+      let rafId: number | null = null;
 
-    // Clear the timer on unmount or before next effect run
-    return clear;
-  }, []);
+      function step() {
+        if (updateProgress()) {
+          onEventClose();
+        } else {
+          rafId = raf(step);
+        }
+      }
+
+      startTimestampRef.current = Date.now();
+      rafId = raf(step);
+
+      return () => {
+        raf.cancel(rafId);
+      };
+    }
+  }, [walking]);
 
   return [onResume, onPause] as const;
 }
