@@ -36,7 +36,16 @@ export interface NotificationListProps {
 }
 
 const NotificationList: React.FC<NotificationListProps> = (props) => {
-  const { configList = [], pauseOnHover, classNames, styles, maxCount, motion, placement } = props;
+  const {
+    configList = [],
+    prefixCls = 'rc-notification',
+    pauseOnHover,
+    classNames,
+    styles,
+    maxCount,
+    motion,
+    placement,
+  } = props;
 
   // ========================== Data ==========================
   const mergedConfigList =
@@ -51,8 +60,16 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
 
   // ========================= Render =========================
+  const listPrefixCls = `${prefixCls}-list`;
+
   return (
-    <CSSMotionList component="div" keys={keys} motionAppear {...placementMotion}>
+    <CSSMotionList
+      component="div"
+      keys={keys}
+      motionAppear
+      className={clsx(listPrefixCls, `${listPrefixCls}-${placement}`)}
+      {...placementMotion}
+    >
       {({ config, className, style }, nodeRef) => (
         <Notification
           {...config}
