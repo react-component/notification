@@ -70,32 +70,37 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       className={clsx(listPrefixCls, `${listPrefixCls}-${placement}`)}
       {...placementMotion}
     >
-      {({ config, className, style }, nodeRef) => (
-        <Notification
-          {...config}
-          ref={nodeRef}
-          className={clsx(className, config.className)}
-          style={{
-            ...style,
-            ...config.style,
-          }}
-          classNames={{
-            root: clsx(classNames?.root, config.classNames?.root),
-            close: clsx(classNames?.close, config.classNames?.close),
-          }}
-          styles={{
-            root: {
-              ...styles?.root,
-              ...config.styles?.root,
-            },
-            close: {
-              ...styles?.close,
-              ...config.styles?.close,
-            },
-          }}
-          pauseOnHover={config.pauseOnHover ?? pauseOnHover}
-        />
-      )}
+      {({ config, className, style }, nodeRef) => {
+        const { key, ...notificationConfig } = config;
+
+        return (
+          <Notification
+            key={key}
+            {...notificationConfig}
+            ref={nodeRef}
+            className={clsx(className, config.className)}
+            style={{
+              ...style,
+              ...config.style,
+            }}
+            classNames={{
+              root: clsx(classNames?.root, config.classNames?.root),
+              close: clsx(classNames?.close, config.classNames?.close),
+            }}
+            styles={{
+              root: {
+                ...styles?.root,
+                ...config.styles?.root,
+              },
+              close: {
+                ...styles?.close,
+                ...config.styles?.close,
+              },
+            }}
+            pauseOnHover={config.pauseOnHover ?? pauseOnHover}
+          />
+        );
+      }}
     </CSSMotionList>
   );
 };

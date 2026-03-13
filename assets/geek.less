@@ -1,0 +1,79 @@
+@notificationPrefixCls: notification;
+@notificationMotionDuration: 0.3s;
+@notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
+@notificationMotionOffset: 64px;
+
+.@{notificationPrefixCls} {
+  &-list {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    width: 360px;
+    max-height: 100vh;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  &-notice {
+    pointer-events: auto;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #111;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.16);
+    color: #111;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.notification-fade {
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.notification-fade-appear-prepare,
+.notification-fade-enter-prepare {
+  opacity: 0;
+  transform: translate3d(@notificationMotionOffset, 0, 0);
+}
+
+.notification-fade-appear-start,
+.notification-fade-enter-start {
+  opacity: 0;
+  transform: translate3d(@notificationMotionOffset, 0, 0);
+}
+
+.notification-fade-appear-active,
+.notification-fade-enter-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform @notificationMotionDuration @notificationMotionEase,
+    opacity @notificationMotionDuration @notificationMotionEase,
+    height @notificationMotionDuration @notificationMotionEase,
+    margin @notificationMotionDuration @notificationMotionEase;
+}
+
+.notification-fade-leave-start {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.notification-fade-leave-active {
+  opacity: 0;
+  transform: translate3d(@notificationMotionOffset, 0, 0);
+  transition:
+    transform @notificationMotionDuration @notificationMotionEase,
+    opacity @notificationMotionDuration @notificationMotionEase,
+    height @notificationMotionDuration @notificationMotionEase,
+    margin @notificationMotionDuration @notificationMotionEase;
+}
