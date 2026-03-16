@@ -99,6 +99,9 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   const prevNotificationPositionRef = React.useRef<Map<string, { x: number; y: number }>>(
     new Map(),
   );
+  const notificationPositionCacheRef = React.useRef<Map<string, { x: number; y: number }>>(
+    new Map(),
+  );
   const scrollOffsetRef = React.useRef(0);
   const [scrollOffset, setScrollOffset] = React.useState(0);
   const [notificationPosition, setNodeSize] = useListPosition(mergedConfigList);
@@ -112,6 +115,12 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     scrollOffsetRef.current = mergedOffset;
     setScrollOffset((prev) => (prev === mergedOffset ? prev : mergedOffset));
   }, []);
+
+  React.useLayoutEffect(() => {
+    notificationPosition.forEach((position, key) => {
+      notificationPositionCacheRef.current.set(key, position);
+    });
+  }, [notificationPosition]);
 
   React.useLayoutEffect(() => {
     const prevKeyList = prevKeyListRef.current;
@@ -211,7 +220,10 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   setNodeSize(strKey, node);
                 }}
                 style={{
-                  ...getNoticeStyle(notificationPosition.get(strKey)),
+                  ...getNoticeStyle(
+                    notificationPosition.get(strKey) ??
+                      notificationPositionCacheRef.current.get(strKey),
+                  ),
                 }}
               >
                 <div
