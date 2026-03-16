@@ -10,14 +10,34 @@
     right: 0;
     z-index: 1000;
     width: 360px;
-    max-height: 100vh;
+    height: 100vh;
     padding: 24px;
     box-sizing: border-box;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  &-list-content {
+    position: relative;
     display: flex;
     flex-direction: column;
+    width: 100%;
     pointer-events: none;
-    overflow-y: auto;
-    overflow-x: hidden;
+    will-change: transform;
+  }
+
+  &-list-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
+    transition: transform @notificationMotionDuration @notificationMotionEase;
+  }
+
+  &-list-item-motion {
+    width: 100%;
   }
 
   &-notice {
