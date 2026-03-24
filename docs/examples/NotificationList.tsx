@@ -33,6 +33,26 @@ const Demo = () => {
     ]);
   }, []);
 
+  const createFiveConfigs = React.useCallback(() => {
+    setConfigList((prevConfigList) => {
+      const startKey = keyRef.current;
+      keyRef.current += 5;
+
+      return [
+        ...prevConfigList,
+        ...Array.from({ length: 5 }, (_, index) => {
+          const key = startKey + index;
+
+          return {
+            key,
+            duration: false,
+            content: `Config ${key + 1}`,
+          };
+        }),
+      ];
+    });
+  }, []);
+
   const removeLastConfig = React.useCallback(() => {
     setConfigList((prevConfigList) => prevConfigList.slice(0, -1));
   }, []);
@@ -58,6 +78,9 @@ const Demo = () => {
       <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
         <button type="button" onClick={createConfig}>
           Add Config
+        </button>
+        <button type="button" onClick={createFiveConfigs}>
+          Add 5 Config
         </button>
         <button type="button" onClick={removeLastConfig}>
           Remove Last Config
