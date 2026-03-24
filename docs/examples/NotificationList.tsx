@@ -37,6 +37,22 @@ const Demo = () => {
     setConfigList((prevConfigList) => prevConfigList.slice(0, -1));
   }, []);
 
+  const removeFirstConfig = React.useCallback(() => {
+    setConfigList((prevConfigList) => prevConfigList.slice(1));
+  }, []);
+
+  const removeMiddleConfig = React.useCallback(() => {
+    setConfigList((prevConfigList) => {
+      if (!prevConfigList.length) {
+        return prevConfigList;
+      }
+
+      const middleIndex = Math.floor(prevConfigList.length / 2);
+
+      return prevConfigList.filter((_, index) => index !== middleIndex);
+    });
+  }, []);
+
   return (
     <>
       <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
@@ -45,6 +61,12 @@ const Demo = () => {
         </button>
         <button type="button" onClick={removeLastConfig}>
           Remove Last Config
+        </button>
+        <button type="button" onClick={removeFirstConfig}>
+          Remove First Config
+        </button>
+        <button type="button" onClick={removeMiddleConfig}>
+          Remove Middle Config
         </button>
       </div>
 

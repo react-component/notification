@@ -15,6 +15,7 @@
     box-sizing: border-box;
     pointer-events: none;
     overflow: hidden;
+    overscroll-behavior: contain;
   }
 
   &-list-content {
@@ -32,18 +33,14 @@
     left: 0;
     box-sizing: border-box;
     width: 100%;
-    transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
-    transition: transform @notificationMotionDuration @notificationMotionEase;
-  }
-
-  &-list-item-motion {
-    width: 100%;
   }
 
   &-notice {
     pointer-events: auto;
     box-sizing: border-box;
     width: 100%;
+    transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
+    transition: transform @notificationMotionDuration @notificationMotionEase;
     padding: 14px 16px;
     border: 2px solid #111;
     border-radius: 14px;

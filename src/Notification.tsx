@@ -18,6 +18,10 @@ export interface NotificationProps {
   actions?: React.ReactNode;
   close?: React.ReactNode;
   duration?: number | false;
+  offset?: {
+    x: number;
+    y: number;
+  };
   pauseOnHover?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -34,6 +38,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     actions,
     close,
     duration = 4.5,
+    offset,
     pauseOnHover = true,
     className,
     style,
@@ -45,9 +50,16 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   // ========================= Close ==========================
   const onEventClose = useEvent(onClose);
+  const offsetRef = React.useRef(offset);
+
+  if (offset) {
+    offsetRef.current = offset;
+  }
 
   // ======================== Duration ========================
   const [onResume, onPause] = useNoticeTimer(duration, onEventClose, () => {});
+
+  const mergedOffset = offset ?? offsetRef.current;
 
   // ========================= Render =========================
   return (
@@ -56,6 +68,12 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       className={clsx(className, classNames?.root)}
       style={{
         ...styles?.root,
+        ...(mergedOffset
+          ? {
+              '--notification-x': `${mergedOffset.x}px`,
+              '--notification-y': `${mergedOffset.y}px`,
+            }
+          : null),
         ...style,
       }}
       onClick={onClick}
