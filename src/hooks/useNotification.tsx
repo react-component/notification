@@ -155,16 +155,10 @@ export default function useNotification(
         }
       });
 
-      let originTaskQueue: Task[];
-      let targetTaskQueue: Task[];
-
       setTaskQueue((originQueue) => {
-        if (originTaskQueue !== originQueue || !targetTaskQueue) {
-          originTaskQueue = originQueue;
-          targetTaskQueue = originQueue.filter((task) => !taskQueue.includes(task));
-        }
+        const targetTaskQueue = originQueue.filter((task) => !taskQueue.includes(task));
 
-        return targetTaskQueue;
+        return targetTaskQueue.length === originQueue.length ? originQueue : targetTaskQueue;
       });
     }
   }, [taskQueue]);
