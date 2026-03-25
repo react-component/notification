@@ -3,7 +3,9 @@ import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { CSSMotionProps } from '@rc-component/motion';
 import NotificationList, {
+  type NotificationClassNames,
   type NotificationListConfig,
+  type NotificationStyles,
   type Placement,
   type StackConfig,
 } from './NotificationList';
@@ -13,6 +15,9 @@ export interface NotificationsProps {
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   container?: HTMLElement | ShadowRoot;
   maxCount?: number;
+  pauseOnHover?: boolean;
+  classNames?: NotificationClassNames;
+  styles?: NotificationStyles;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
   onAllRemoved?: VoidFunction;
@@ -37,6 +42,9 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     container,
     motion,
     maxCount,
+    pauseOnHover,
+    classNames,
+    styles,
     className,
     style,
     onAllRemoved,
@@ -133,6 +141,9 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             configList={placements[placement]}
             placement={placement}
             prefixCls={prefixCls}
+            pauseOnHover={pauseOnHover}
+            classNames={classNames}
+            styles={styles}
             className={className?.(placement)}
             style={style?.(placement)}
             motion={motion}

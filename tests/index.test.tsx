@@ -923,12 +923,12 @@ describe('Notification.Basic', () => {
     it('show with progress', () => {
       const { instance } = renderDemo({
         duration: 1,
-        showProgress: true,
       });
 
       act(() => {
         instance.open({
           content: <p className="test">1</p>,
+          showProgress: true,
         });
       });
 

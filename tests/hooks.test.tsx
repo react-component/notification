@@ -180,4 +180,43 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.rc-notification')).toHaveClass('banana');
     expect(document.querySelector('.custom-notice')).toHaveClass('apple');
   });
+
+  it('support root classNames defaults', () => {
+    const { instance } = renderDemo({
+      classNames: {
+        wrapper: 'hook-wrapper',
+        close: 'hook-close',
+      },
+    });
+
+    act(() => {
+      instance.open({
+        content: <div className="bamboo" />,
+        duration: 0,
+        closable: true,
+        classNames: {
+          root: 'notice-root',
+        },
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('hook-wrapper');
+    expect(document.querySelector('.rc-notification-notice')).toHaveClass('notice-root');
+    expect(document.querySelector('.rc-notification-notice-close')).toHaveClass('hook-close');
+  });
+
+  it('support root placement defaults', () => {
+    const { instance } = renderDemo({
+      placement: 'bottomLeft',
+    });
+
+    act(() => {
+      instance.open({
+        content: <div className="bamboo" />,
+        duration: 0,
+      });
+    });
+
+    expect(document.querySelector('.rc-notification')).toHaveClass('rc-notification-bottomLeft');
+  });
 });

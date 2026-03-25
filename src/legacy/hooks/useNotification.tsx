@@ -135,15 +135,14 @@ export default function useNotification(
   );
 
   // ======================= Container ======================
-  // React 18 should all in effect that we will check container in each render
-  // Which means getContainer should be stable.
+  // `getContainer` should be stable.
   React.useEffect(() => {
     setContainer(getContainer());
   });
 
   // ======================== Effect ========================
   React.useEffect(() => {
-    // Flush task when node ready
+    // Flush queued tasks once the holder is ready.
     if (notificationsRef.current && taskQueue.length) {
       taskQueue.forEach((task) => {
         switch (task.type) {
@@ -163,23 +162,11 @@ export default function useNotification(
 
       // https://github.com/ant-design/ant-design/issues/52590
       // React `startTransition` will run once `useEffect` but many times `setState`,
-      // So `setTaskQueue` with filtered array will cause infinite loop.
-      // We cache the first match queue instead.
-      let oriTaskQueue: Task[];
-      let tgtTaskQueue: Task[];
-
-      // React 17 will mix order of effect & setState in async
-      // - open: setState[0]
-      // - effect[0]
-      // - open: setState[1]
-      // - effect setState([]) * here will clean up [0, 1] in React 17
+      // so we only publish a new queue when something was actually removed.
       setTaskQueue((oriQueue) => {
-        if (oriTaskQueue !== oriQueue || !tgtTaskQueue) {
-          oriTaskQueue = oriQueue;
-          tgtTaskQueue = oriQueue.filter((task) => !taskQueue.includes(task));
-        }
+        const tgtTaskQueue = oriQueue.filter((task) => !taskQueue.includes(task));
 
-        return tgtTaskQueue;
+        return tgtTaskQueue.length === oriQueue.length ? oriQueue : tgtTaskQueue;
       });
     }
   }, [taskQueue]);

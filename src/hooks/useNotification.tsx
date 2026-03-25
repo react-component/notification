@@ -11,24 +11,32 @@ import type { Placement, StackConfig } from '../NotificationList';
 
 const defaultGetContainer = () => document.body;
 
+// ========================= Types ==========================
 type OptionalConfig = Partial<NotificationListConfig>;
+type SharedConfig = Pick<NotificationListConfig, 'placement' | 'closable' | 'duration'>;
 
 export interface NotificationConfig {
+  // Style
   prefixCls?: string;
-  getContainer?: () => HTMLElement | ShadowRoot;
-  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  placement?: Placement;
-  closable?: NotificationListConfig['closable'];
-  duration?: number | false | null;
-  showProgress?: boolean;
-  pauseOnHover?: boolean;
-  classNames?: NotificationClassNames;
-  styles?: NotificationStyles;
-  maxCount?: number;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
-  onAllRemoved?: VoidFunction;
+  classNames?: NotificationClassNames;
+  styles?: NotificationStyles;
+
+  // UI
+  placement?: Placement;
+  getContainer?: () => HTMLElement | ShadowRoot;
+  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
+
+  // Behavior
+  closable?: NotificationListConfig['closable'];
+  duration?: number | false | null;
+  pauseOnHover?: boolean;
+  maxCount?: number;
   stack?: StackConfig;
+
+  // Function
+  onAllRemoved?: VoidFunction;
   renderNotifications?: NotificationsProps['renderNotifications'];
 }
 
@@ -54,6 +62,7 @@ interface DestroyTask {
 
 type Task = OpenTask | CloseTask | DestroyTask;
 
+// ======================== Helper ==========================
 let uniqueKey = 0;
 
 function mergeConfig<T>(...objList: Partial<T>[]): T {
@@ -79,21 +88,35 @@ function mergeConfig<T>(...objList: Partial<T>[]): T {
 export default function useNotification(
   rootConfig: NotificationConfig = {},
 ): [NotificationAPI, React.ReactElement] {
+  // ========================= Config =========================
   const {
     getContainer = defaultGetContainer,
     motion,
     prefixCls,
+    placement,
+    closable,
+    duration,
+    pauseOnHover,
+    classNames,
+    styles,
     maxCount,
     className,
     style,
     onAllRemoved,
     stack,
     renderNotifications,
-    ...shareConfig
   } = rootConfig;
+  const shareConfig: SharedConfig = {
+    placement,
+    closable,
+    duration,
+  };
 
+  // ========================= Holder =========================
   const [container, setContainer] = React.useState<HTMLElement | ShadowRoot>();
   const notificationsRef = React.useRef<NotificationsRef | null>(null);
+  const [taskQueue, setTaskQueue] = React.useState<Task[]>([]);
+
   const contextHolder = (
     <Notifications
       container={container}
@@ -101,6 +124,9 @@ export default function useNotification(
       prefixCls={prefixCls}
       motion={motion}
       maxCount={maxCount}
+      pauseOnHover={pauseOnHover}
+      classNames={classNames}
+      styles={styles}
       className={className}
       style={style}
       onAllRemoved={onAllRemoved}
@@ -109,8 +135,7 @@ export default function useNotification(
     />
   );
 
-  const [taskQueue, setTaskQueue] = React.useState<Task[]>([]);
-
+  // ========================== API ==========================
   const open = useEvent<NotificationAPI['open']>((config) => {
     const mergedConfig = mergeConfig<NotificationListConfig>(shareConfig, config);
 
@@ -135,6 +160,7 @@ export default function useNotification(
     [open],
   );
 
+  // ======================== Effect =========================
   React.useEffect(() => {
     setContainer(getContainer());
   });
@@ -163,5 +189,6 @@ export default function useNotification(
     }
   }, [taskQueue]);
 
+  // ======================== Return =========================
   return [api, contextHolder];
 }
