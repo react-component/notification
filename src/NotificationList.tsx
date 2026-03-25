@@ -2,6 +2,8 @@ import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import { clsx } from 'clsx';
 import * as React from 'react';
+import { NotificationContext } from './legacy/NotificationProvider';
+import useStack from './legacy/hooks/useStack';
 import Notification, {
   type NotificationClassNames,
   type NotificationProps,
@@ -22,18 +24,23 @@ export type StackConfig =
 
 export interface NotificationListConfig extends NotificationProps {
   key: React.Key;
+  placement?: Placement;
+  times?: number;
 }
 
 export interface NotificationListProps {
   configList?: NotificationListConfig[];
   prefixCls?: string;
-  getContainer?: () => HTMLElement | ShadowRoot;
   placement?: Placement;
   pauseOnHover?: boolean;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
   stack?: StackConfig;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
+  className?: string;
+  style?: React.CSSProperties;
+  onNoticeClose?: (key: React.Key) => void;
+  onAllRemoved?: (placement: Placement) => void;
 }
 
 function assignRef<T>(ref: React.Ref<T>, value: T | null) {
@@ -51,9 +58,15 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     pauseOnHover,
     classNames,
     styles,
+    stack: stackConfig,
     motion,
     placement,
+    className,
+    style,
+    onNoticeClose,
+    onAllRemoved,
   } = props;
+  const { classNames: contextClassNames } = React.useContext(NotificationContext);
 
   // ========================== Data ==========================
   const mergedConfigList = React.useMemo(() => configList.slice().reverse(), [configList]);
@@ -70,6 +83,9 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   // ========================= Motion =========================
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
+  const [stack, { threshold }] = useStack(stackConfig);
+  const [hoverKeys, setHoverKeys] = React.useState<string[]>([]);
+  const expanded = stack && (hoverKeys.length > 0 || keys.length <= threshold);
 
   const [notificationPosition, setNodeSize] = useListPosition(mergedConfigList);
   const { contentRef, onWheel, scrollOffset, viewportRef } = useListScroll(
@@ -77,15 +93,40 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     notificationPosition,
   );
 
+  React.useEffect(() => {
+    if (stack && hoverKeys.length > 1) {
+      setHoverKeys((originKeys) => {
+        const nextKeys = originKeys.filter((key) =>
+          keyList.some((existingKey) => existingKey === key),
+        );
+
+        return nextKeys.length === originKeys.length ? originKeys : nextKeys;
+      });
+    }
+  }, [hoverKeys, keyList, stack]);
+
   // ========================= Render =========================
   const listPrefixCls = `${prefixCls}-list`;
   const itemPrefixCls = `${listPrefixCls}-item`;
+  const noticeWrapperCls = `${prefixCls}-notice-wrapper`;
 
   return (
     <div
-      className={clsx(listPrefixCls, `${listPrefixCls}-${placement}`)}
+      className={clsx(
+        prefixCls,
+        `${prefixCls}-${placement}`,
+        listPrefixCls,
+        `${listPrefixCls}-${placement}`,
+        contextClassNames?.list,
+        className,
+        {
+          [`${prefixCls}-stack`]: stack,
+          [`${prefixCls}-stack-expanded`]: expanded,
+        },
+      )}
       onWheel={onWheel}
       ref={viewportRef}
+      style={style}
     >
       <div
         className={`${listPrefixCls}-content`}
@@ -94,41 +135,85 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         }}
         ref={contentRef}
       >
-        <CSSMotionList component={false} keys={keys} motionAppear {...placementMotion}>
+        <CSSMotionList
+          component={false}
+          keys={keys}
+          motionAppear
+          {...placementMotion}
+          onAllRemoved={() => {
+            if (placement) {
+              onAllRemoved?.(placement);
+            }
+          }}
+        >
           {({ config, className, style }, nodeRef) => {
-            const { key, ...notificationConfig } = config;
+            const { key, placement: _placement, ...notificationConfig } = config;
             const strKey = String(key);
 
             return (
               <div
                 key={key}
-                className={clsx(itemPrefixCls, className)}
+                className={clsx(
+                  noticeWrapperCls,
+                  itemPrefixCls,
+                  className,
+                  classNames?.wrapper,
+                  config.classNames?.wrapper,
+                )}
                 ref={(node) => {
                   assignRef(nodeRef, node);
                   setNodeSize(strKey, node);
                 }}
-                style={style}
+                style={{
+                  ...style,
+                  ...styles?.wrapper,
+                  ...config.styles?.wrapper,
+                }}
+                onMouseEnter={() =>
+                  setHoverKeys((originKeys) =>
+                    originKeys.includes(strKey) ? originKeys : [...originKeys, strKey],
+                  )
+                }
+                onMouseLeave={() =>
+                  setHoverKeys((originKeys) => originKeys.filter((key) => key !== strKey))
+                }
               >
                 <Notification
+                  key={config.times}
                   {...notificationConfig}
+                  prefixCls={prefixCls}
                   offset={notificationPosition.get(strKey)}
-                  className={config.className}
+                  className={clsx(contextClassNames?.notice, config.className)}
                   style={config.style}
                   classNames={{
                     root: clsx(classNames?.root, config.classNames?.root),
+                    content: clsx(classNames?.content, config.classNames?.content),
                     close: clsx(classNames?.close, config.classNames?.close),
+                    progress: clsx(classNames?.progress, config.classNames?.progress),
                   }}
                   styles={{
                     root: {
                       ...styles?.root,
                       ...config.styles?.root,
                     },
+                    content: {
+                      ...styles?.content,
+                      ...config.styles?.content,
+                    },
                     close: {
                       ...styles?.close,
                       ...config.styles?.close,
                     },
+                    progress: {
+                      ...styles?.progress,
+                      ...config.styles?.progress,
+                    },
                   }}
+                  hovering={stack && hoverKeys.length > 0}
                   pauseOnHover={config.pauseOnHover ?? pauseOnHover}
+                  onCloseInternal={() => {
+                    onNoticeClose?.(key);
+                  }}
                 />
               </div>
             );
@@ -140,3 +225,4 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 };
 
 export default NotificationList;
+export type { NotificationClassNames, NotificationStyles } from './Notification';

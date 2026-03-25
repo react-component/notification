@@ -3,9 +3,10 @@ import raf from '@rc-component/util/es/raf';
 import useEvent from '@rc-component/util/es/hooks/useEvent';
 
 export default function useNoticeTimer(
-  duration: number | false,
+  duration: number | false | null,
   onClose: VoidFunction,
   onUpdate: (ptg: number) => void,
+  trackProgress = true,
 ) {
   const mergedDuration = typeof duration === 'number' ? duration : 0;
   const durationMs = Math.max(mergedDuration, 0) * 1000;
@@ -23,18 +24,18 @@ export default function useNoticeTimer(
     passTimeRef.current += passedTime;
   }
 
-  function onPause() {
+  const onPause = React.useCallback(() => {
     syncPassTime();
     setWalking(false);
-  }
+  }, []);
 
-  function onResume() {
+  const onResume = React.useCallback(() => {
     if (durationMs > 0) {
       setWalking(true);
     } else {
       onEventUpdate(0);
     }
-  }
+  }, [durationMs, onEventUpdate]);
 
   React.useEffect(() => {
     if (durationMs <= 0) {
@@ -52,8 +53,21 @@ export default function useNoticeTimer(
     }
 
     if (passTimeRef.current >= durationMs) {
+      onEventUpdate(1);
       onEventClose();
       return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      passTimeRef.current = durationMs;
+      onEventUpdate(1);
+      onEventClose();
+    }, durationMs - passTimeRef.current);
+
+    if (!trackProgress) {
+      return () => {
+        window.clearTimeout(timeout);
+      };
     }
 
     let rafId: number | null = null;
@@ -62,9 +76,7 @@ export default function useNoticeTimer(
       syncPassTime();
       onEventUpdate(Math.min(passTimeRef.current / durationMs, 1));
 
-      if (passTimeRef.current >= durationMs) {
-        onEventClose();
-      } else {
+      if (passTimeRef.current < durationMs) {
         rafId = raf(step);
       }
     }
@@ -73,6 +85,7 @@ export default function useNoticeTimer(
     rafId = raf(step);
 
     return () => {
+      window.clearTimeout(timeout);
       raf.cancel(rafId);
     };
   }, [durationMs, walking]);

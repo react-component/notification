@@ -1,6 +1,6 @@
-import useNotification from './legacy/hooks/useNotification';
+import useNotification from './hooks/useNotification';
 import Notice from './legacy/Notice';
-import type { NotificationAPI, NotificationConfig } from './legacy/hooks/useNotification';
+import type { NotificationAPI, NotificationConfig } from './hooks/useNotification';
 import NotificationProvider from './legacy/NotificationProvider';
 
 export { useNotification, Notice, NotificationProvider };

@@ -49,6 +49,39 @@
     color: #111;
     font-size: 14px;
     line-height: 1.5;
+
+    &-content {
+      white-space: pre-wrap;
+      padding-right: 36px;
+    }
+
+    &-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #111;
+      border-radius: 999px;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      transition:
+        transform @notificationMotionDuration @notificationMotionEase,
+        box-shadow @notificationMotionDuration @notificationMotionEase,
+        background-color @notificationMotionDuration @notificationMotionEase;
+
+      &:hover {
+        background: #f4f9ff;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
+        transform: translate3d(-1px, -1px, 0);
+      }
+    }
   }
 }
 
