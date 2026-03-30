@@ -144,8 +144,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             }
           }}
         >
-          {({ config, className, style }, nodeRef) => {
-            const { key, placement: _placement, ...notificationConfig } = config;
+          {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
+            const { key, placement: itemPlacement, ...notificationConfig } = config;
             const strKey = String(key);
 
             return (
@@ -154,7 +154,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 className={clsx(
                   noticeWrapperCls,
                   itemPrefixCls,
-                  className,
+                  motionClassName,
                   classNames?.wrapper,
                   config.classNames?.wrapper,
                 )}
@@ -163,7 +163,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   setNodeSize(strKey, node);
                 }}
                 style={{
-                  ...style,
+                  ...motionStyle,
                   ...styles?.wrapper,
                   ...config.styles?.wrapper,
                 }}
