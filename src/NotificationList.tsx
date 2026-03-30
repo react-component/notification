@@ -208,7 +208,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   }}
                   hovering={stackEnabled && listHovering}
                   pauseOnHover={config.pauseOnHover ?? pauseOnHover}
-                  onCloseInternal={() => {
+                  onClose={() => {
+                    config.onClose?.();
                     onNoticeClose?.(key);
                   }}
                 />

@@ -39,6 +39,7 @@ export interface NotificationProps {
     x: number;
     y: number;
   };
+  props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
 
   // Behavior
   duration?: number | false | null;
@@ -49,8 +50,9 @@ export interface NotificationProps {
 
   // Function
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   onClose?: () => void;
-  onCloseInternal?: VoidFunction;
 }
 
 const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props, ref) => {
@@ -68,6 +70,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     close,
     closable,
     offset,
+    props: rootProps,
 
     // Behavior
     duration = 4.5,
@@ -77,16 +80,16 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
     // Function
     onClick,
+    onMouseEnter,
+    onMouseLeave,
     onClose,
-    onCloseInternal,
   } = props;
-  const [hovering, setHovering] = React.useState(false);
+
   const [percent, setPercent] = React.useState(0);
   const noticePrefixCls = `${prefixCls}-notice`;
 
   // ========================= Close ==========================
   const onEventClose = useEvent(onClose);
-  const onEventCloseInternal = useEvent(onCloseInternal);
   const offsetRef = React.useRef(offset);
   const closableObj = React.useMemo(() => {
     if (typeof closable === 'object' && closable !== null) {
@@ -104,12 +107,13 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   // ======================== Duration ========================
+  const [hovering, setHovering] = React.useState(false);
+
   const [onResume, onPause] = useNoticeTimer(
     duration,
     () => {
       closableObj.onClose?.();
       onEventClose();
-      onEventCloseInternal();
     },
     setPercent,
     !!showProgress,
@@ -129,6 +133,23 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       onResume();
     }
   }, [forcedHovering, hovering, onPause, onResume, pauseOnHover]);
+
+  // ========================= Hover ==========================
+  function onInternalMouseEnter(event: React.MouseEvent<HTMLDivElement>) {
+    setHovering(true);
+    if (pauseOnHover) {
+      onPause();
+    }
+    onMouseEnter?.(event);
+  }
+
+  function onInternalMouseLeave(event: React.MouseEvent<HTMLDivElement>) {
+    setHovering(false);
+    if (pauseOnHover && !forcedHovering) {
+      onResume();
+    }
+    onMouseLeave?.(event);
+  }
 
   // ========================= Render =========================
   return (
@@ -151,20 +172,8 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       }}
       // Events
       onClick={onClick}
-      onMouseEnter={(event) => {
-        setHovering(true);
-        if (pauseOnHover) {
-          onPause();
-        }
-        rootProps?.onMouseEnter?.(event);
-      }}
-      onMouseLeave={(event) => {
-        setHovering(false);
-        if (pauseOnHover && !forcedHovering) {
-          onResume();
-        }
-        rootProps?.onMouseLeave?.(event);
-      }}
+      onMouseEnter={onInternalMouseEnter}
+      onMouseLeave={onInternalMouseLeave}
     >
       <div
         className={clsx(`${noticePrefixCls}-content`, classNames?.content)}
@@ -183,7 +192,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
             if (event.key === 'Enter' || event.code === 'Enter') {
               closableObj.onClose?.();
               onEventClose();
-              onEventCloseInternal();
             }
           }}
           onClick={(e) => {
@@ -191,7 +199,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
             e.stopPropagation();
             closableObj.onClose?.();
             onEventClose();
-            onEventCloseInternal();
           }}
         >
           {closeContent}
