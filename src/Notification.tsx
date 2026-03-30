@@ -21,27 +21,33 @@ export interface NotificationStyles {
 }
 
 export interface NotificationProps {
+  // Style
   prefixCls?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  classNames?: NotificationClassNames;
+  styles?: NotificationStyles;
+
+  // UI
   content?: React.ReactNode;
   actions?: React.ReactNode;
   close?: React.ReactNode;
   closable?:
     | boolean
     | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
-  duration?: number | false | null;
-  showProgress?: boolean;
-  times?: number;
-  hovering?: boolean;
   offset?: {
     x: number;
     y: number;
   };
+
+  // Behavior
+  duration?: number | false | null;
+  showProgress?: boolean;
+  times?: number;
+  hovering?: boolean;
   pauseOnHover?: boolean;
-  className?: string;
-  style?: React.CSSProperties;
-  classNames?: NotificationClassNames;
-  styles?: NotificationStyles;
-  props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
+
+  // Function
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onClose?: () => void;
   onCloseInternal?: VoidFunction;
@@ -49,21 +55,27 @@ export interface NotificationProps {
 
 const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props, ref) => {
   const {
+    // Style
     prefixCls = 'rc-notification',
-    content,
-    actions,
-    close,
-    closable,
-    duration = 4.5,
-    showProgress,
-    hovering: forcedHovering,
-    offset,
-    pauseOnHover = true,
     className,
     style,
     classNames,
     styles,
-    props: divProps,
+
+    // UI
+    content,
+    actions,
+    close,
+    closable,
+    offset,
+
+    // Behavior
+    duration = 4.5,
+    showProgress,
+    hovering: forcedHovering,
+    pauseOnHover = true,
+
+    // Function
     onClick,
     onClose,
     onCloseInternal,
@@ -121,8 +133,9 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   // ========================= Render =========================
   return (
     <div
-      {...divProps}
+      {...rootProps}
       ref={ref}
+      // Styles
       className={clsx(noticePrefixCls, className, classNames?.root, {
         [`${noticePrefixCls}-closable`]: mergedClosable,
       })}
@@ -136,20 +149,21 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
           : null),
         ...style,
       }}
+      // Events
       onClick={onClick}
       onMouseEnter={(event) => {
         setHovering(true);
         if (pauseOnHover) {
           onPause();
         }
-        divProps?.onMouseEnter?.(event);
+        rootProps?.onMouseEnter?.(event);
       }}
       onMouseLeave={(event) => {
         setHovering(false);
         if (pauseOnHover && !forcedHovering) {
           onResume();
         }
-        divProps?.onMouseLeave?.(event);
+        rootProps?.onMouseLeave?.(event);
       }}
     >
       <div
