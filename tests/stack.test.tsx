@@ -113,12 +113,16 @@ describe('stack', () => {
       fireEvent.click(container.querySelector('button'));
     }
 
-    const [firstNotice] = document.querySelectorAll<HTMLElement>('.rc-notification-notice');
+    const notices = Array.from(document.querySelectorAll<HTMLElement>('.rc-notification-notice'));
+    const offsetList = notices.map((notice) => notice.style.getPropertyValue('--notification-y'));
 
-    expect(firstNotice.style.getPropertyValue('--notification-y')).toBe('12px');
+    expect(offsetList).toContain('0px');
+    expect(offsetList).toContain('12px');
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
 
-    expect(firstNotice.style.getPropertyValue('--notification-y')).toBe('0px');
+    expect(
+      notices.every((notice) => notice.style.getPropertyValue('--notification-y') === '0px'),
+    ).toBeTruthy();
   });
 });

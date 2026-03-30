@@ -18,11 +18,12 @@ export default function useListPosition(configList: { key: React.Key }[], stack?
       const key = String(config.key);
       const nodePosition = {
         x: 0,
-        y: stack ? offsetY + (stack.offset ?? 0) : offsetY,
+        y: offsetY,
       };
 
       nextNotificationPosition.set(key, nodePosition);
-      offsetY += sizeMap[key]?.height ?? 0;
+      // offsetY += (sizeMap[key]?.height ?? 0) + (stack?.offset ?? 0);
+      offsetY += (stack ? stack.offset : sizeMap[key]?.height) ?? 0;
     });
 
     return nextNotificationPosition;
