@@ -63,17 +63,18 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   const { classNames: contextClassNames } = React.useContext(NotificationContext);
 
   // ========================== Data ==========================
-  const mergedConfigList = React.useMemo(() => configList.slice().reverse(), [configList]);
-
   const keys = React.useMemo(
     () =>
-      mergedConfigList.map((config) => ({
+      configList.map((config) => ({
         config,
         key: String(config.key),
       })),
-    [mergedConfigList],
+    [configList],
   );
-  const keyList = React.useMemo(() => keys.map(({ key }) => key), [keys]);
+  const keyList = React.useMemo(
+    () => configList.map((config) => String(config.key)).reverse(),
+    [configList],
+  );
 
   // ========================= Motion =========================
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
@@ -91,7 +92,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     };
   }, [expanded, offset, stackEnabled, threshold]);
 
-  const [notificationPosition, setNodeSize] = useListPosition(mergedConfigList, stackPosition);
+  const [notificationPosition, setNodeSize] = useListPosition(configList, stackPosition);
   const { contentRef, onWheel, scrollOffset, viewportRef } = useListScroll(
     keyList,
     notificationPosition,
@@ -145,7 +146,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
           }}
         >
           {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-            const { key, placement: itemPlacement, ...notificationConfig } = config;
+            const { key, placement: _placement, ...notificationConfig } = config;
             const strKey = String(key);
 
             return (

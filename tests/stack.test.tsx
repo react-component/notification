@@ -87,6 +87,7 @@ describe('stack', () => {
 
   it('passes stack offset to list position when collapsed', () => {
     const Demo = () => {
+      const countRef = React.useRef(0);
       const [api, holder] = useNotification({
         stack: { threshold: 1, offset: 12 },
       });
@@ -96,8 +97,11 @@ describe('stack', () => {
           <button
             type="button"
             onClick={() => {
+              const index = countRef.current;
+              countRef.current += 1;
+
               api.open({
-                content: <div className="context-content">Test</div>,
+                content: <div className={`context-content-${index}`}>Test {index}</div>,
                 duration: false,
               });
             }}
@@ -116,8 +120,9 @@ describe('stack', () => {
     const notices = Array.from(document.querySelectorAll<HTMLElement>('.rc-notification-notice'));
     const offsetList = notices.map((notice) => notice.style.getPropertyValue('--notification-y'));
 
-    expect(offsetList).toContain('0px');
-    expect(offsetList).toContain('12px');
+    expect(notices[0].querySelector('.context-content-0')).toBeTruthy();
+    expect(notices[1].querySelector('.context-content-1')).toBeTruthy();
+    expect(offsetList).toEqual(['12px', '0px']);
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
 
