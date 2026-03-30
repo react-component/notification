@@ -11,17 +11,24 @@ import NotificationList, {
 } from './NotificationList';
 
 export interface NotificationsProps {
+  // Style
   prefixCls?: string;
-  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
-  container?: HTMLElement | ShadowRoot;
-  maxCount?: number;
-  pauseOnHover?: boolean;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
+
+  // UI
+  container?: HTMLElement | ShadowRoot;
+  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
+
+  // Behavior
+  maxCount?: number;
+  pauseOnHover?: boolean;
+  stack?: boolean | StackConfig;
+
+  // Function
   onAllRemoved?: VoidFunction;
-  stack?: StackConfig;
   renderNotifications?: (
     node: ReactElement,
     info: { prefixCls: string; key: React.Key },
@@ -34,9 +41,11 @@ export interface NotificationsRef {
   destroy: () => void;
 }
 
+// ========================= Types ==========================
 type Placements = Partial<Record<Placement, NotificationListConfig[]>>;
 
 const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((props, ref) => {
+  // ========================= Props ==========================
   const {
     prefixCls = 'rc-notification',
     container,
@@ -51,8 +60,13 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     stack,
     renderNotifications,
   } = props;
-  const [configList, setConfigList] = React.useState<NotificationListConfig[]>([]);
 
+  // ========================= State ==========================
+  const [configList, setConfigList] = React.useState<NotificationListConfig[]>([]);
+  const [placements, setPlacements] = React.useState<Placements>({});
+  const emptyRef = React.useRef(false);
+
+  // ========================== Ref ===========================
   React.useImperativeHandle(ref, () => ({
     open: (config) => {
       setConfigList((list) => {
@@ -84,8 +98,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     },
   }));
 
-  const [placements, setPlacements] = React.useState<Placements>({});
-
+  // ======================== Effect =========================
   React.useEffect(() => {
     const nextPlacements: Placements = {};
 
@@ -102,6 +115,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     setPlacements(nextPlacements);
   }, [configList]);
 
+  // ======================== Callback =======================
   const onAllNoticeRemoved = React.useCallback((placement: Placement) => {
     setPlacements((originPlacements) => {
       const clone = {
@@ -116,7 +130,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     });
   }, []);
 
-  const emptyRef = React.useRef(false);
+  // ======================== Effect =========================
   React.useEffect(() => {
     if (Object.keys(placements).length > 0) {
       emptyRef.current = true;
@@ -126,6 +140,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     }
   }, [placements, onAllRemoved]);
 
+  // ======================== Render =========================
   if (!container) {
     return null;
   }

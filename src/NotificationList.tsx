@@ -2,6 +2,7 @@ import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import { clsx } from 'clsx';
 import * as React from 'react';
+import type { StackConfig } from './interface';
 import { NotificationContext } from './legacy/NotificationProvider';
 import useStack from './legacy/hooks/useStack';
 import Notification, {
@@ -13,14 +14,7 @@ import useListPosition from './hooks/useListPosition';
 import useListScroll from './hooks/useListScroll';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
-
-export type StackConfig =
-  | boolean
-  | {
-      threshold?: number;
-      offset?: number;
-      gap?: number;
-    };
+export type { StackConfig } from './interface';
 
 export interface NotificationListConfig extends NotificationProps {
   key: React.Key;
@@ -35,7 +29,7 @@ export interface NotificationListProps {
   pauseOnHover?: boolean;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
-  stack?: StackConfig;
+  stack?: boolean | StackConfig;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   className?: string;
   style?: React.CSSProperties;
@@ -83,27 +77,25 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   // ========================= Motion =========================
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
-  const [stack, { threshold }] = useStack(stackConfig);
-  const [hoverKeys, setHoverKeys] = React.useState<string[]>([]);
-  const expanded = stack && (hoverKeys.length > 0 || keys.length <= threshold);
+  const [stackEnabled, { offset, threshold }] = useStack(stackConfig);
+  const [listHovering, setListHovering] = React.useState(false);
+  const expanded = stackEnabled && (listHovering || keys.length <= threshold);
+  const stackPosition = React.useMemo<StackConfig | undefined>(() => {
+    if (!stackEnabled || expanded) {
+      return undefined;
+    }
 
-  const [notificationPosition, setNodeSize] = useListPosition(mergedConfigList);
+    return {
+      offset,
+      threshold,
+    };
+  }, [expanded, offset, stackEnabled, threshold]);
+
+  const [notificationPosition, setNodeSize] = useListPosition(mergedConfigList, stackPosition);
   const { contentRef, onWheel, scrollOffset, viewportRef } = useListScroll(
     keyList,
     notificationPosition,
   );
-
-  React.useEffect(() => {
-    if (stack && hoverKeys.length > 1) {
-      setHoverKeys((originKeys) => {
-        const nextKeys = originKeys.filter((key) =>
-          keyList.some((existingKey) => existingKey === key),
-        );
-
-        return nextKeys.length === originKeys.length ? originKeys : nextKeys;
-      });
-    }
-  }, [hoverKeys, keyList, stack]);
 
   // ========================= Render =========================
   const listPrefixCls = `${prefixCls}-list`;
@@ -120,11 +112,17 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         contextClassNames?.list,
         className,
         {
-          [`${prefixCls}-stack`]: stack,
+          [`${prefixCls}-stack`]: stackEnabled,
           [`${prefixCls}-stack-expanded`]: expanded,
         },
       )}
       onWheel={onWheel}
+      onMouseEnter={() => {
+        setListHovering(true);
+      }}
+      onMouseLeave={() => {
+        setListHovering(false);
+      }}
       ref={viewportRef}
       style={style}
     >
@@ -169,14 +167,6 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   ...styles?.wrapper,
                   ...config.styles?.wrapper,
                 }}
-                onMouseEnter={() =>
-                  setHoverKeys((originKeys) =>
-                    originKeys.includes(strKey) ? originKeys : [...originKeys, strKey],
-                  )
-                }
-                onMouseLeave={() =>
-                  setHoverKeys((originKeys) => originKeys.filter((key) => key !== strKey))
-                }
               >
                 <Notification
                   key={config.times}
@@ -209,7 +199,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                       ...config.styles?.progress,
                     },
                   }}
-                  hovering={stack && hoverKeys.length > 0}
+                  hovering={stackEnabled && listHovering}
                   pauseOnHover={config.pauseOnHover ?? pauseOnHover}
                   onCloseInternal={() => {
                     onNoticeClose?.(key);

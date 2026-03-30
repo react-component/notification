@@ -1,43 +1,27 @@
-import type { CSSMotionProps } from '@rc-component/motion';
 import { useEvent } from '@rc-component/util';
 import * as React from 'react';
 import Notifications, { type NotificationsProps, type NotificationsRef } from '../Notifications';
-import type {
-  NotificationClassNames,
-  NotificationListConfig,
-  NotificationStyles,
-} from '../NotificationList';
-import type { Placement, StackConfig } from '../NotificationList';
+import type { NotificationListConfig } from '../NotificationList';
+import type { Placement } from '../NotificationList';
 
 const defaultGetContainer = () => document.body;
 
 // ========================= Types ==========================
 type OptionalConfig = Partial<NotificationListConfig>;
-type SharedConfig = Pick<NotificationListConfig, 'placement' | 'closable' | 'duration'>;
+type SharedConfig = Pick<
+  NotificationListConfig,
+  'placement' | 'closable' | 'duration' | 'showProgress'
+>;
 
-export interface NotificationConfig {
-  // Style
-  prefixCls?: string;
-  className?: (placement: Placement) => string;
-  style?: (placement: Placement) => React.CSSProperties;
-  classNames?: NotificationClassNames;
-  styles?: NotificationStyles;
-
+export interface NotificationConfig extends Omit<NotificationsProps, 'container'> {
   // UI
   placement?: Placement;
   getContainer?: () => HTMLElement | ShadowRoot;
-  motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
 
   // Behavior
   closable?: NotificationListConfig['closable'];
   duration?: number | false | null;
-  pauseOnHover?: boolean;
-  maxCount?: number;
-  stack?: StackConfig;
-
-  // Function
-  onAllRemoved?: VoidFunction;
-  renderNotifications?: NotificationsProps['renderNotifications'];
+  showProgress?: NotificationListConfig['showProgress'];
 }
 
 export interface NotificationAPI {
@@ -96,6 +80,7 @@ export default function useNotification(
     placement,
     closable,
     duration,
+    showProgress,
     pauseOnHover,
     classNames,
     styles,
@@ -110,6 +95,7 @@ export default function useNotification(
     placement,
     closable,
     duration,
+    showProgress,
   };
 
   // ========================= Holder =========================

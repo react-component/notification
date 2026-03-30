@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { StackConfig } from '../../interface';
 import useSizes from './useSizes';
 
 export type NodePosition = {
@@ -6,7 +7,7 @@ export type NodePosition = {
   y: number;
 };
 
-export default function useListPosition(configList: { key: React.Key }[]) {
+export default function useListPosition(configList: { key: React.Key }[], stack?: StackConfig) {
   const [sizeMap, setNodeSize] = useSizes();
 
   const notificationPosition = React.useMemo(() => {
@@ -17,7 +18,7 @@ export default function useListPosition(configList: { key: React.Key }[]) {
       const key = String(config.key);
       const nodePosition = {
         x: 0,
-        y: offsetY,
+        y: stack ? offsetY + (stack.offset ?? 0) : offsetY,
       };
 
       nextNotificationPosition.set(key, nodePosition);
@@ -25,7 +26,7 @@ export default function useListPosition(configList: { key: React.Key }[]) {
     });
 
     return nextNotificationPosition;
-  }, [configList, sizeMap]);
+  }, [configList, sizeMap, stack]);
 
   return [notificationPosition, setNodeSize] as const;
 }

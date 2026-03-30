@@ -40,7 +40,7 @@ describe('stack', () => {
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(5);
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
 
-    fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
   });
 
@@ -74,16 +74,51 @@ describe('stack', () => {
     expect(document.querySelector('.rc-notification-stack')).toBeTruthy();
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
 
-    fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
 
     fireEvent.click(document.querySelector('.rc-notification-notice-close'));
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(4);
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
 
-    // mouseleave will not triggerred if notice is closed
-    fireEvent.mouseEnter(document.querySelector('.rc-notification-notice-wrapper'));
-    fireEvent.mouseLeave(document.querySelector('.rc-notification-notice-wrapper'));
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-list'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
+  });
+
+  it('passes stack offset to list position when collapsed', () => {
+    const Demo = () => {
+      const [api, holder] = useNotification({
+        stack: { threshold: 1, offset: 12 },
+      });
+
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              api.open({
+                content: <div className="context-content">Test</div>,
+                duration: false,
+              });
+            }}
+          />
+          {holder}
+        </>
+      );
+    };
+
+    const { container } = render(<Demo />);
+
+    for (let i = 0; i < 2; i++) {
+      fireEvent.click(container.querySelector('button'));
+    }
+
+    const [firstNotice] = document.querySelectorAll<HTMLElement>('.rc-notification-notice');
+
+    expect(firstNotice.style.getPropertyValue('--notification-y')).toBe('12px');
+
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
+
+    expect(firstNotice.style.getPropertyValue('--notification-y')).toBe('0px');
   });
 });

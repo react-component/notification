@@ -17,21 +17,23 @@ const motion: CSSMotionProps = {
 
 const Demo = () => {
   const [configList, setConfigList] = React.useState<NotificationListConfig[]>([]);
+  const [stack, setStack] = React.useState(false);
   const keyRef = React.useRef(0);
+  const createNotification = React.useCallback(
+    (key: number): NotificationListConfig => ({
+      key,
+      duration: false,
+      content: `Config ${key + 1}`,
+    }),
+    [],
+  );
 
   const createConfig = React.useCallback(() => {
     const key = keyRef.current;
     keyRef.current += 1;
 
-    setConfigList((prevConfigList) => [
-      ...prevConfigList,
-      {
-        key,
-        duration: false,
-        content: `Config ${key + 1}`,
-      },
-    ]);
-  }, []);
+    setConfigList((prevConfigList) => [...prevConfigList, createNotification(key)]);
+  }, [createNotification]);
 
   const createFiveConfigs = React.useCallback(() => {
     setConfigList((prevConfigList) => {
@@ -40,18 +42,10 @@ const Demo = () => {
 
       return [
         ...prevConfigList,
-        ...Array.from({ length: 5 }, (_, index) => {
-          const key = startKey + index;
-
-          return {
-            key,
-            duration: false,
-            content: `Config ${key + 1}`,
-          };
-        }),
+        ...Array.from({ length: 5 }, (_, index) => createNotification(startKey + index)),
       ];
     });
-  }, []);
+  }, [createNotification]);
 
   const removeLastConfig = React.useCallback(() => {
     setConfigList((prevConfigList) => prevConfigList.slice(0, -1));
@@ -91,6 +85,16 @@ const Demo = () => {
         <button type="button" onClick={removeMiddleConfig}>
           Remove Middle Config
         </button>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={stack}
+            onChange={(event) => {
+              setStack(event.target.checked);
+            }}
+          />
+          Enable Stack
+        </label>
       </div>
 
       <NotificationList
@@ -99,6 +103,7 @@ const Demo = () => {
         classNames={{ root: 'notification-notice' }}
         motion={motion}
         placement="topRight"
+        stack={stack ? { threshold: 3, offset: 20 } : undefined}
       />
     </>
   );
