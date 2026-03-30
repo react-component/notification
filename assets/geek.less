@@ -84,6 +84,15 @@
       }
     }
   }
+
+  &-stack {
+    &:not(.@{notificationPrefixCls}-stack-expanded) {
+      .@{notificationPrefixCls}-list-item:nth-last-child(n + 4) {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
 }
 
 .notification-fade {

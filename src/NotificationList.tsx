@@ -4,7 +4,6 @@ import { clsx } from 'clsx';
 import * as React from 'react';
 import type { StackConfig } from './interface';
 import { NotificationContext } from './legacy/NotificationProvider';
-import useStack from './legacy/hooks/useStack';
 import Notification, {
   type NotificationClassNames,
   type NotificationProps,
@@ -12,6 +11,7 @@ import Notification, {
 } from './Notification';
 import useListPosition from './hooks/useListPosition';
 import useListScroll from './hooks/useListScroll';
+import useStack from './hooks/useStack';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 export type { StackConfig } from './interface';
