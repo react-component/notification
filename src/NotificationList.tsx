@@ -92,11 +92,25 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     };
   }, [expanded, offset, stackEnabled, threshold]);
 
-  const [notificationPosition, setNodeSize] = useListPosition(configList, stackPosition);
+  const [gap, setGap] = React.useState(0);
+  const [notificationPosition, setNodeSize] = useListPosition(configList, stackPosition, gap);
   const { contentRef, onWheel, scrollOffset, viewportRef } = useListScroll(
     keyList,
     notificationPosition,
   );
+
+  React.useEffect(() => {
+    const listNode = contentRef.current;
+
+    if (!listNode) {
+      return;
+    }
+
+    const { gap: cssGap, rowGap } = window.getComputedStyle(listNode);
+    const nextGap = parseFloat(rowGap || cssGap) || 0;
+
+    setGap((prevGap) => (prevGap === nextGap ? prevGap : nextGap));
+  }, [!!configList.length]);
 
   // ========================= Render =========================
   const listPrefixCls = `${prefixCls}-list`;

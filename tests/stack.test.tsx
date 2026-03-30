@@ -1,6 +1,7 @@
 import { useNotification } from '../src';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import NotificationList from '../src/NotificationList';
 
 require('../assets/index.less');
 
@@ -129,5 +130,63 @@ describe('stack', () => {
     expect(
       notices.every((notice) => notice.style.getPropertyValue('--notification-y') === '0px'),
     ).toBeTruthy();
+  });
+
+  it('passes list css gap to list position when expanded', () => {
+    const offsetHeightSpy = vi
+      .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+      .mockImplementation(function mockOffsetHeight() {
+        return this.classList?.contains('rc-notification-notice-wrapper') ? 50 : 0;
+      });
+    const originGetComputedStyle = window.getComputedStyle;
+    const getComputedStyleSpy = vi
+      .spyOn(window, 'getComputedStyle')
+      .mockImplementation((element) => {
+        const style = originGetComputedStyle(element);
+
+        if ((element as HTMLElement).classList?.contains('rc-notification-list-content')) {
+          return new Proxy(style, {
+            get(target, prop, receiver) {
+              if (prop === 'gap' || prop === 'rowGap') {
+                return '8px';
+              }
+
+              return Reflect.get(target, prop, receiver);
+            },
+          }) as CSSStyleDeclaration;
+        }
+
+        return style;
+      });
+
+    render(
+      <NotificationList
+        configList={[
+          {
+            key: 'first',
+            content: <div className="context-content-first">First</div>,
+            duration: false,
+          },
+          {
+            key: 'second',
+            content: <div className="context-content-second">Second</div>,
+            duration: false,
+          },
+        ]}
+      />,
+    );
+
+    const firstNotice = document
+      .querySelector('.context-content-first')
+      ?.closest<HTMLElement>('.rc-notification-notice');
+    const secondNotice = document
+      .querySelector('.context-content-second')
+      ?.closest<HTMLElement>('.rc-notification-notice');
+
+    expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('58px');
+    expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
+
+    getComputedStyleSpy.mockRestore();
+    offsetHeightSpy.mockRestore();
   });
 });

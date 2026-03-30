@@ -7,7 +7,11 @@ export type NodePosition = {
   y: number;
 };
 
-export default function useListPosition(configList: { key: React.Key }[], stack?: StackConfig) {
+export default function useListPosition(
+  configList: { key: React.Key }[],
+  stack?: StackConfig,
+  gap = 0,
+) {
   const [sizeMap, setNodeSize] = useSizes();
 
   const notificationPosition = React.useMemo(() => {
@@ -26,10 +30,14 @@ export default function useListPosition(configList: { key: React.Key }[], stack?
 
         nextNotificationPosition.set(key, nodePosition);
         offsetY += (stack ? stack.offset : sizeMap[key]?.height) ?? 0;
+
+        if (!stack) {
+          offsetY += gap;
+        }
       });
 
     return nextNotificationPosition;
-  }, [configList, sizeMap, stack]);
+  }, [configList, gap, sizeMap, stack]);
 
   return [notificationPosition, setNodeSize] as const;
 }
