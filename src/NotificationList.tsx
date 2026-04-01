@@ -119,10 +119,17 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   return (
     <div
-      className={clsx(prefixCls, `${prefixCls}-${placement}`, contextClassNames?.list, className, {
-        [`${prefixCls}-stack`]: stackEnabled,
-        [`${prefixCls}-stack-expanded`]: expanded,
-      })}
+      className={clsx(
+        prefixCls,
+        listPrefixCls,
+        `${prefixCls}-${placement}`,
+        contextClassNames?.list,
+        className,
+        {
+          [`${prefixCls}-stack`]: stackEnabled,
+          [`${prefixCls}-stack-expanded`]: expanded,
+        },
+      )}
       onWheel={onWheel}
       onMouseEnter={() => {
         setListHovering(true);

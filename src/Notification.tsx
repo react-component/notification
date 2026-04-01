@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { clsx } from 'clsx';
-import pickAttrs from '@rc-component/util/lib/pickAttrs';
 import useNoticeTimer from './hooks/useNoticeTimer';
 import { useEvent } from '@rc-component/util';
+import useClosable, { type ClosableType } from './hooks/useClosable';
 
 export interface NotificationClassNames {
   wrapper?: string;
@@ -32,9 +32,7 @@ export interface NotificationProps {
   content?: React.ReactNode;
   actions?: React.ReactNode;
   close?: React.ReactNode;
-  closable?:
-    | boolean
-    | ({ closeIcon?: React.ReactNode; onClose?: VoidFunction } & React.AriaAttributes);
+  closable?: ClosableType;
   offset?: {
     x: number;
     y: number;
@@ -90,21 +88,10 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   // ========================= Close ==========================
   const onEventClose = useEvent(onClose);
-  const offsetRef = React.useRef(offset);
-  const closableObj = React.useMemo(() => {
-    if (typeof closable === 'object' && closable !== null) {
-      return closable;
-    }
 
-    return {};
-  }, [closable]);
-  const closeContent = close === undefined ? (closableObj.closeIcon ?? 'x') : close;
-  const mergedClosable = close !== undefined ? close !== null : !!closable;
-  const ariaProps = pickAttrs(closableObj, true);
-
-  if (offset) {
-    offsetRef.current = offset;
-  }
+  const [closableEnabled, closableConfig, closeBtnAriaProps] = useClosable(closable);
+  const closeContent = close === undefined ? closableConfig.closeIcon : close;
+  const mergedClosable = close !== undefined ? close !== null : closableEnabled;
 
   // ======================== Duration ========================
   const [hovering, setHovering] = React.useState(false);
@@ -112,14 +99,13 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   const [onResume, onPause] = useNoticeTimer(
     duration,
     () => {
-      closableObj.onClose?.();
+      closableConfig.onClose?.();
       onEventClose();
     },
     setPercent,
     !!showProgress,
   );
 
-  const mergedOffset = offset ?? offsetRef.current;
   const validPercent = 100 - Math.min(Math.max(percent * 100, 0), 100);
 
   React.useEffect(() => {
@@ -150,6 +136,14 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     }
     onMouseLeave?.(event);
   }
+
+  // ======================== Position ========================
+  const offsetRef = React.useRef(offset);
+  if (offset) {
+    offsetRef.current = offset;
+  }
+
+  const mergedOffset = offset ?? offsetRef.current;
 
   // ========================= Render =========================
   return (
@@ -186,18 +180,18 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
         <button
           className={clsx(`${noticePrefixCls}-close`, classNames?.close)}
           aria-label="Close"
-          {...ariaProps}
+          {...closeBtnAriaProps}
           style={styles?.close}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.code === 'Enter') {
-              closableObj.onClose?.();
+              closableConfig.onClose?.();
               onEventClose();
             }
           }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            closableObj.onClose?.();
+            closableConfig.onClose?.();
             onEventClose();
           }}
         >

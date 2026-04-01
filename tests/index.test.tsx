@@ -68,6 +68,26 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.test-icon').textContent).toEqual('test-close-icon');
   });
 
+  it('works with default close icon and aria props', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        content: <p className="test">1</p>,
+        closable: {
+          'aria-describedby': 'custom-close',
+        },
+        duration: 0,
+      });
+    });
+
+    const closeBtn = document.querySelector('.rc-notification-notice-close');
+
+    expect(document.querySelectorAll('.test')).toHaveLength(1);
+    expect(closeBtn?.textContent).toEqual('x');
+    expect(closeBtn).toHaveAttribute('aria-describedby', 'custom-close');
+  });
+
   it('works with multi instance', () => {
     const { instance } = renderDemo();
 
