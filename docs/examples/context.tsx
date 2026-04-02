@@ -7,7 +7,7 @@ import motion from './motion';
 const Context = React.createContext({ name: 'light' });
 
 const NOTICE = {
-  content: <span>simple show</span>,
+  description: <span>simple show</span>,
   onClose() {
     console.log('simple close');
   },
@@ -24,7 +24,7 @@ const Demo = () => {
         onClick={() => {
           open({
             ...NOTICE,
-            content: <Context.Consumer>{({ name }) => `Hi ${name}!`}</Context.Consumer>,
+            description: <Context.Consumer>{({ name }) => `Hi ${name}!`}</Context.Consumer>,
             props: {
               'data-testid': 'my-data-testid',
             },

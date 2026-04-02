@@ -7,7 +7,7 @@ import motion from './motion';
 const Context = React.createContext({ name: 'light' });
 
 const getConfig = () => ({
-  content: `${Array(Math.round(Math.random() * 5) + 1)
+  description: `${Array(Math.round(Math.random() * 5) + 1)
     .fill(1)
     .map(() => new Date().toISOString())
     .join('\n')}`,

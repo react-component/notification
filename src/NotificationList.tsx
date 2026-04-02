@@ -191,7 +191,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   style={config.style}
                   classNames={{
                     root: clsx(classNames?.root, config.classNames?.root),
-                    content: clsx(classNames?.content, config.classNames?.content),
+                    icon: clsx(classNames?.icon, config.classNames?.icon),
+                    section: clsx(classNames?.section, config.classNames?.section),
                     close: clsx(classNames?.close, config.classNames?.close),
                     progress: clsx(classNames?.progress, config.classNames?.progress),
                   }}
@@ -200,9 +201,13 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                       ...styles?.root,
                       ...config.styles?.root,
                     },
-                    content: {
-                      ...styles?.content,
-                      ...config.styles?.content,
+                    icon: {
+                      ...styles?.icon,
+                      ...config.styles?.icon,
+                    },
+                    section: {
+                      ...styles?.section,
+                      ...config.styles?.section,
                     },
                     close: {
                       ...styles?.close,

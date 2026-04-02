@@ -41,7 +41,7 @@ describe('Notification.Hooks', () => {
             onClick={() => {
               api.open({
                 duration: 0.1,
-                content: (
+                description: (
                   <Context.Consumer>
                     {({ name }) => <div className="context-content">{name}</div>}
                   </Context.Consumer>
@@ -78,14 +78,14 @@ describe('Notification.Hooks', () => {
               api.open({
                 key: 'little',
                 duration: 1000,
-                content: <div className="context-content">light</div>,
+                description: <div className="context-content">light</div>,
               });
 
               setTimeout(() => {
                 api.open({
                   key: 'little',
                   duration: 1000,
-                  content: <div className="context-content">bamboo</div>,
+                  description: <div className="context-content">bamboo</div>,
                 });
               }, 500);
             }}
@@ -115,7 +115,7 @@ describe('Notification.Hooks', () => {
 
     act(() => {
       instance.open({
-        content: <div className="bamboo" />,
+        description: <div className="bamboo" />,
       });
     });
 
@@ -129,7 +129,7 @@ describe('Notification.Hooks', () => {
     // Can be override
     act(() => {
       instance.open({
-        content: <div className="little" />,
+        description: <div className="little" />,
         duration: 1,
       });
     });
@@ -142,7 +142,7 @@ describe('Notification.Hooks', () => {
     // Can be undefined
     act(() => {
       instance.open({
-        content: <div className="light" />,
+        description: <div className="light" />,
         duration: undefined,
       });
     });
@@ -171,7 +171,7 @@ describe('Notification.Hooks', () => {
 
     act(() => {
       instance.open({
-        content: <div className="bamboo" />,
+        description: <div className="bamboo" />,
         style: { color: 'red' },
         className: 'custom-notice',
       });
@@ -191,7 +191,7 @@ describe('Notification.Hooks', () => {
 
     act(() => {
       instance.open({
-        content: <div className="bamboo" />,
+        description: <div className="bamboo" />,
         duration: 0,
         closable: true,
         classNames: {
@@ -212,7 +212,7 @@ describe('Notification.Hooks', () => {
 
     act(() => {
       instance.open({
-        content: <div className="bamboo" />,
+        description: <div className="bamboo" />,
         duration: 0,
       });
     });

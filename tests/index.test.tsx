@@ -37,7 +37,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         duration: 0.1,
       });
     });
@@ -56,7 +56,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         closable: {
           closeIcon: <span className="test-icon">test-close-icon</span>,
         },
@@ -73,7 +73,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         closable: {
           'aria-describedby': 'custom-close',
         },
@@ -93,13 +93,13 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         duration: 0.1,
       });
     });
     act(() => {
       instance.open({
-        content: <p className="test">2</p>,
+        description: <p className="test">2</p>,
         duration: 0.1,
       });
     });
@@ -117,7 +117,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="test" className="test">
             222222
           </p>
@@ -146,7 +146,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="test" className="test">
             222222
           </p>
@@ -174,7 +174,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p className="test">
             <button type="button" id="closeButton" onClick={() => close(key)}>
               close
@@ -207,7 +207,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="not-updatable" className="not-updatable">
             {notUpdatableValue}
           </p>
@@ -218,7 +218,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="updatable" className="updatable">
             {value}
           </p>
@@ -233,7 +233,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="updatable" className="updatable">
             {newValue}
           </p>
@@ -264,7 +264,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p id="freeze" className="freeze">
             freeze
           </p>
@@ -297,7 +297,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
       });
     });
 
@@ -335,7 +335,7 @@ describe('Notification.Basic', () => {
 
       act(() => {
         instance.open({
-          content: (
+          description: (
             <p id="not-freeze" className="not-freeze">
               not freeze
             </p>
@@ -363,7 +363,7 @@ describe('Notification.Basic', () => {
 
       act(() => {
         instance.open({
-          content: <p className="test">1</p>,
+          description: <p className="test">1</p>,
         });
       });
 
@@ -406,7 +406,7 @@ describe('Notification.Basic', () => {
       // First
       act(() => {
         instance.open({
-          content: <div className="max-count">bamboo</div>,
+          description: <div className="max-count">bamboo</div>,
           key: 'bamboo',
           duration: 0,
         });
@@ -415,7 +415,7 @@ describe('Notification.Basic', () => {
       // Next
       act(() => {
         instance.open({
-          content: <div className="max-count">bamboo</div>,
+          description: <div className="max-count">bamboo</div>,
           key: 'bamboo',
           duration: 0,
         });
@@ -436,21 +436,21 @@ describe('Notification.Basic', () => {
       const value = 'updated last';
       act(() => {
         instance.open({
-          content: <span className="test-maxcount">simple show</span>,
+          description: <span className="test-maxcount">simple show</span>,
           duration: 0,
         });
       });
 
       act(() => {
         instance.open({
-          content: <span className="test-maxcount">simple show</span>,
+          description: <span className="test-maxcount">simple show</span>,
           duration: 0,
         });
       });
 
       act(() => {
         instance.open({
-          content: <span className="test-maxcount">{value}</span>,
+          description: <span className="test-maxcount">{value}</span>,
           duration: 0,
         });
       });
@@ -470,7 +470,7 @@ describe('Notification.Basic', () => {
 
       act(() => {
         instance.open({
-          content: <span className="auto-remove">bamboo</span>,
+          description: <span className="auto-remove">bamboo</span>,
           duration: 99,
         });
       });
@@ -478,7 +478,7 @@ describe('Notification.Basic', () => {
 
       act(() => {
         instance.open({
-          content: <span className="auto-remove">light</span>,
+          description: <span className="auto-remove">light</span>,
           duration: 0.5,
         });
       });
@@ -502,7 +502,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: (
+        description: (
           <p className="test">
             <button type="button" id="closeButton" onClick={close.bind(null, key)}>
               close
@@ -528,7 +528,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         closable: true,
         onClick: () => {
           clickCount += 1;
@@ -549,7 +549,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <span className="test-data-attributes">simple show</span>,
+        description: <span className="test-data-attributes">simple show</span>,
         duration: 3,
         className: 'notice-class',
         props: {
@@ -571,7 +571,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <span className="test-aria-attributes">simple show</span>,
+        description: <span className="test-aria-attributes">simple show</span>,
         duration: 3,
         className: 'notice-class',
         props: {
@@ -592,7 +592,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <span className="test-aria-attributes">simple show</span>,
+        description: <span className="test-aria-attributes">simple show</span>,
         duration: 3,
         className: 'notice-class',
         props: { role: 'alert' },
@@ -767,14 +767,14 @@ describe('Notification.Basic', () => {
               api.open({
                 key: 'little',
                 duration: 1,
-                content: <div className="context-content">light</div>,
+                description: <div className="context-content">light</div>,
               });
 
               setTimeout(() => {
                 api.open({
                   key: 'little',
                   duration: 1,
-                  content: <div className="context-content">bamboo</div>,
+                  description: <div className="context-content">bamboo</div>,
                   onClose,
                 });
               }, 1100);
@@ -811,7 +811,7 @@ describe('Notification.Basic', () => {
                 api.open({
                   key: 'little',
                   duration: 1,
-                  content: <div className="context-content">light</div>,
+                  description: <div className="context-content">light</div>,
                   closable: { onClose },
                 });
               }}
@@ -843,7 +843,7 @@ describe('Notification.Basic', () => {
                 api.open({
                   key: 'little',
                   duration: 1,
-                  content: <div className="context-content">light</div>,
+                  description: <div className="context-content">light</div>,
                   onClose,
                   closable: { onClose: closableOnClose },
                 });
@@ -876,7 +876,7 @@ describe('Notification.Basic', () => {
                 api.open({
                   key: 'little',
                   duration: 1,
-                  content: <div className="context-content">light</div>,
+                  description: <div className="context-content">light</div>,
                 });
               }}
             />
@@ -902,7 +902,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         closable: true,
         onClose: () => {
           closeCount += 1;
@@ -925,7 +925,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
-        content: <p className="test">1</p>,
+        description: <p className="test">1</p>,
         duration: 0,
       });
     });
@@ -947,7 +947,7 @@ describe('Notification.Basic', () => {
 
       act(() => {
         instance.open({
-          content: <p className="test">1</p>,
+          description: <p className="test">1</p>,
           showProgress: true,
         });
       });
@@ -983,7 +983,7 @@ describe('Notification.Basic', () => {
               data-testid="show-notification"
               onClick={() => {
                 api.open({
-                  content: `Test Notification`,
+                  description: `Test Notification`,
                 });
               }}
             >
@@ -1020,7 +1020,7 @@ describe('Notification.Basic', () => {
             data-testid="show-notification"
             onClick={() => {
               api.open({
-                content: `Test Notification`,
+                description: `Test Notification`,
                 closable: { 'aria-label': 'xxx' },
               });
             }}

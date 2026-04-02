@@ -32,7 +32,7 @@ const App = () => {
             type="button"
             onClick={() => {
               notice.open({
-                content: `${new Date().toISOString()}`,
+                description: `${new Date().toISOString()}`,
               });
             }}
           >
@@ -44,7 +44,7 @@ const App = () => {
             type="button"
             onClick={() => {
               notice.open({
-                content: `${Array(Math.round(Math.random() * 5) + 1)
+                description: `${Array(Math.round(Math.random() * 5) + 1)
                   .fill(1)
                   .map(() => new Date().toISOString())
                   .join('\n')}`,
@@ -60,7 +60,7 @@ const App = () => {
             type="button"
             onClick={() => {
               notice.open({
-                content: `${Array(5)
+                description: `${Array(5)
                   .fill(1)
                   .map(() => new Date().toISOString())
                   .join('\n')}`,
@@ -78,7 +78,7 @@ const App = () => {
             type="button"
             onClick={() => {
               notice.open({
-                content: `No Close! ${new Date().toISOString()}`,
+                description: `No Close! ${new Date().toISOString()}`,
                 duration: null,
                 closable: false,
                 key: 'No Close',

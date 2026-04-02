@@ -7,7 +7,8 @@ import useClosable, { type ClosableType } from './hooks/useClosable';
 export interface NotificationClassNames {
   wrapper?: string;
   root?: string;
-  content?: string;
+  icon?: string;
+  section?: string;
   close?: string;
   progress?: string;
 }
@@ -15,7 +16,8 @@ export interface NotificationClassNames {
 export interface NotificationStyles {
   wrapper?: React.CSSProperties;
   root?: React.CSSProperties;
-  content?: React.CSSProperties;
+  icon?: React.CSSProperties;
+  section?: React.CSSProperties;
   close?: React.CSSProperties;
   progress?: React.CSSProperties;
 }
@@ -29,7 +31,9 @@ export interface NotificationProps {
   styles?: NotificationStyles;
 
   // UI
-  content?: React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  icon?: React.ReactNode;
   actions?: React.ReactNode;
   closable?: ClosableType;
   offset?: {
@@ -63,7 +67,9 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     styles,
 
     // UI
-    content,
+    title,
+    description,
+    icon,
     actions,
     closable,
     offset,
@@ -166,11 +172,24 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       onMouseEnter={onInternalMouseEnter}
       onMouseLeave={onInternalMouseLeave}
     >
-      <div
-        className={clsx(`${noticePrefixCls}-content`, classNames?.content)}
-        style={styles?.content}
-      >
-        {content}
+      <div className={classNames?.wrapper} style={styles?.wrapper}>
+        {icon && (
+          <div className={clsx(`${noticePrefixCls}-icon`, classNames?.icon)} style={styles?.icon}>
+            {icon}
+          </div>
+        )}
+
+        <div
+          className={clsx(`${noticePrefixCls}-section`, classNames?.section)}
+          style={styles?.section}
+        >
+          {title !== undefined && title !== null && (
+            <div className={`${noticePrefixCls}-title`}>{title}</div>
+          )}
+          {description !== undefined && description !== null && (
+            <div className={`${noticePrefixCls}-description`}>{description}</div>
+          )}
+        </div>
       </div>
 
       {mergedClosable && (

@@ -17,7 +17,7 @@ describe('stack', () => {
             type="button"
             onClick={() => {
               api.open({
-                content: <div className="context-content">Test</div>,
+                description: <div className="context-content">Test</div>,
                 duration: false,
               });
             }}
@@ -56,7 +56,7 @@ describe('stack', () => {
             type="button"
             onClick={() => {
               api.open({
-                content: <div className="context-content">Test</div>,
+                description: <div className="context-content">Test</div>,
                 duration: false,
                 closable: true,
               });
@@ -102,7 +102,7 @@ describe('stack', () => {
               countRef.current += 1;
 
               api.open({
-                content: <div className={`context-content-${index}`}>Test {index}</div>,
+                description: <div className={`context-content-${index}`}>Test {index}</div>,
                 duration: false,
               });
             }}
@@ -164,12 +164,12 @@ describe('stack', () => {
         configList={[
           {
             key: 'first',
-            content: <div className="context-content-first">First</div>,
+            description: <div className="context-content-first">First</div>,
             duration: false,
           },
           {
             key: 'second',
-            content: <div className="context-content-second">Second</div>,
+            description: <div className="context-content-second">Second</div>,
             duration: false,
           },
         ]}

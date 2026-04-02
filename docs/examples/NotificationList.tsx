@@ -23,7 +23,7 @@ const Demo = () => {
     (key: number): NotificationListConfig => ({
       key,
       duration: false,
-      content: `Config ${key + 1}`,
+      description: `Config ${key + 1}`,
     }),
     [],
   );

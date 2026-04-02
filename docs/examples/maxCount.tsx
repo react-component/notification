@@ -12,7 +12,7 @@ export default () => {
       <button
         onClick={() => {
           notice.open({
-            content: `${new Date().toISOString()}`,
+            description: `${new Date().toISOString()}`,
           });
         }}
       >
