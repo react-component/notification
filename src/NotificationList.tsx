@@ -16,7 +16,7 @@ import useStack from './hooks/useStack';
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 export type { StackConfig } from './interface';
 
-export interface NotificationListConfig extends NotificationProps {
+export interface NotificationListConfig extends Omit<NotificationProps, 'prefixCls'> {
   key: React.Key;
   placement?: Placement;
   times?: number;

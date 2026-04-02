@@ -22,7 +22,7 @@ export interface NotificationStyles {
 
 export interface NotificationProps {
   // Style
-  prefixCls?: string;
+  prefixCls: string;
   className?: string;
   style?: React.CSSProperties;
   classNames?: NotificationClassNames;
@@ -31,7 +31,6 @@ export interface NotificationProps {
   // UI
   content?: React.ReactNode;
   actions?: React.ReactNode;
-  close?: React.ReactNode;
   closable?: ClosableType;
   offset?: {
     x: number;
@@ -50,13 +49,14 @@ export interface NotificationProps {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
+  /** @deprecated Please use `closable.onClose` instead. */
   onClose?: () => void;
 }
 
 const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props, ref) => {
   const {
     // Style
-    prefixCls = 'rc-notification',
+    prefixCls,
     className,
     style,
     classNames,
@@ -65,7 +65,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     // UI
     content,
     actions,
-    close,
     closable,
     offset,
     props: rootProps,
@@ -87,24 +86,16 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   const noticePrefixCls = `${prefixCls}-notice`;
 
   // ========================= Close ==========================
-  const onEventClose = useEvent(onClose);
-
-  const [closableEnabled, closableConfig, closeBtnAriaProps] = useClosable(closable);
-  const closeContent = close === undefined ? closableConfig.closeIcon : close;
-  const mergedClosable = close !== undefined ? close !== null : closableEnabled;
+  const [mergedClosable, closableConfig, closeBtnAriaProps] = useClosable(closable);
+  const onInternalClose = useEvent(() => {
+    closableConfig.onClose?.();
+    onClose?.();
+  });
 
   // ======================== Duration ========================
   const [hovering, setHovering] = React.useState(false);
 
-  const [onResume, onPause] = useNoticeTimer(
-    duration,
-    () => {
-      closableConfig.onClose?.();
-      onEventClose();
-    },
-    setPercent,
-    !!showProgress,
-  );
+  const [onResume, onPause] = useNoticeTimer(duration, onInternalClose, setPercent, !!showProgress);
 
   const validPercent = 100 - Math.min(Math.max(percent * 100, 0), 100);
 
@@ -135,6 +126,12 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       onResume();
     }
     onMouseLeave?.(event);
+  }
+
+  function onInternalCloseClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    onInternalClose();
   }
 
   // ======================== Position ========================
@@ -182,22 +179,13 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
           aria-label="Close"
           {...closeBtnAriaProps}
           style={styles?.close}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.code === 'Enter') {
-              closableConfig.onClose?.();
-              onEventClose();
-            }
-          }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closableConfig.onClose?.();
-            onEventClose();
-          }}
+          onClick={onInternalCloseClick}
         >
-          {closeContent}
+          {closableConfig.closeIcon}
         </button>
       )}
+
+      {actions && <div className="actions">{actions}</div>}
 
       {showProgress && typeof duration === 'number' && duration > 0 && (
         <progress
@@ -205,12 +193,8 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
           max="100"
           value={validPercent}
           style={styles?.progress}
-        >
-          {validPercent}%
-        </progress>
+        />
       )}
-
-      {actions && <div className="actions">{actions}</div>}
     </div>
   );
 });

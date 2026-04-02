@@ -33,7 +33,7 @@ export default function useClosable(
   const closableConfig = React.useMemo<ParsedClosableConfig>(
     () => ({
       ...closableObj,
-      closeIcon: closableObj.closeIcon ?? '×',
+      closeIcon: 'closeIcon' in closableObj ? closableObj.closeIcon : '×',
       disabled: closableObj.disabled ?? false,
     }),
     [closableObj],
