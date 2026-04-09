@@ -86,57 +86,77 @@ describe('stack', () => {
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
   });
 
-  it('passes stack offset to list position when collapsed', () => {
-    const Demo = () => {
-      const countRef = React.useRef(0);
-      const [api, holder] = useNotification({
-        stack: { threshold: 1, offset: 12 },
+  it('passes stack offset to list position by bottom edge when collapsed', () => {
+    const offsetHeightSpy = vi
+      .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+      .mockImplementation(function mockOffsetHeight() {
+        if (this.classList?.contains('rc-notification-notice')) {
+          if (this.querySelector('.context-content-first')) {
+            return 80;
+          }
+
+          if (this.querySelector('.context-content-second')) {
+            return 40;
+          }
+        }
+
+        return 0;
       });
 
-      return (
-        <>
-          <button
-            type="button"
-            onClick={() => {
-              const index = countRef.current;
-              countRef.current += 1;
+    render(
+      <NotificationList
+        placement="topRight"
+        stack={{ threshold: 1, offset: 12 }}
+        configList={[
+          {
+            key: 'first',
+            description: <div className="context-content-first">First</div>,
+            duration: false,
+          },
+          {
+            key: 'second',
+            description: <div className="context-content-second">Second</div>,
+            duration: false,
+          },
+        ]}
+      />,
+    );
 
-              api.open({
-                description: <div className={`context-content-${index}`}>Test {index}</div>,
-                duration: false,
-              });
-            }}
-          />
-          {holder}
-        </>
-      );
-    };
+    const firstNotice = document
+      .querySelector('.context-content-first')
+      ?.closest<HTMLElement>('.rc-notification-notice');
+    const secondNotice = document
+      .querySelector('.context-content-second')
+      ?.closest<HTMLElement>('.rc-notification-notice');
 
-    const { container } = render(<Demo />);
+    const getBottom = (notice: HTMLElement | undefined | null) =>
+      (notice ? parseFloat(notice.style.getPropertyValue('--notification-y')) : 0) +
+      (notice?.offsetHeight ?? 0);
 
-    for (let i = 0; i < 2; i++) {
-      fireEvent.click(container.querySelector('button'));
-    }
-
-    const notices = Array.from(document.querySelectorAll<HTMLElement>('.rc-notification-notice'));
-    const offsetList = notices.map((notice) => notice.style.getPropertyValue('--notification-y'));
-
-    expect(notices[0].querySelector('.context-content-0')).toBeTruthy();
-    expect(notices[1].querySelector('.context-content-1')).toBeTruthy();
-    expect(offsetList).toEqual(['12px', '0px']);
+    expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('-28px');
+    expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
+    expect(getBottom(firstNotice) - getBottom(secondNotice)).toBe(12);
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
 
-    expect(
-      notices.every((notice) => notice.style.getPropertyValue('--notification-y') === '0px'),
-    ).toBeTruthy();
+    expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('40px');
+    expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
+
+    offsetHeightSpy.mockRestore();
   });
 
   it('passes list css gap to list position when expanded', () => {
     const offsetHeightSpy = vi
       .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
       .mockImplementation(function mockOffsetHeight() {
-        return this.classList?.contains('rc-notification-notice-wrapper') ? 50 : 0;
+        if (
+          this.classList?.contains('rc-notification-notice-wrapper') ||
+          this.classList?.contains('rc-notification-notice')
+        ) {
+          return 50;
+        }
+
+        return 0;
       });
     const originGetComputedStyle = window.getComputedStyle;
     const getComputedStyleSpy = vi

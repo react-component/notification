@@ -16,23 +16,25 @@ export default function useListPosition(
 
   const notificationPosition = React.useMemo(() => {
     let offsetY = 0;
+    let offsetBottom = 0;
     const nextNotificationPosition = new Map<string, NodePosition>();
 
     configList
       .slice()
       .reverse()
-      .forEach((config) => {
+      .forEach((config, index) => {
         const key = String(config.key);
+        const height = sizeMap[key]?.height ?? 0;
         const nodePosition = {
           x: 0,
-          y: offsetY,
+          y: stack && index > 0 ? offsetBottom + (stack.offset ?? 0) - height : offsetY,
         };
 
         nextNotificationPosition.set(key, nodePosition);
-        offsetY += (stack ? stack.offset : sizeMap[key]?.height) ?? 0;
-
-        if (!stack) {
-          offsetY += gap;
+        if (stack) {
+          offsetBottom = nodePosition.y + height;
+        } else {
+          offsetY += height + gap;
         }
       });
 
