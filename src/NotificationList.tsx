@@ -27,7 +27,7 @@ export interface NotificationListConfig extends Omit<NotificationProps, 'prefixC
 export interface NotificationListProps {
   configList?: NotificationListConfig[];
   prefixCls?: string;
-  placement?: Placement;
+  placement: Placement;
   pauseOnHover?: boolean;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
@@ -38,14 +38,6 @@ export interface NotificationListProps {
   style?: React.CSSProperties;
   onNoticeClose?: (key: React.Key) => void;
   onAllRemoved?: (placement: Placement) => void;
-}
-
-function assignRef<T>(ref: React.Ref<T>, value: T | null) {
-  if (typeof ref === 'function') {
-    ref(value);
-  } else if (ref) {
-    (ref as React.MutableRefObject<T | null>).current = value;
-  }
 }
 
 const NotificationList: React.FC<NotificationListProps> = (props) => {
@@ -118,8 +110,6 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   // ========================= Render =========================
   const listPrefixCls = `${prefixCls}-list`;
-  const itemPrefixCls = `${listPrefixCls}-item`;
-  const noticeWrapperCls = `${prefixCls}-notice-wrapper`;
 
   return (
     <div
