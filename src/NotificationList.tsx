@@ -90,10 +90,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   const [gap, setGap] = React.useState(0);
   const [notificationPosition, setNodeSize] = useListPosition(configList, stackPosition, gap);
-  const { contentRef, onWheel, scrollOffset, viewportRef } = useListScroll(
-    keyList,
-    notificationPosition,
-  );
+  const { contentRef, onTouchEnd, onTouchMove, onTouchStart, onWheel, scrollOffset, viewportRef } =
+    useListScroll(keyList, notificationPosition);
 
   React.useEffect(() => {
     const listNode = contentRef.current;
@@ -124,6 +122,9 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
           [`${prefixCls}-stack-expanded`]: expanded,
         },
       )}
+      onTouchEnd={onTouchEnd}
+      onTouchMove={onTouchMove}
+      onTouchStart={onTouchStart}
       onWheel={onWheel}
       onMouseEnter={() => {
         setListHovering(true);

@@ -11,8 +11,10 @@ function getViewportInnerHeight(node: HTMLDivElement | null) {
   }
 
   const { paddingBottom, paddingTop } = window.getComputedStyle(node);
+  const topPadding = parseFloat(paddingTop) || 0;
+  const bottomPadding = parseFloat(paddingBottom) || 0;
 
-  return node.clientHeight - parseFloat(paddingTop) - parseFloat(paddingBottom);
+  return node.clientHeight - topPadding - bottomPadding;
 }
 
 function getMaxScroll(viewportNode: HTMLDivElement | null, contentNode: HTMLDivElement | null) {
@@ -28,6 +30,8 @@ export default function useListScroll(
 ) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
+  const touchStartYRef = React.useRef<number | null>(null);
+  const touchStartOffsetRef = React.useRef(0);
   const prevKeyListRef = React.useRef<string[]>(keyList);
   const prevNotificationPositionRef = React.useRef<Map<string, NodePosition>>(new Map());
   const scrollOffsetRef = React.useRef(0);
@@ -107,8 +111,50 @@ export default function useListScroll(
     [syncScrollOffset],
   );
 
+  const onTouchStart = React.useCallback((event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+
+    if (!touch) {
+      return;
+    }
+
+    touchStartYRef.current = touch.clientY;
+    touchStartOffsetRef.current = scrollOffsetRef.current;
+  }, []);
+
+  const onTouchMove = React.useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const touch = event.touches[0];
+      const touchStartY = touchStartYRef.current;
+      const maxScroll = getMaxScroll(viewportRef.current, contentRef.current);
+
+      if (!touch || touchStartY === null || !maxScroll) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const nextOffset = clampScrollOffset(
+        touchStartOffsetRef.current + touch.clientY - touchStartY,
+        maxScroll,
+      );
+
+      if (nextOffset !== scrollOffsetRef.current) {
+        syncScrollOffset(nextOffset);
+      }
+    },
+    [syncScrollOffset],
+  );
+
+  const onTouchEnd = React.useCallback(() => {
+    touchStartYRef.current = null;
+  }, []);
+
   return {
     contentRef,
+    onTouchEnd,
+    onTouchMove,
+    onTouchStart,
     onWheel,
     scrollOffset,
     viewportRef,
