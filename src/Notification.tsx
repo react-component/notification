@@ -47,6 +47,8 @@ export interface NotificationProps {
     x: number;
     y: number;
   };
+  notificationIndex?: number;
+  stackInThreshold?: boolean;
   props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
 
   // Behavior
@@ -81,6 +83,8 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     actions,
     closable,
     offset,
+    notificationIndex,
+    stackInThreshold,
     props: rootProps,
 
     // Behavior
@@ -156,6 +160,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   const mergedOffset = offset ?? offsetRef.current;
+  const mergedNotificationIndex = notificationIndex ?? 0;
 
   // ======================== Content =========================
   const titleNode =
@@ -199,24 +204,32 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   // ========================= Render =========================
+  const mergedStyle: React.CSSProperties & {
+    '--notification-index'?: number;
+    '--notification-x'?: string;
+    '--notification-y'?: string;
+  } = {
+    '--notification-index': mergedNotificationIndex,
+    ...styles?.root,
+    ...style,
+  };
+
+  if (mergedOffset) {
+    mergedStyle['--notification-x'] = `${mergedOffset.x}px`;
+    mergedStyle['--notification-y'] = `${mergedOffset.y}px`;
+  }
+
   return (
     <div
       {...rootProps}
       ref={ref}
+      data-notification-index={mergedNotificationIndex}
       // Styles
       className={clsx(noticePrefixCls, className, classNames?.root, {
         [`${noticePrefixCls}-closable`]: mergedClosable,
+        [`${noticePrefixCls}-stack-in-threshold`]: stackInThreshold,
       })}
-      style={{
-        ...styles?.root,
-        ...(mergedOffset
-          ? {
-              '--notification-x': `${mergedOffset.x}px`,
-              '--notification-y': `${mergedOffset.y}px`,
-            }
-          : null),
-        ...style,
-      }}
+      style={mergedStyle}
       // Events
       onClick={onClick}
       onMouseEnter={onInternalMouseEnter}

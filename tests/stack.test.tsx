@@ -41,6 +41,25 @@ describe('stack', () => {
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(5);
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
 
+    const notices = Array.from(document.querySelectorAll<HTMLElement>('.rc-notification-notice'));
+    expect(notices.map((notice) => notice.getAttribute('data-notification-index'))).toEqual([
+      '4',
+      '3',
+      '2',
+      '1',
+      '0',
+    ]);
+    expect(
+      notices
+        .slice(0, 2)
+        .every((notice) => !notice.matches('.rc-notification-notice-stack-in-threshold')),
+    ).toBeTruthy();
+    expect(
+      notices
+        .slice(2)
+        .every((notice) => notice.matches('.rc-notification-notice-stack-in-threshold')),
+    ).toBeTruthy();
+
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
   });
@@ -203,6 +222,8 @@ describe('stack', () => {
       .querySelector('.context-content-second')
       ?.closest<HTMLElement>('.rc-notification-notice');
 
+    expect(firstNotice?.getAttribute('data-notification-index')).toBe('1');
+    expect(secondNotice?.getAttribute('data-notification-index')).toBe('0');
     expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('58px');
     expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
 

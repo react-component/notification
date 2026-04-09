@@ -152,9 +152,11 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             }
           }}
         >
-          {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
-            const { key, placement: _placement, ...notificationConfig } = config;
+          {({ config, className: motionClassName, style: motionStyle, index = 0 }, nodeRef) => {
+            const { key, placement: itemPlacement, ...notificationConfig } = config;
             const strKey = String(key);
+            const notificationIndex = keyList.length - index - 1;
+            const stackInThreshold = stackEnabled && notificationIndex < threshold;
 
             const setItemRef = (node: HTMLDivElement | null) => {
               setNodeSize(strKey, node);
@@ -167,6 +169,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 ref={composeRef(nodeRef, setItemRef)}
                 prefixCls={prefixCls}
                 offset={notificationPosition.get(strKey)}
+                notificationIndex={notificationIndex}
+                stackInThreshold={stackInThreshold}
                 className={clsx(contextClassNames?.notice, config.className)}
                 style={config.style}
                 classNames={{

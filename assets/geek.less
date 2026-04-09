@@ -1,5 +1,6 @@
 @notificationPrefixCls: notification;
 @notificationMotionDuration: 0.3s;
+// @notificationMotionDuration: 10s;
 @notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
 @notificationMotionOffset: 64px;
 
@@ -42,10 +43,13 @@
     // transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
     right: var(--notification-x, 0);
     top: var(--notification-y, 0);
+    transform: scale(var(--notification-scale, 1));
     transition:
       transform @notificationMotionDuration @notificationMotionEase,
       inset @notificationMotionDuration @notificationMotionEase,
+      clip-path @notificationMotionDuration @notificationMotionEase,
       opacity @notificationMotionDuration @notificationMotionEase;
+    transform-origin: center bottom;
     padding: 14px 16px;
     border: 2px solid #111;
     border-radius: 14px;
@@ -89,8 +93,21 @@
   }
 
   &-stack {
+    .@{notificationPrefixCls}-notice {
+      clip-path: inset(-50% -50% -50% -50%);
+    }
+
     &:not(.@{notificationPrefixCls}-stack-expanded) {
-      .@{notificationPrefixCls}-list-item:nth-last-child(n + 4) {
+      .@{notificationPrefixCls}-notice {
+        --notification-scale: ~'calc(1 - min(var(--notification-index, 0), 2) * 0.06)';
+        clip-path: inset(50% -50% -50% -50%);
+      }
+
+      .@{notificationPrefixCls}-notice[data-notification-index='0'] {
+        clip-path: inset(-50% -50% -50% -50%);
+      }
+
+      .@{notificationPrefixCls}-notice:not(.@{notificationPrefixCls}-notice-stack-in-threshold) {
         opacity: 0;
         pointer-events: none;
       }
@@ -106,28 +123,28 @@
 .notification-fade-appear-prepare,
 .notification-fade-enter-prepare {
   opacity: 0;
-  transform: translateX(@notificationMotionOffset);
+  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
   transition: none;
 }
 
 .notification-fade-appear-start,
 .notification-fade-enter-start {
   opacity: 0;
-  transform: translateX(@notificationMotionOffset);
+  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
 }
 
 .notification-fade-appear-active,
 .notification-fade-enter-active {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(0) scale(var(--notification-scale, 1));
 }
 
 .notification-fade-leave-start {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(0) scale(var(--notification-scale, 1));
 }
 
 .notification-fade-leave-active {
   opacity: 0;
-  transform: translateX(@notificationMotionOffset);
+  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
 }
