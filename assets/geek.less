@@ -24,6 +24,7 @@
     gap: 8px;
     width: 100%;
     pointer-events: none;
+    transition: transform @notificationMotionDuration @notificationMotionEase;
     will-change: transform;
   }
 
@@ -37,6 +38,10 @@
 
   &-stack-expanded {
     pointer-events: auto;
+
+    .@{notificationPrefixCls}-list-content {
+      transition: none;
+    }
   }
 
   &-notice {
