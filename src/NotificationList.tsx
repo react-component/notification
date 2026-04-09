@@ -13,6 +13,7 @@ import Notification, {
 import useListPosition from './hooks/useListPosition';
 import useListScroll from './hooks/useListScroll';
 import useStack from './hooks/useStack';
+import { composeRef } from '@rc-component/util/lib/ref';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 export type { StackConfig } from './interface';
@@ -165,29 +166,21 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             const { key, placement: _placement, ...notificationConfig } = config;
             const strKey = String(key);
 
+            const setItemRef = (node: HTMLDivElement | null) => {
+              setNodeSize(strKey, node);
+            };
+
             return (
               <div
-                key={key}
-                className={clsx(
-                  noticeWrapperCls,
-                  itemPrefixCls,
-                  motionClassName,
-                  classNames?.wrapper,
-                  config.classNames?.wrapper,
-                )}
-                ref={(node) => {
-                  assignRef(nodeRef, node);
-                  setNodeSize(strKey, node);
-                }}
+                className={clsx(noticeWrapperCls, itemPrefixCls, motionClassName)}
                 style={{
                   ...motionStyle,
-                  ...styles?.wrapper,
-                  ...config.styles?.wrapper,
                 }}
               >
                 <Notification
-                  key={config.times}
+                  key={key}
                   {...notificationConfig}
+                  ref={composeRef(nodeRef, setItemRef)}
                   prefixCls={prefixCls}
                   offset={notificationPosition.get(strKey)}
                   className={clsx(contextClassNames?.notice, config.className)}
