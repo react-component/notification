@@ -27,6 +27,7 @@ function getMaxScroll(viewportNode: HTMLDivElement | null, contentNode: HTMLDivE
 export default function useListScroll(
   keyList: string[],
   notificationPosition: Map<string, NodePosition>,
+  expanded = false,
 ) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -91,6 +92,14 @@ export default function useListScroll(
       resizeObserver.disconnect();
     };
   }, [syncScrollOffset]);
+
+  React.useEffect(() => {
+    if (!expanded) {
+      touchStartYRef.current = null;
+      touchStartOffsetRef.current = 0;
+      syncScrollOffset(0);
+    }
+  }, [expanded, syncScrollOffset]);
 
   const onWheel = React.useCallback(
     (event: React.WheelEvent<HTMLDivElement>) => {

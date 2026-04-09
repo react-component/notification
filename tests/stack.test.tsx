@@ -279,4 +279,53 @@ describe('stack', () => {
     clientHeightSpy.mockRestore();
     scrollHeightSpy.mockRestore();
   });
+
+  it('resets scroll offset when stack collapses after hover leave', () => {
+    const clientHeightSpy = vi
+      .spyOn(HTMLElement.prototype, 'clientHeight', 'get')
+      .mockImplementation(function mockClientHeight() {
+        if (this.classList?.contains('rc-notification-list')) {
+          return 120;
+        }
+
+        return 0;
+      });
+    const scrollHeightSpy = vi
+      .spyOn(HTMLElement.prototype, 'scrollHeight', 'get')
+      .mockImplementation(function mockScrollHeight() {
+        if (this.classList?.contains('rc-notification-list-content')) {
+          return 300;
+        }
+
+        return 0;
+      });
+
+    render(
+      <NotificationList
+        placement="topRight"
+        stack={{ threshold: 3 }}
+        configList={Array.from({ length: 5 }, (_, index) => ({
+          key: index,
+          description: `Notice ${index}`,
+          duration: false,
+        }))}
+      />,
+    );
+
+    const list = document.querySelector<HTMLElement>('.rc-notification-list');
+    const content = document.querySelector<HTMLElement>('.rc-notification-list-content');
+
+    fireEvent.mouseEnter(list!);
+    fireEvent.wheel(list!, { deltaY: 60 });
+
+    expect(content?.style.transform).toBe('translate3d(0, -60px, 0)');
+
+    fireEvent.mouseLeave(list!);
+
+    expect(list).not.toHaveClass('rc-notification-stack-expanded');
+    expect(content?.style.transform).toBe('translate3d(0, 0px, 0)');
+
+    clientHeightSpy.mockRestore();
+    scrollHeightSpy.mockRestore();
+  });
 });
