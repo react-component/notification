@@ -148,6 +148,47 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   const mergedOffset = offset ?? offsetRef.current;
 
+  // ======================== Content =========================
+  const titleNode =
+    title !== undefined && title !== null ? (
+      <div className={`${noticePrefixCls}-title`}>{title}</div>
+    ) : null;
+
+  const descNode =
+    description !== undefined && description !== null ? (
+      <div className={`${noticePrefixCls}-description`}>{description}</div>
+    ) : null;
+
+  let contentNode: React.ReactNode =
+    titleNode !== null || descNode !== null ? (
+      <>
+        {titleNode}
+        {descNode}
+      </>
+    ) : null;
+
+  if (contentNode) {
+    contentNode = (
+      <div
+        className={clsx(`${noticePrefixCls}-section`, classNames?.section)}
+        style={styles?.section}
+      >
+        {contentNode}
+      </div>
+    );
+  }
+
+  if (icon !== undefined && icon !== null) {
+    contentNode = (
+      <div className={classNames?.wrapper} style={styles?.wrapper}>
+        <div className={clsx(`${noticePrefixCls}-icon`, classNames?.icon)} style={styles?.icon}>
+          {icon}
+        </div>
+        {contentNode}
+      </div>
+    );
+  }
+
   // ========================= Render =========================
   return (
     <div
@@ -172,25 +213,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       onMouseEnter={onInternalMouseEnter}
       onMouseLeave={onInternalMouseLeave}
     >
-      <div className={classNames?.wrapper} style={styles?.wrapper}>
-        {icon && (
-          <div className={clsx(`${noticePrefixCls}-icon`, classNames?.icon)} style={styles?.icon}>
-            {icon}
-          </div>
-        )}
-
-        <div
-          className={clsx(`${noticePrefixCls}-section`, classNames?.section)}
-          style={styles?.section}
-        >
-          {title !== undefined && title !== null && (
-            <div className={`${noticePrefixCls}-title`}>{title}</div>
-          )}
-          {description !== undefined && description !== null && (
-            <div className={`${noticePrefixCls}-description`}>{description}</div>
-          )}
-        </div>
-      </div>
+      {contentNode}
 
       {mergedClosable && (
         <button
