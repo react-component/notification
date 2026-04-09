@@ -1,29 +1,24 @@
 import * as React from 'react';
 import type { NodePosition } from './useListPosition';
 
-function clampScrollOffset(offset: number, maxScroll: number) {
-  return Math.min(0, Math.max(-maxScroll, offset));
-}
-
-function getViewportInnerHeight(node: HTMLDivElement | null) {
-  if (!node) {
+/**
+ * Measures how much the list content can scroll inside the viewport.
+ */
+function getMaxScroll(viewportNode: HTMLDivElement | null, contentNode: HTMLDivElement | null) {
+  if (!viewportNode) {
     return 0;
   }
 
-  const { paddingBottom, paddingTop } = window.getComputedStyle(node);
-  const topPadding = parseFloat(paddingTop) || 0;
-  const bottomPadding = parseFloat(paddingBottom) || 0;
+  const { paddingBottom, paddingTop } = window.getComputedStyle(viewportNode);
+  const viewportHeight =
+    viewportNode.clientHeight - (parseFloat(paddingTop) || 0) - (parseFloat(paddingBottom) || 0);
 
-  return node.clientHeight - topPadding - bottomPadding;
+  return Math.max((contentNode?.scrollHeight ?? 0) - viewportHeight, 0);
 }
 
-function getMaxScroll(viewportNode: HTMLDivElement | null, contentNode: HTMLDivElement | null) {
-  const viewportHeight = getViewportInnerHeight(viewportNode);
-  const measuredContentHeight = contentNode?.scrollHeight ?? 0;
-
-  return Math.max(measuredContentHeight - viewportHeight, 0);
-}
-
+/**
+ * Manages wheel and touch scrolling for the notification list.
+ */
 export default function useListScroll(
   keyList: string[],
   notificationPosition: Map<string, NodePosition>,
@@ -31,46 +26,43 @@ export default function useListScroll(
 ) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
-  const touchStartYRef = React.useRef<number | null>(null);
-  const touchStartOffsetRef = React.useRef(0);
-  const prevKeyListRef = React.useRef<string[]>(keyList);
-  const prevNotificationPositionRef = React.useRef<Map<string, NodePosition>>(new Map());
+  const touchStartRef = React.useRef<{ y: number; offset: number } | null>(null);
+  const prevRef = React.useRef({ keyList, notificationPosition });
   const scrollOffsetRef = React.useRef(0);
   const [scrollOffset, setScrollOffset] = React.useState(0);
 
+  /**
+   * Applies the next offset and keeps it within the current scroll bounds.
+   */
   const syncScrollOffset = React.useCallback((nextOffset: number) => {
     const maxScroll = getMaxScroll(viewportRef.current, contentRef.current);
-    const mergedOffset = clampScrollOffset(nextOffset, maxScroll);
+    // Clamp the offset so the content never scrolls past its visible range.
+    const mergedOffset = Math.max(-maxScroll, Math.min(0, nextOffset));
 
     scrollOffsetRef.current = mergedOffset;
-    setScrollOffset((prev) => (prev === mergedOffset ? prev : mergedOffset));
+    setScrollOffset(mergedOffset);
   }, []);
 
   React.useLayoutEffect(() => {
-    const prevKeyList = prevKeyListRef.current;
-    const prevNotificationPosition = prevNotificationPositionRef.current;
+    const { keyList: prevKeyList, notificationPosition: prevNotificationPosition } =
+      prevRef.current;
+    let nextOffset = scrollOffsetRef.current;
 
-    if (scrollOffsetRef.current < 0) {
-      const prependCount = prevKeyList.length
-        ? keyList.findIndex((key) => key === prevKeyList[0])
-        : -1;
-      const removedCount = keyList.length ? prevKeyList.findIndex((key) => key === keyList[0]) : -1;
+    if (nextOffset < 0) {
+      const prevFirstKey = prevKeyList[0];
+      const firstKey = keyList[0];
+      const prependCount = prevFirstKey === undefined ? -1 : keyList.indexOf(prevFirstKey);
+      const removedCount = firstKey === undefined ? -1 : prevKeyList.indexOf(firstKey);
 
       if (prependCount > 0) {
-        const prependHeight = notificationPosition.get(prevKeyList[0])?.y ?? 0;
-        syncScrollOffset(scrollOffsetRef.current - prependHeight);
+        nextOffset -= notificationPosition.get(prevFirstKey)?.y ?? 0;
       } else if (removedCount > 0) {
-        const removedHeight = keyList[0] ? (prevNotificationPosition.get(keyList[0])?.y ?? 0) : 0;
-        syncScrollOffset(scrollOffsetRef.current + removedHeight);
-      } else {
-        syncScrollOffset(scrollOffsetRef.current);
+        nextOffset += prevNotificationPosition.get(firstKey)?.y ?? 0;
       }
-    } else {
-      syncScrollOffset(scrollOffsetRef.current);
     }
 
-    prevKeyListRef.current = keyList;
-    prevNotificationPositionRef.current = new Map(notificationPosition);
+    syncScrollOffset(nextOffset);
+    prevRef.current = { keyList, notificationPosition };
   }, [keyList, notificationPosition, syncScrollOffset]);
 
   React.useLayoutEffect(() => {
@@ -81,82 +73,69 @@ export default function useListScroll(
       return;
     }
 
-    const resizeObserver = new ResizeObserver(() => {
-      syncScrollOffset(scrollOffsetRef.current);
-    });
+    const resizeObserver = new ResizeObserver(() => syncScrollOffset(scrollOffsetRef.current));
 
     resizeObserver.observe(viewportNode);
     resizeObserver.observe(contentNode);
 
-    return () => {
-      resizeObserver.disconnect();
-    };
+    return () => resizeObserver.disconnect();
   }, [syncScrollOffset]);
 
   React.useEffect(() => {
-    if (!expanded) {
-      touchStartYRef.current = null;
-      touchStartOffsetRef.current = 0;
-      syncScrollOffset(0);
-    }
-  }, [expanded, syncScrollOffset]);
-
-  const onWheel = React.useCallback(
-    (event: React.WheelEvent<HTMLDivElement>) => {
-      const maxScroll = getMaxScroll(viewportRef.current, contentRef.current);
-
-      if (!maxScroll) {
-        return;
-      }
-
-      event.preventDefault();
-
-      const nextOffset = clampScrollOffset(scrollOffsetRef.current - event.deltaY, maxScroll);
-
-      if (nextOffset !== scrollOffsetRef.current) {
-        syncScrollOffset(nextOffset);
-      }
-    },
-    [syncScrollOffset],
-  );
-
-  const onTouchStart = React.useCallback((event: React.TouchEvent<HTMLDivElement>) => {
-    const touch = event.touches[0];
-
-    if (!touch) {
+    if (expanded) {
       return;
     }
 
-    touchStartYRef.current = touch.clientY;
-    touchStartOffsetRef.current = scrollOffsetRef.current;
-  }, []);
+    touchStartRef.current = null;
+    syncScrollOffset(0);
+  }, [expanded, syncScrollOffset]);
 
-  const onTouchMove = React.useCallback(
-    (event: React.TouchEvent<HTMLDivElement>) => {
-      const touch = event.touches[0];
-      const touchStartY = touchStartYRef.current;
-      const maxScroll = getMaxScroll(viewportRef.current, contentRef.current);
-
-      if (!touch || touchStartY === null || !maxScroll) {
+  /**
+   * Updates the list offset from mouse wheel input.
+   */
+  const onWheel = React.useCallback(
+    (event: React.WheelEvent<HTMLDivElement>) => {
+      if (!getMaxScroll(viewportRef.current, contentRef.current)) {
         return;
       }
 
       event.preventDefault();
-
-      const nextOffset = clampScrollOffset(
-        touchStartOffsetRef.current + touch.clientY - touchStartY,
-        maxScroll,
-      );
-
-      if (nextOffset !== scrollOffsetRef.current) {
-        syncScrollOffset(nextOffset);
-      }
+      syncScrollOffset(scrollOffsetRef.current - event.deltaY);
     },
     [syncScrollOffset],
   );
 
+  /**
+   * Stores the touch start position and current offset.
+   */
+  const onTouchStart = React.useCallback((event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    touchStartRef.current = touch ? { y: touch.clientY, offset: scrollOffsetRef.current } : null;
+  }, []);
+
+  /**
+   * Updates the list offset while the user is dragging.
+   */
+  const onTouchMove = React.useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const touch = event.touches[0];
+      const touchStart = touchStartRef.current;
+
+      if (!touch || !touchStart || !getMaxScroll(viewportRef.current, contentRef.current)) {
+        return;
+      }
+
+      event.preventDefault();
+      syncScrollOffset(touchStart.offset + touch.clientY - touchStart.y);
+    },
+    [syncScrollOffset],
+  );
+
+  /**
+   * Clears the active touch scroll state.
+   */
   const onTouchEnd = React.useCallback(() => {
-    touchStartYRef.current = null;
+    touchStartRef.current = null;
   }, []);
 
   return {
