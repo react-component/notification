@@ -168,7 +168,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             motion={motion}
             stack={stack}
             onNoticeClose={(key) => {
-              setConfigList((list) => list.filter((item) => item.key !== key));
+              setConfigList((oriList) => oriList.filter((item) => item.key !== key));
             }}
             onAllRemoved={onAllNoticeRemoved}
           />
