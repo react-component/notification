@@ -171,61 +171,55 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             };
 
             return (
-              <div
-                className={clsx(noticeWrapperCls, itemPrefixCls, motionClassName)}
-                style={{
-                  ...motionStyle,
+              <Notification
+                key={key}
+                {...notificationConfig}
+                ref={composeRef(nodeRef, setItemRef)}
+                prefixCls={prefixCls}
+                offset={notificationPosition.get(strKey)}
+                className={clsx(contextClassNames?.notice, config.className)}
+                style={config.style}
+                classNames={{
+                  root: clsx(classNames?.root, config.classNames?.root, motionClassName),
+                  icon: clsx(classNames?.icon, config.classNames?.icon),
+                  section: clsx(classNames?.section, config.classNames?.section),
+                  close: clsx(classNames?.close, config.classNames?.close),
+                  progress: clsx(classNames?.progress, config.classNames?.progress),
                 }}
-              >
-                <Notification
-                  key={key}
-                  {...notificationConfig}
-                  ref={composeRef(nodeRef, setItemRef)}
-                  prefixCls={prefixCls}
-                  offset={notificationPosition.get(strKey)}
-                  className={clsx(contextClassNames?.notice, config.className)}
-                  style={config.style}
-                  classNames={{
-                    root: clsx(classNames?.root, config.classNames?.root),
-                    icon: clsx(classNames?.icon, config.classNames?.icon),
-                    section: clsx(classNames?.section, config.classNames?.section),
-                    close: clsx(classNames?.close, config.classNames?.close),
-                    progress: clsx(classNames?.progress, config.classNames?.progress),
-                  }}
-                  styles={{
-                    root: {
-                      ...styles?.root,
-                      ...config.styles?.root,
-                    },
-                    icon: {
-                      ...styles?.icon,
-                      ...config.styles?.icon,
-                    },
-                    section: {
-                      ...styles?.section,
-                      ...config.styles?.section,
-                    },
-                    close: {
-                      ...styles?.close,
-                      ...config.styles?.close,
-                    },
-                    progress: {
-                      ...styles?.progress,
-                      ...config.styles?.progress,
-                    },
-                  }}
-                  components={{
-                    ...components,
-                    ...config.components,
-                  }}
-                  hovering={stackEnabled && listHovering}
-                  pauseOnHover={config.pauseOnHover ?? pauseOnHover}
-                  onClose={() => {
-                    config.onClose?.();
-                    onNoticeClose?.(key);
-                  }}
-                />
-              </div>
+                styles={{
+                  root: {
+                    ...styles?.root,
+                    ...config.styles?.root,
+                    ...motionStyle,
+                  },
+                  icon: {
+                    ...styles?.icon,
+                    ...config.styles?.icon,
+                  },
+                  section: {
+                    ...styles?.section,
+                    ...config.styles?.section,
+                  },
+                  close: {
+                    ...styles?.close,
+                    ...config.styles?.close,
+                  },
+                  progress: {
+                    ...styles?.progress,
+                    ...config.styles?.progress,
+                  },
+                }}
+                components={{
+                  ...components,
+                  ...config.components,
+                }}
+                hovering={stackEnabled && listHovering}
+                pauseOnHover={config.pauseOnHover ?? pauseOnHover}
+                onClose={() => {
+                  config.onClose?.();
+                  onNoticeClose?.(key);
+                }}
+              />
             );
           }}
         </CSSMotionList>

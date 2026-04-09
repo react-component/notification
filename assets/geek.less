@@ -35,11 +35,17 @@
   }
 
   &-notice {
+    position: absolute;
     pointer-events: auto;
     box-sizing: border-box;
     width: 100%;
-    transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
-    transition: transform @notificationMotionDuration @notificationMotionEase;
+    // transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
+    right: var(--notification-x, 0);
+    top: var(--notification-y, 0);
+    transition:
+      transform @notificationMotionDuration @notificationMotionEase,
+      inset @notificationMotionDuration @notificationMotionEase,
+      opacity @notificationMotionDuration @notificationMotionEase;
     padding: 14px 16px;
     border: 2px solid #111;
     border-radius: 14px;
@@ -78,7 +84,6 @@
       &:hover {
         background: #f4f9ff;
         box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
-        transform: translate3d(-1px, -1px, 0);
       }
     }
   }
@@ -101,37 +106,28 @@
 .notification-fade-appear-prepare,
 .notification-fade-enter-prepare {
   opacity: 0;
-  transform: translate3d(@notificationMotionOffset, 0, 0);
+  transform: translateX(@notificationMotionOffset);
+  transition: none;
 }
 
 .notification-fade-appear-start,
 .notification-fade-enter-start {
   opacity: 0;
-  transform: translate3d(@notificationMotionOffset, 0, 0);
+  transform: translateX(@notificationMotionOffset);
 }
 
 .notification-fade-appear-active,
 .notification-fade-enter-active {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
-  transition:
-    transform @notificationMotionDuration @notificationMotionEase,
-    opacity @notificationMotionDuration @notificationMotionEase,
-    height @notificationMotionDuration @notificationMotionEase,
-    margin @notificationMotionDuration @notificationMotionEase;
+  transform: translateX(0);
 }
 
 .notification-fade-leave-start {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: translateX(0);
 }
 
 .notification-fade-leave-active {
   opacity: 0;
-  transform: translate3d(@notificationMotionOffset, 0, 0);
-  transition:
-    transform @notificationMotionDuration @notificationMotionEase,
-    opacity @notificationMotionDuration @notificationMotionEase,
-    height @notificationMotionDuration @notificationMotionEase,
-    margin @notificationMotionDuration @notificationMotionEase;
+  transform: translateX(@notificationMotionOffset);
 }
