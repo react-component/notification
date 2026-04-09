@@ -11,7 +11,6 @@ import Notification, {
   type NotificationStyles,
 } from './Notification';
 import useListPosition from './hooks/useListPosition';
-import useListScroll from './hooks/useListScroll';
 import useStack from './hooks/useStack';
 import { composeRef } from '@rc-component/util/lib/ref';
 
@@ -89,9 +88,12 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   }, [expanded, offset, stackEnabled, threshold]);
 
   const [gap, setGap] = React.useState(0);
-  const [notificationPosition, setNodeSize] = useListPosition(configList, stackPosition, gap);
-  const { contentRef, onTouchEnd, onTouchMove, onTouchStart, onWheel, scrollOffset, viewportRef } =
-    useListScroll(keyList, notificationPosition, expanded);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [notificationPosition, setNodeSize, totalHeight] = useListPosition(
+    configList,
+    stackPosition,
+    gap,
+  );
 
   React.useEffect(() => {
     const listNode = contentRef.current;
@@ -122,23 +124,18 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
           [`${prefixCls}-stack-expanded`]: expanded,
         },
       )}
-      onTouchEnd={onTouchEnd}
-      onTouchMove={onTouchMove}
-      onTouchStart={onTouchStart}
-      onWheel={onWheel}
       onMouseEnter={() => {
         setListHovering(true);
       }}
       onMouseLeave={() => {
         setListHovering(false);
       }}
-      ref={viewportRef}
       style={style}
     >
       <div
         className={`${listPrefixCls}-content`}
         style={{
-          transform: `translate3d(0, ${scrollOffset}px, 0)`,
+          height: totalHeight,
         }}
         ref={contentRef}
       >
