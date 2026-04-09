@@ -5,6 +5,7 @@ import * as React from 'react';
 import type { StackConfig } from './interface';
 import { NotificationContext } from './legacy/NotificationProvider';
 import Notification, {
+  type ComponentsType,
   type NotificationClassNames,
   type NotificationProps,
   type NotificationStyles,
@@ -29,6 +30,7 @@ export interface NotificationListProps {
   pauseOnHover?: boolean;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
+  components?: ComponentsType;
   stack?: boolean | StackConfig;
   motion?: CSSMotionProps | ((placement: Placement) => CSSMotionProps);
   className?: string;
@@ -52,6 +54,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     pauseOnHover,
     classNames,
     styles,
+    components,
     stack: stackConfig,
     motion,
     placement,
@@ -217,6 +220,10 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                       ...styles?.progress,
                       ...config.styles?.progress,
                     },
+                  }}
+                  components={{
+                    ...components,
+                    ...config.components,
                   }}
                   hovering={stackEnabled && listHovering}
                   pauseOnHover={config.pauseOnHover ?? pauseOnHover}

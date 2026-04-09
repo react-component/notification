@@ -84,6 +84,7 @@ export default function useNotification(
     pauseOnHover,
     classNames,
     styles,
+    components,
     maxCount,
     className,
     style,
@@ -113,6 +114,7 @@ export default function useNotification(
       pauseOnHover={pauseOnHover}
       classNames={classNames}
       styles={styles}
+      components={components}
       className={className}
       style={style}
       onAllRemoved={onAllRemoved}

@@ -1,7 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import type { NotificationAPI, NotificationConfig } from '../src';
+import type { NotificationAPI, NotificationConfig, NotificationProgressProps } from '../src';
 import { useNotification } from '../src';
 
 require('../assets/index.less');
@@ -965,6 +965,33 @@ describe('Notification.Basic', () => {
       });
 
       expect(document.querySelector('.rc-notification-notice-progress')).toBeFalsy();
+    });
+
+    it('supports custom progress component', () => {
+      const CustomProgress: React.FC<NotificationProgressProps> = ({ className, percent }) => (
+        <div className={className} data-testid="custom-progress">
+          {percent}
+        </div>
+      );
+
+      const { instance } = renderDemo({
+        duration: 1,
+        components: {
+          progress: CustomProgress,
+        },
+      });
+
+      act(() => {
+        instance.open({
+          description: <p className="test">1</p>,
+          showProgress: true,
+        });
+      });
+
+      expect(document.querySelector('progress')).toBeFalsy();
+      expect(document.querySelector('.rc-notification-notice-progress')?.textContent).toEqual(
+        '100',
+      );
     });
   });
 

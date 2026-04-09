@@ -9,12 +9,14 @@ import NotificationList, {
   type Placement,
   type StackConfig,
 } from './NotificationList';
+import type { ComponentsType } from './Notification';
 
 export interface NotificationsProps {
   // Style
   prefixCls?: string;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
+  components?: ComponentsType;
   className?: (placement: Placement) => string;
   style?: (placement: Placement) => React.CSSProperties;
 
@@ -54,6 +56,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
     pauseOnHover,
     classNames,
     styles,
+    components,
     className,
     style,
     onAllRemoved,
@@ -159,6 +162,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
             pauseOnHover={pauseOnHover}
             classNames={classNames}
             styles={styles}
+            components={components}
             className={className?.(placement)}
             style={style?.(placement)}
             motion={motion}

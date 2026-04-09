@@ -3,6 +3,8 @@ import { clsx } from 'clsx';
 import useNoticeTimer from './hooks/useNoticeTimer';
 import { useEvent } from '@rc-component/util';
 import useClosable, { type ClosableType } from './hooks/useClosable';
+import DefaultProgress from './Progress';
+import type { NotificationProgressProps } from './Progress';
 
 export interface NotificationClassNames {
   wrapper?: string;
@@ -22,6 +24,10 @@ export interface NotificationStyles {
   progress?: React.CSSProperties;
 }
 
+export interface ComponentsType {
+  progress?: React.ComponentType<NotificationProgressProps>;
+}
+
 export interface NotificationProps {
   // Style
   prefixCls: string;
@@ -29,6 +35,7 @@ export interface NotificationProps {
   style?: React.CSSProperties;
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
+  components?: ComponentsType;
 
   // UI
   title?: React.ReactNode;
@@ -65,6 +72,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     style,
     classNames,
     styles,
+    components,
 
     // UI
     title,
@@ -104,6 +112,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   const [onResume, onPause] = useNoticeTimer(duration, onInternalClose, setPercent, !!showProgress);
 
   const validPercent = 100 - Math.min(Math.max(percent * 100, 0), 100);
+  const Progress = components?.progress || DefaultProgress;
 
   React.useEffect(() => {
     if (!pauseOnHover) {
@@ -230,10 +239,9 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       {actions && <div className="actions">{actions}</div>}
 
       {showProgress && typeof duration === 'number' && duration > 0 && (
-        <progress
+        <Progress
           className={clsx(`${noticePrefixCls}-progress`, classNames?.progress)}
-          max="100"
-          value={validPercent}
+          percent={validPercent}
           style={styles?.progress}
         />
       )}
@@ -241,6 +249,8 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   );
 });
 
-Notification.displayName = 'Notification';
+if (process.env.NODE_ENV !== 'production') {
+  Notification.displayName = 'Notification';
+}
 
 export default Notification;
