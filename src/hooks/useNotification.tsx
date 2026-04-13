@@ -69,6 +69,10 @@ function mergeConfig<T>(...objList: Partial<T>[]): T {
   return clone;
 }
 
+/**
+ * Creates the notification API and the React holder element.
+ * Queueing is handled internally until the notification instance is ready.
+ */
 export default function useNotification(
   rootConfig: NotificationConfig = {},
 ): [NotificationAPI, React.ReactElement] {

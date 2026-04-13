@@ -2,6 +2,10 @@ import * as React from 'react';
 import raf from '@rc-component/util/es/raf';
 import useEvent from '@rc-component/util/es/hooks/useEvent';
 
+/**
+ * Runs the notice auto-close timer and reports progress updates.
+ * Returns controls to pause and resume the timer.
+ */
 export default function useNoticeTimer(
   duration: number | false | null,
   onClose: VoidFunction,

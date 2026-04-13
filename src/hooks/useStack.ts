@@ -7,6 +7,9 @@ type StackParams = Required<StackConfig>;
 
 type UseStack = (config?: boolean | StackConfig) => [boolean, StackParams];
 
+/**
+ * Resolves the stack setting into an enabled flag and normalized stack params.
+ */
 const useStack: UseStack = (config) => {
   const result: StackParams = {
     offset: DEFAULT_OFFSET,

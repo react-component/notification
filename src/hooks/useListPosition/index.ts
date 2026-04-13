@@ -7,6 +7,9 @@ export type NodePosition = {
   y: number;
 };
 
+/**
+ * Calculates each notification's position and the full list height.
+ */
 export default function useListPosition(
   configList: { key: React.Key }[],
   stack?: StackConfig,

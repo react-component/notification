@@ -1,11 +1,22 @@
 /* eslint-disable no-console */
 import React from 'react';
-import '../../assets/index.less';
+import type { CSSMotionProps } from '@rc-component/motion';
+import '../../assets/geek.less';
 import { useNotification } from '../../src';
-import motion from './motion';
+
+const motion: CSSMotionProps = {
+  motionName: 'notification-fade',
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
 
 export default () => {
-  const [notice, contextHolder] = useNotification({ motion, maxCount: 3 });
+  const [notice, contextHolder] = useNotification({
+    motion,
+    maxCount: 3,
+    prefixCls: 'notification',
+  });
 
   return (
     <>
