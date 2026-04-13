@@ -43,3 +43,5 @@ pnpm-lock.yaml
 .dumi/tmp-production
 
 bun.lockb
+
+.claude/skills/tmp-*
