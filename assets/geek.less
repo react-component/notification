@@ -4,16 +4,12 @@
 @notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
 @notificationMotionOffset: 64px;
 
-.generate-placement(@placement, @vertical, @horizontal, @contentMargin, @stackClip, @motionX) {
+.generate-placement(@placement, @vertical, @horizontal, @flexDirection, @stackClip, @motionX) {
   &-@{placement} {
     @{vertical}: 0;
     @{horizontal}: 0;
     display: flex;
-    flex-direction: column;
-
-    .@{notificationPrefixCls}-list-content {
-      @{contentMargin}: auto;
-    }
+    flex-direction: @flexDirection;
 
     .@{notificationPrefixCls}-notice {
       @{vertical}: var(--notification-y, 0);
@@ -77,7 +73,7 @@
     topRight,
     top,
     right,
-    margin-bottom,
+    column,
     inset(50% -50% -50% -50%),
     @notificationMotionOffset
   );
@@ -85,7 +81,7 @@
     bottomRight,
     bottom,
     right,
-    margin-top,
+    column-reverse,
     inset(-50% -50% 50% -50%),
     @notificationMotionOffset
   );
@@ -93,7 +89,7 @@
     topLeft,
     top,
     left,
-    margin-bottom,
+    column,
     inset(50% -50% -50% -50%),
     -@notificationMotionOffset
   );
@@ -101,7 +97,7 @@
     bottomLeft,
     bottom,
     left,
-    margin-top,
+    column-reverse,
     inset(-50% -50% 50% -50%),
     -@notificationMotionOffset
   );
