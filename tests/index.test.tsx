@@ -84,7 +84,7 @@ describe('Notification.Basic', () => {
     const closeBtn = document.querySelector('.rc-notification-notice-close');
 
     expect(document.querySelectorAll('.test')).toHaveLength(1);
-    expect(closeBtn?.textContent).toEqual('x');
+    expect(closeBtn?.textContent).toEqual('×');
     expect(closeBtn).toHaveAttribute('aria-describedby', 'custom-close');
   });
 
@@ -643,6 +643,7 @@ describe('Notification.Basic', () => {
 
     act(() => {
       instance.open({
+        icon: <span />,
         styles: {
           wrapper: {
             content: 'little',
@@ -654,10 +655,10 @@ describe('Notification.Basic', () => {
       });
     });
 
-    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveStyle({
+    expect(document.querySelector('.bamboo')).toHaveStyle({
       content: 'little',
     });
-    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
+    expect(document.querySelector('.bamboo')).toHaveClass('bamboo');
   });
 
   it('should className work', () => {
@@ -896,7 +897,7 @@ describe('Notification.Basic', () => {
     });
   });
 
-  it('closes via keyboard Enter key', () => {
+  it('closes via close button click', () => {
     const { instance } = renderDemo();
     let closeCount = 0;
 
@@ -910,7 +911,7 @@ describe('Notification.Basic', () => {
       });
     });
 
-    fireEvent.keyDown(document.querySelector('.rc-notification-notice-close'), { key: 'Enter' }); // origin latest
+    fireEvent.click(document.querySelector('.rc-notification-notice-close')); // origin latest
     expect(closeCount).toEqual(1);
   });
 

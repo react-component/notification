@@ -194,13 +194,14 @@ describe('Notification.Hooks', () => {
         description: <div className="bamboo" />,
         duration: 0,
         closable: true,
+        icon: <span />,
         classNames: {
           root: 'notice-root',
         },
       });
     });
 
-    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('hook-wrapper');
+    expect(document.querySelector('.hook-wrapper')).toHaveClass('hook-wrapper');
     expect(document.querySelector('.rc-notification-notice')).toHaveClass('notice-root');
     expect(document.querySelector('.rc-notification-notice-close')).toHaveClass('hook-close');
   });

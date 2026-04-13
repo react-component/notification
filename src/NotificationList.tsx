@@ -172,6 +172,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 className={clsx(contextClassNames?.notice, config.className)}
                 style={config.style}
                 classNames={{
+                  wrapper: clsx(classNames?.wrapper, config.classNames?.wrapper),
                   root: clsx(classNames?.root, config.classNames?.root, motionClassName),
                   icon: clsx(classNames?.icon, config.classNames?.icon),
                   section: clsx(classNames?.section, config.classNames?.section),
@@ -179,6 +180,10 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                   progress: clsx(classNames?.progress, config.classNames?.progress),
                 }}
                 styles={{
+                  wrapper: {
+                    ...styles?.wrapper,
+                    ...config.styles?.wrapper,
+                  },
                   root: {
                     ...styles?.root,
                     ...config.styles?.root,
