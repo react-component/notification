@@ -4,10 +4,66 @@
 @notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
 @notificationMotionOffset: 64px;
 
+.generate-placement(@placement, @vertical, @horizontal, @contentMargin, @stackClip, @motionX) {
+  &-@{placement} {
+    @{vertical}: 0;
+    @{horizontal}: 0;
+    display: flex;
+    flex-direction: column;
+
+    .@{notificationPrefixCls}-list-content {
+      @{contentMargin}: auto;
+    }
+
+    .@{notificationPrefixCls}-notice {
+      @{vertical}: var(--notification-y, 0);
+      @{horizontal}: var(--notification-x, 0);
+      transform-origin: center bottom;
+    }
+
+    .notification-fade-appear-prepare,
+    .notification-fade-enter-prepare {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+      transition: none;
+    }
+
+    .notification-fade-appear-start,
+    .notification-fade-enter-start {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+    }
+
+    .notification-fade-appear-active,
+    .notification-fade-enter-active {
+      opacity: 1;
+      transform: translateX(0) scale(var(--notification-scale, 1));
+    }
+
+    .notification-fade-leave-start {
+      opacity: 1;
+      transform: translateX(0) scale(var(--notification-scale, 1));
+    }
+
+    .notification-fade-leave-active {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+    }
+
+    &.@{notificationPrefixCls}-stack:not(.@{notificationPrefixCls}-stack-expanded) {
+      .@{notificationPrefixCls}-notice {
+        clip-path: @stackClip;
+      }
+
+      .@{notificationPrefixCls}-notice[data-notification-index='0'] {
+        clip-path: inset(-50% -50% -50% -50%);
+      }
+    }
+  }
+}
+
 .@{notificationPrefixCls} {
   position: fixed;
-  top: 0;
-  right: 0;
   z-index: 1000;
   width: 360px;
   height: 100vh;
@@ -16,6 +72,39 @@
   pointer-events: none;
   overflow: hidden;
   overscroll-behavior: contain;
+
+  .generate-placement(
+    topRight,
+    top,
+    right,
+    margin-bottom,
+    inset(50% -50% -50% -50%),
+    @notificationMotionOffset
+  );
+  .generate-placement(
+    bottomRight,
+    bottom,
+    right,
+    margin-top,
+    inset(-50% -50% 50% -50%),
+    @notificationMotionOffset
+  );
+  .generate-placement(
+    topLeft,
+    top,
+    left,
+    margin-bottom,
+    inset(50% -50% -50% -50%),
+    -@notificationMotionOffset
+  );
+  .generate-placement(
+    bottomLeft,
+    bottom,
+    left,
+    margin-top,
+    inset(-50% -50% 50% -50%),
+    -@notificationMotionOffset
+  );
 
   &-list {
     overflow-x: hidden;
@@ -64,15 +153,12 @@
     box-sizing: border-box;
     width: 100%;
     // transform: translate3d(var(--notification-x, 0), var(--notification-y, 0), 0);
-    right: var(--notification-x, 0);
-    top: var(--notification-y, 0);
     transform: scale(var(--notification-scale, 1));
     transition:
       transform @notificationMotionDuration @notificationMotionEase,
       inset @notificationMotionDuration @notificationMotionEase,
       clip-path @notificationMotionDuration @notificationMotionEase,
       opacity @notificationMotionDuration @notificationMotionEase;
-    transform-origin: center bottom;
     padding: 14px 16px;
     border: 2px solid #111;
     border-radius: 14px;
@@ -123,11 +209,6 @@
     &:not(.@{notificationPrefixCls}-stack-expanded) {
       .@{notificationPrefixCls}-notice {
         --notification-scale: ~'calc(1 - min(var(--notification-index, 0), 2) * 0.06)';
-        clip-path: inset(50% -50% -50% -50%);
-      }
-
-      .@{notificationPrefixCls}-notice[data-notification-index='0'] {
-        clip-path: inset(-50% -50% -50% -50%);
       }
 
       .@{notificationPrefixCls}-notice:not(.@{notificationPrefixCls}-notice-stack-in-threshold) {
@@ -141,33 +222,4 @@
 .notification-fade {
   backface-visibility: hidden;
   will-change: transform, opacity;
-}
-
-.notification-fade-appear-prepare,
-.notification-fade-enter-prepare {
-  opacity: 0;
-  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
-  transition: none;
-}
-
-.notification-fade-appear-start,
-.notification-fade-enter-start {
-  opacity: 0;
-  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
-}
-
-.notification-fade-appear-active,
-.notification-fade-enter-active {
-  opacity: 1;
-  transform: translateX(0) scale(var(--notification-scale, 1));
-}
-
-.notification-fade-leave-start {
-  opacity: 1;
-  transform: translateX(0) scale(var(--notification-scale, 1));
-}
-
-.notification-fade-leave-active {
-  opacity: 0;
-  transform: translateX(@notificationMotionOffset) scale(var(--notification-scale, 1));
 }
