@@ -4,7 +4,15 @@
 @notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
 @notificationMotionOffset: 64px;
 
-.generate-placement(@placement, @vertical, @horizontal, @flexDirection, @stackClip, @motionX) {
+.generate-placement(
+  @placement,
+  @vertical,
+  @horizontal,
+  @flexDirection,
+  @transformOrigin,
+  @stackClip,
+  @motionX
+) {
   &-@{placement} {
     @{vertical}: 0;
     @{horizontal}: 0;
@@ -14,7 +22,7 @@
     .@{notificationPrefixCls}-notice {
       @{vertical}: var(--notification-y, 0);
       @{horizontal}: var(--notification-x, 0);
-      transform-origin: center bottom;
+      transform-origin: @transformOrigin;
     }
 
     .notification-fade-appear-prepare,
@@ -74,6 +82,7 @@
     top,
     right,
     column,
+    ~'center bottom',
     inset(50% -50% -50% -50%),
     @notificationMotionOffset
   );
@@ -82,6 +91,7 @@
     bottom,
     right,
     column-reverse,
+    ~'center top',
     inset(-50% -50% 50% -50%),
     @notificationMotionOffset
   );
@@ -90,6 +100,7 @@
     top,
     left,
     column,
+    ~'center bottom',
     inset(50% -50% -50% -50%),
     -@notificationMotionOffset
   );
@@ -98,6 +109,7 @@
     bottom,
     left,
     column-reverse,
+    ~'center top',
     inset(-50% -50% 50% -50%),
     -@notificationMotionOffset
   );
