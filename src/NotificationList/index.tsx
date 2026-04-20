@@ -1,21 +1,22 @@
 import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
+import { composeRef } from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
-import type { StackConfig } from './interface';
-import { NotificationContext } from './legacy/NotificationProvider';
+import useListPosition from '../hooks/useListPosition';
+import useStack from '../hooks/useStack';
+import type { StackConfig } from '../interface';
+import { NotificationContext } from '../legacy/NotificationProvider';
 import Notification, {
   type ComponentsType,
   type NotificationClassNames,
   type NotificationProps,
   type NotificationStyles,
-} from './Notification';
-import useListPosition from './hooks/useListPosition';
-import useStack from './hooks/useStack';
-import { composeRef } from '@rc-component/util/lib/ref';
+} from '../Notification';
+import Content from './Content';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
-export type { StackConfig } from './interface';
+export type { StackConfig } from '../interface';
 
 export interface NotificationListConfig extends Omit<NotificationProps, 'prefixCls'> {
   key: React.Key;
@@ -94,6 +95,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     stackPosition,
     gap,
   );
+  const hasConfigList = !!configList.length;
 
   React.useEffect(() => {
     const listNode = contentRef.current;
@@ -106,7 +108,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     const nextGap = parseFloat(rowGap || cssGap) || 0;
 
     setGap((prevGap) => (prevGap === nextGap ? prevGap : nextGap));
-  }, [!!configList.length]);
+  }, [hasConfigList]);
 
   // ========================= Render =========================
   const listPrefixCls = `${prefixCls}-list`;
@@ -132,13 +134,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       }}
       style={style}
     >
-      <div
-        className={`${listPrefixCls}-content`}
-        style={{
-          height: totalHeight,
-        }}
-        ref={contentRef}
-      >
+      <Content listPrefixCls={listPrefixCls} height={totalHeight} ref={contentRef}>
         <CSSMotionList
           component={false}
           keys={keys}
@@ -220,10 +216,10 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             );
           }}
         </CSSMotionList>
-      </div>
+      </Content>
     </div>
   );
 };
 
 export default NotificationList;
-export type { NotificationClassNames, NotificationStyles } from './Notification';
+export type { NotificationClassNames, NotificationStyles } from '../Notification';
