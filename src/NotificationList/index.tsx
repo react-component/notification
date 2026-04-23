@@ -124,6 +124,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         {
           [`${prefixCls}-stack`]: stackEnabled,
           [`${prefixCls}-stack-expanded`]: expanded,
+          [`${listPrefixCls}-hovered`]: listHovering,
         },
       )}
       onMouseEnter={() => {

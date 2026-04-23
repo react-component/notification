@@ -62,6 +62,10 @@ describe('stack', () => {
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
+    expect(document.querySelector('.rc-notification-list-hovered')).toBeTruthy();
+
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-list'));
+    expect(document.querySelector('.rc-notification-list-hovered')).toBeFalsy();
   });
 
   it('should collapse when amount is less than threshold', () => {
@@ -147,17 +151,20 @@ describe('stack', () => {
     const secondNotice = document
       .querySelector('.context-content-second')
       ?.closest<HTMLElement>('.rc-notification-notice');
+    const contentNode = document.querySelector<HTMLElement>('.rc-notification-list-content');
 
     const getBottom = (notice: HTMLElement | undefined | null) =>
       (notice ? parseFloat(notice.style.getPropertyValue('--notification-y')) : 0) +
       (notice?.offsetHeight ?? 0);
 
+    expect(contentNode?.style.height).toBe('40px');
     expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('-28px');
     expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
     expect(getBottom(firstNotice) - getBottom(secondNotice)).toBe(12);
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
 
+    expect(contentNode?.style.height).toBe('120px');
     expect(firstNotice?.style.getPropertyValue('--notification-y')).toBe('40px');
     expect(secondNotice?.style.getPropertyValue('--notification-y')).toBe('0px');
 

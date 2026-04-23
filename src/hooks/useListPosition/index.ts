@@ -19,8 +19,8 @@ export default function useListPosition(
 
   const [notificationPosition, totalHeight] = React.useMemo(() => {
     let offsetY = 0;
-    let offsetBottom = 0;
     let nextTotalHeight = 0;
+    const stackThreshold = stack?.threshold ?? 0;
     const nextNotificationPosition = new Map<string, NodePosition>();
 
     configList
@@ -31,15 +31,17 @@ export default function useListPosition(
         const height = sizeMap[key]?.height ?? 0;
         const nodePosition = {
           x: 0,
-          y: stack && index > 0 ? offsetBottom + (stack.offset ?? 0) - height : offsetY,
+          y: stack && index > 0 ? offsetY + (stack.offset ?? 0) - height : offsetY,
         };
 
         nextNotificationPosition.set(key, nodePosition);
 
-        nextTotalHeight = Math.max(nextTotalHeight, nodePosition.y + height);
+        if (!stack || index < stackThreshold) {
+          nextTotalHeight = Math.max(nextTotalHeight, nodePosition.y + height);
+        }
 
         if (stack) {
-          offsetBottom = nodePosition.y + height;
+          offsetY = nodePosition.y + height;
         } else {
           offsetY += height + gap;
         }
