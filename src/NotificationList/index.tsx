@@ -76,7 +76,9 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
   const [stackEnabled, { offset, threshold }] = useStack(stackConfig);
   const [listHovering, setListHovering] = React.useState(false);
+  const stackCollapsed = stackEnabled && keys.length > threshold;
   const expanded = stackEnabled && (listHovering || keys.length <= threshold);
+  const stackExpanded = stackCollapsed && listHovering;
   const stackPosition = React.useMemo<StackConfig | undefined>(() => {
     if (!stackEnabled || expanded) {
       return undefined;
@@ -123,7 +125,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         className,
         {
           [`${prefixCls}-stack`]: stackEnabled,
-          [`${prefixCls}-stack-expanded`]: expanded,
+          [`${prefixCls}-stack-expanded`]: stackExpanded,
         },
       )}
       onMouseEnter={() => {

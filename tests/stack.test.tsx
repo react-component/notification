@@ -33,7 +33,11 @@ describe('stack', () => {
     }
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(3);
     expect(document.querySelector('.rc-notification-stack')).toBeTruthy();
-    expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
+    expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
+
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
+    expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-list'));
 
     for (let i = 0; i < 2; i++) {
       fireEvent.click(container.querySelector('button'));
