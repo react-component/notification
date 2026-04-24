@@ -42,17 +42,19 @@ export interface NotificationListProps {
 
 const noticeSlotKeys = ['wrapper', 'root', 'icon', 'section', 'close', 'progress'] as const;
 
-function fillClassNames(classNamesList: NotificationClassNames[]): NotificationClassNames {
+function fillClassNames(
+  classNamesList: (NotificationClassNames | undefined)[],
+): NotificationClassNames {
   return noticeSlotKeys.reduce<NotificationClassNames>((mergedClassNames, key) => {
-    mergedClassNames[key] = clsx(...classNamesList.map((classNames) => classNames[key]));
+    mergedClassNames[key] = clsx(...classNamesList.map((classNames) => classNames?.[key]));
 
     return mergedClassNames;
   }, {});
 }
 
-function fillStyles(stylesList: NotificationStyles[]): NotificationStyles {
+function fillStyles(stylesList: (NotificationStyles | undefined)[]): NotificationStyles {
   return noticeSlotKeys.reduce<NotificationStyles>((mergedStyles, key) => {
-    mergedStyles[key] = Object.assign({}, ...stylesList.map((styles) => styles[key]));
+    mergedStyles[key] = Object.assign({}, ...stylesList.map((styles) => styles?.[key]));
 
     return mergedStyles;
   }, {});
@@ -114,15 +116,15 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
       className={clsx(contextClassNames?.notice, config.className)}
       style={config.style}
       classNames={fillClassNames([
-        classNames || {},
-        config.classNames || {},
+        classNames,
+        config.classNames,
         {
           root: motionClassName,
         },
       ])}
       styles={fillStyles([
-        styles || {},
-        config.styles || {},
+        styles,
+        config.styles,
         {
           root: motionStyle,
         },
