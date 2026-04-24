@@ -1,4 +1,7 @@
-import type { StackConfig } from '../interface';
+export interface StackConfig {
+  threshold?: number;
+  offset?: number;
+}
 
 const DEFAULT_OFFSET = 8;
 const DEFAULT_THRESHOLD = 3;

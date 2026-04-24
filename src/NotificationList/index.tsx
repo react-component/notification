@@ -4,24 +4,31 @@ import { useComposeRef } from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import useListPosition from '../hooks/useListPosition';
-import useStack from '../hooks/useStack';
-import type { StackConfig } from '../interface';
+import useStack, { type StackConfig } from '../hooks/useStack';
 import Notification, {
   type ComponentsType,
-  type NotificationClassNames,
+  type NotificationClassNames as NoticeClassNames,
   type NotificationProps,
-  type NotificationStyles,
+  type NotificationStyles as NoticeStyles,
 } from '../Notification';
 import { NotificationContext, type NotificationContextProps } from '../NotificationProvider';
 import Content from './Content';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
-export type { StackConfig } from '../interface';
+export type { StackConfig } from '../hooks/useStack';
 
 export interface NotificationListConfig extends Omit<NotificationProps, 'prefixCls'> {
   key: React.Key;
   placement?: Placement;
   times?: number;
+}
+
+export interface NotificationClassNames extends NoticeClassNames {
+  listContent?: string;
+}
+
+export interface NotificationStyles extends NoticeStyles {
+  listContent?: React.CSSProperties;
 }
 
 export interface NotificationListProps {
@@ -244,7 +251,13 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       }}
       style={style}
     >
-      <Content listPrefixCls={listPrefixCls} height={totalHeight} ref={contentRef}>
+      <Content
+        listPrefixCls={listPrefixCls}
+        height={totalHeight}
+        className={classNames?.listContent}
+        style={styles?.listContent}
+        ref={contentRef}
+      >
         <CSSMotionList
           component={false}
           keys={keys}
@@ -292,4 +305,3 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 };
 
 export default NotificationList;
-export type { NotificationClassNames, NotificationStyles } from '../Notification';

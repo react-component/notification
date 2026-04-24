@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { StackConfig } from '../../interface';
+import type { StackConfig } from '../useStack';
 import useSizes from './useSizes';
 
 /**

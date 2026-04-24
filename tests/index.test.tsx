@@ -653,6 +653,28 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.bamboo-topRight')).toBeTruthy();
   });
 
+  it('should listContent styles and classNames work', () => {
+    const { instance } = renderDemo({
+      classNames: {
+        listContent: 'bamboo',
+      },
+      styles: {
+        listContent: {
+          content: 'little',
+        },
+      },
+    });
+
+    act(() => {
+      instance.open({});
+    });
+
+    expect(document.querySelector('.rc-notification-list-content')).toHaveStyle({
+      content: 'little',
+    });
+    expect(document.querySelector('.rc-notification-list-content')).toHaveClass('bamboo');
+  });
+
   it('placement', () => {
     const { instance } = renderDemo();
 
