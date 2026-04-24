@@ -44,7 +44,6 @@ export interface NotificationProps {
   actions?: React.ReactNode;
   closable?: ClosableType;
   offset?: {
-    x: number;
     y: number;
   };
   notificationIndex?: number;
@@ -206,7 +205,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   // ========================= Render =========================
   const mergedStyle: React.CSSProperties & {
     '--notification-index'?: number;
-    '--notification-x'?: string;
     '--notification-y'?: string;
   } = {
     '--notification-index': mergedNotificationIndex,
@@ -215,7 +213,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   };
 
   if (mergedOffset) {
-    mergedStyle['--notification-x'] = `${mergedOffset.x}px`;
     mergedStyle['--notification-y'] = `${mergedOffset.y}px`;
   }
 

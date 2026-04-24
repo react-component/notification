@@ -3,7 +3,6 @@ import type { StackConfig } from '../../interface';
 import useSizes from './useSizes';
 
 export type NodePosition = {
-  x: number;
   y: number;
 };
 
@@ -27,10 +26,10 @@ export default function useListPosition(
       .slice()
       .reverse()
       .forEach((config, index) => {
+        // Walk from newest to oldest so each notice can be positioned after the ones below it.
         const key = String(config.key);
         const height = sizeMap[key]?.height ?? 0;
         const nodePosition = {
-          x: 0,
           y: stack && index > 0 ? offsetY + (stack.offset ?? 0) - height : offsetY,
         };
 
