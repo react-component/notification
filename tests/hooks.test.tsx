@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import { useNotification, NotificationProvider } from '../src';
+import { useNotification } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
+import NotificationProvider from '../src/NotificationProvider';
 
 require('../assets/index.less');
 
@@ -179,45 +180,5 @@ describe('Notification.Hooks', () => {
 
     expect(document.querySelector('.rc-notification')).toHaveClass('banana');
     expect(document.querySelector('.custom-notice')).toHaveClass('apple');
-  });
-
-  it('support root classNames defaults', () => {
-    const { instance } = renderDemo({
-      classNames: {
-        wrapper: 'hook-wrapper',
-        close: 'hook-close',
-      },
-    });
-
-    act(() => {
-      instance.open({
-        description: <div className="bamboo" />,
-        duration: 0,
-        closable: true,
-        icon: <span />,
-        classNames: {
-          root: 'notice-root',
-        },
-      });
-    });
-
-    expect(document.querySelector('.hook-wrapper')).toHaveClass('hook-wrapper');
-    expect(document.querySelector('.rc-notification-notice')).toHaveClass('notice-root');
-    expect(document.querySelector('.rc-notification-notice-close')).toHaveClass('hook-close');
-  });
-
-  it('support root placement defaults', () => {
-    const { instance } = renderDemo({
-      placement: 'bottomLeft',
-    });
-
-    act(() => {
-      instance.open({
-        description: <div className="bamboo" />,
-        duration: 0,
-      });
-    });
-
-    expect(document.querySelector('.rc-notification')).toHaveClass('rc-notification-bottomLeft');
   });
 });

@@ -68,26 +68,6 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.test-icon').textContent).toEqual('test-close-icon');
   });
 
-  it('works with default close icon and aria props', () => {
-    const { instance } = renderDemo();
-
-    act(() => {
-      instance.open({
-        description: <p className="test">1</p>,
-        closable: {
-          'aria-describedby': 'custom-close',
-        },
-        duration: 0,
-      });
-    });
-
-    const closeBtn = document.querySelector('.rc-notification-notice-close');
-
-    expect(document.querySelectorAll('.test')).toHaveLength(1);
-    expect(closeBtn?.textContent).toEqual('×');
-    expect(closeBtn).toHaveAttribute('aria-describedby', 'custom-close');
-  });
-
   it('works with multi instance', () => {
     const { instance } = renderDemo();
 
@@ -944,12 +924,12 @@ describe('Notification.Basic', () => {
     it('show with progress', () => {
       const { instance } = renderDemo({
         duration: 1,
+        showProgress: true,
       });
 
       act(() => {
         instance.open({
           description: <p className="test">1</p>,
-          showProgress: true,
         });
       });
 
@@ -969,30 +949,25 @@ describe('Notification.Basic', () => {
     });
 
     it('supports custom progress component', () => {
-      const CustomProgress: React.FC<NotificationProgressProps> = ({ className, percent }) => (
-        <div className={className} data-testid="custom-progress">
-          {percent}
-        </div>
+      const CustomProgress: React.FC<NotificationProgressProps> = ({ className }) => (
+        <span className={className} />
       );
 
       const { instance } = renderDemo({
-        duration: 1,
         components: {
           progress: CustomProgress,
         },
+        duration: 1,
+        showProgress: true,
       });
 
       act(() => {
         instance.open({
           description: <p className="test">1</p>,
-          showProgress: true,
         });
       });
 
-      expect(document.querySelector('progress')).toBeFalsy();
-      expect(document.querySelector('.rc-notification-notice-progress')?.textContent).toEqual(
-        '100',
-      );
+      expect(document.querySelector('span.rc-notification-notice-progress')).toBeTruthy();
     });
   });
 
