@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { CSSMotionProps } from '@rc-component/motion';
+import { useEvent } from '@rc-component/util';
 import NotificationList, {
   type NotificationClassNames,
   type NotificationListConfig,
@@ -119,7 +120,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
   }, [configList]);
 
   // ======================== Callback =======================
-  const onAllNoticeRemoved = React.useCallback((placement: Placement) => {
+  const onAllNoticeRemoved = useEvent((placement: Placement) => {
     setPlacements((originPlacements) => {
       const clone = {
         ...originPlacements,
@@ -131,7 +132,7 @@ const Notifications = React.forwardRef<NotificationsRef, NotificationsProps>((pr
 
       return clone;
     });
-  }, []);
+  });
 
   // ======================== Effect =========================
   React.useEffect(() => {
