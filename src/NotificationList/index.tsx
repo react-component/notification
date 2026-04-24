@@ -88,15 +88,12 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
     motionClassName,
     motionStyle,
     nodeRef,
-    prefixCls,
-    offset,
-    notificationIndex,
-    stackInThreshold,
     listHovering,
     stackEnabled,
     pauseOnHover,
     setNodeSize,
     onNoticeClose,
+    ...restProps
   } = props;
   const { key, placement: itemPlacement, ...notificationConfig } = config;
   const strKey = String(key);
@@ -112,11 +109,8 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
   return (
     <Notification
       {...notificationConfig}
+      {...restProps}
       ref={ref}
-      prefixCls={prefixCls}
-      offset={offset}
-      notificationIndex={notificationIndex}
-      stackInThreshold={stackInThreshold}
       className={clsx(contextClassNames?.notice, config.className)}
       style={config.style}
       classNames={fillClassNames([
