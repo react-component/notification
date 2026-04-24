@@ -182,11 +182,15 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     [configList],
   );
 
-  // ========================= Motion =========================
+  // ===================== Motion Config ======================
   const placementMotion = typeof motion === 'function' ? motion(placement) : motion;
+
+  // ====================== Stack State =======================
   const [stackEnabled, { offset, threshold }] = useStack(stackConfig);
   const [listHovering, setListHovering] = React.useState(false);
   const expanded = stackEnabled && (listHovering || keys.length <= threshold);
+
+  // ====================== Stack Layout ======================
   const stackPosition = React.useMemo<StackConfig | undefined>(() => {
     if (!stackEnabled || expanded) {
       return undefined;
@@ -198,6 +202,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
     };
   }, [expanded, offset, stackEnabled, threshold]);
 
+  // ====================== List Measure ======================
   const [gap, setGap] = React.useState(0);
   const contentRef = React.useRef<HTMLDivElement>(null);
   const [notificationPosition, setNodeSize, totalHeight] = useListPosition(
@@ -214,6 +219,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       return;
     }
 
+    // CSS gap impacts stack offset and total list height calculation.
     const { gap: cssGap, rowGap } = window.getComputedStyle(listNode);
     const nextGap = parseFloat(rowGap || cssGap) || 0;
 
