@@ -147,15 +147,18 @@ export default function useNotification(
         setTaskQueue((queue) => [...queue, { type: 'destroy' }]);
       },
     }),
-    [open],
+    [],
   );
 
   // ======================== Effect =========================
+  // React 18 should all in effect that we will check container in each render
+  // Which means getContainer should be stable.
   React.useEffect(() => {
     setContainer(getContainer());
   });
 
   React.useEffect(() => {
+    // Flush task when node ready
     if (notificationsRef.current && taskQueue.length) {
       taskQueue.forEach((task) => {
         switch (task.type) {
