@@ -40,6 +40,40 @@ export interface NotificationListProps {
   onAllRemoved?: (placement: Placement) => void;
 }
 
+const noticeSlotKeys = ['wrapper', 'root', 'icon', 'section', 'close', 'progress'] as const;
+
+function fillClassNames(
+  classNames?: NotificationClassNames,
+  configClassNames?: NotificationClassNames,
+  extraClassNames?: NotificationClassNames,
+): NotificationClassNames {
+  return noticeSlotKeys.reduce<NotificationClassNames>((mergedClassNames, key) => {
+    mergedClassNames[key] = clsx(
+      classNames?.[key],
+      configClassNames?.[key],
+      extraClassNames?.[key],
+    );
+
+    return mergedClassNames;
+  }, {});
+}
+
+function fillStyles(
+  styles?: NotificationStyles,
+  configStyles?: NotificationStyles,
+  extraStyles?: NotificationStyles,
+): NotificationStyles {
+  return noticeSlotKeys.reduce<NotificationStyles>((mergedStyles, key) => {
+    mergedStyles[key] = {
+      ...styles?.[key],
+      ...configStyles?.[key],
+      ...extraStyles?.[key],
+    };
+
+    return mergedStyles;
+  }, {});
+}
+
 interface NotificationListItemProps {
   config: NotificationListConfig;
   components?: ComponentsType;
@@ -101,41 +135,12 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
       stackInThreshold={stackInThreshold}
       className={clsx(contextClassNames?.notice, config.className)}
       style={config.style}
-      classNames={{
-        wrapper: clsx(classNames?.wrapper, config.classNames?.wrapper),
-        root: clsx(classNames?.root, config.classNames?.root, motionClassName),
-        icon: clsx(classNames?.icon, config.classNames?.icon),
-        section: clsx(classNames?.section, config.classNames?.section),
-        close: clsx(classNames?.close, config.classNames?.close),
-        progress: clsx(classNames?.progress, config.classNames?.progress),
-      }}
-      styles={{
-        wrapper: {
-          ...styles?.wrapper,
-          ...config.styles?.wrapper,
-        },
-        root: {
-          ...styles?.root,
-          ...config.styles?.root,
-          ...motionStyle,
-        },
-        icon: {
-          ...styles?.icon,
-          ...config.styles?.icon,
-        },
-        section: {
-          ...styles?.section,
-          ...config.styles?.section,
-        },
-        close: {
-          ...styles?.close,
-          ...config.styles?.close,
-        },
-        progress: {
-          ...styles?.progress,
-          ...config.styles?.progress,
-        },
-      }}
+      classNames={fillClassNames(classNames, config.classNames, {
+        root: motionClassName,
+      })}
+      styles={fillStyles(styles, config.styles, {
+        root: motionStyle,
+      })}
       components={{
         ...components,
         ...config.components,
