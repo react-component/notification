@@ -2,10 +2,6 @@ import * as React from 'react';
 import type { StackConfig } from '../../interface';
 import useSizes from './useSizes';
 
-export type NodePosition = {
-  y: number;
-};
-
 /**
  * Calculates each notification's position and the full list height.
  */
@@ -20,7 +16,7 @@ export default function useListPosition(
     let offsetY = 0;
     let nextTotalHeight = 0;
     const stackThreshold = stack?.threshold ?? 0;
-    const nextNotificationPosition = new Map<string, NodePosition>();
+    const nextNotificationPosition = new Map<string, number>();
 
     configList
       .slice()
@@ -29,18 +25,16 @@ export default function useListPosition(
         // Walk from newest to oldest so each notice can be positioned after the ones below it.
         const key = String(config.key);
         const height = sizeMap[key]?.height ?? 0;
-        const nodePosition = {
-          y: stack && index > 0 ? offsetY + (stack.offset ?? 0) - height : offsetY,
-        };
+        const y = stack && index > 0 ? offsetY + (stack.offset ?? 0) - height : offsetY;
 
-        nextNotificationPosition.set(key, nodePosition);
+        nextNotificationPosition.set(key, y);
 
         if (!stack || index < stackThreshold) {
-          nextTotalHeight = Math.max(nextTotalHeight, nodePosition.y + height);
+          nextTotalHeight = Math.max(nextTotalHeight, y + height);
         }
 
         if (stack) {
-          offsetY = nodePosition.y + height;
+          offsetY = y + height;
         } else {
           offsetY += height + gap;
         }

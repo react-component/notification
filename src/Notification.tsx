@@ -43,9 +43,7 @@ export interface NotificationProps {
   icon?: React.ReactNode;
   actions?: React.ReactNode;
   closable?: ClosableType;
-  offset?: {
-    y: number;
-  };
+  offset?: number;
   notificationIndex?: number;
   stackInThreshold?: boolean;
   props?: React.HTMLAttributes<HTMLDivElement> & Record<string, any>;
@@ -213,7 +211,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   };
 
   if (mergedOffset) {
-    mergedStyle['--notification-y'] = `${mergedOffset.y}px`;
+    mergedStyle['--notification-y'] = `${mergedOffset}px`;
   }
 
   return (
