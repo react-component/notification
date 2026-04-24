@@ -1,24 +1,200 @@
 @notificationPrefixCls: rc-notification;
+@notificationMotionDuration: 0.3s;
+@notificationMotionEase: cubic-bezier(0.22, 1, 0.36, 1);
+@notificationMotionOffset: 64px;
+
+.generate-placement(
+  @placement,
+  @vertical,
+  @horizontal,
+  @flexDirection,
+  @transformOrigin,
+  @stackClip,
+  @motionX
+) {
+  &-@{placement} {
+    @{vertical}: 0;
+    @{horizontal}: 0;
+    display: flex;
+    flex-direction: @flexDirection;
+
+    .@{notificationPrefixCls}-notice {
+      @{vertical}: var(--notification-y, 0);
+      @{horizontal}: var(--notification-x, 0);
+      transform-origin: @transformOrigin;
+    }
+
+    .@{notificationPrefixCls}-fade-appear-prepare,
+    .@{notificationPrefixCls}-fade-enter-prepare {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+      transition: none;
+    }
+
+    .@{notificationPrefixCls}-fade-appear-start,
+    .@{notificationPrefixCls}-fade-enter-start {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-appear-active,
+    .@{notificationPrefixCls}-fade-enter-active {
+      opacity: 1;
+      transform: translateX(0) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-leave-start {
+      opacity: 1;
+      transform: translateX(0) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-leave-active {
+      opacity: 0;
+      transform: translateX(@motionX) scale(var(--notification-scale, 1));
+    }
+
+    &.@{notificationPrefixCls}-stack:not(.@{notificationPrefixCls}-stack-expanded) {
+      .@{notificationPrefixCls}-notice {
+        clip-path: @stackClip;
+      }
+
+      .@{notificationPrefixCls}-notice[data-notification-index='0'] {
+        clip-path: inset(-50% -50% -50% -50%);
+      }
+    }
+  }
+}
+
+.generate-center-placement(
+  @placement,
+  @vertical,
+  @flexDirection,
+  @transformOrigin,
+  @stackClip,
+  @motionY
+) {
+  &-@{placement} {
+    @{vertical}: 0;
+    left: 50%;
+    display: flex;
+    flex-direction: @flexDirection;
+    transform: translateX(-50%);
+
+    .@{notificationPrefixCls}-notice {
+      @{vertical}: var(--notification-y, 0);
+      left: var(--notification-x, 0);
+      transform-origin: @transformOrigin;
+    }
+
+    .@{notificationPrefixCls}-fade-appear-prepare,
+    .@{notificationPrefixCls}-fade-enter-prepare {
+      opacity: 0;
+      transform: translateY(@motionY) scale(var(--notification-scale, 1));
+      transition: none;
+    }
+
+    .@{notificationPrefixCls}-fade-appear-start,
+    .@{notificationPrefixCls}-fade-enter-start {
+      opacity: 0;
+      transform: translateY(@motionY) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-appear-active,
+    .@{notificationPrefixCls}-fade-enter-active {
+      opacity: 1;
+      transform: translateY(0) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-leave-start {
+      opacity: 1;
+      transform: translateY(0) scale(var(--notification-scale, 1));
+    }
+
+    .@{notificationPrefixCls}-fade-leave-active {
+      opacity: 0;
+      transform: translateY(@motionY) scale(var(--notification-scale, 1));
+    }
+
+    &.@{notificationPrefixCls}-stack:not(.@{notificationPrefixCls}-stack-expanded) {
+      .@{notificationPrefixCls}-notice {
+        clip-path: @stackClip;
+      }
+
+      .@{notificationPrefixCls}-notice[data-notification-index='0'] {
+        clip-path: inset(-50% -50% -50% -50%);
+      }
+    }
+  }
+}
 
 .@{notificationPrefixCls} {
-  // ====================== Notification ======================
   position: fixed;
   z-index: 1000;
-  display: flex;
-  max-height: 100vh;
-  padding: 10px;
-  align-items: flex-end;
-  width: 340px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  width: 360px;
   height: 100vh;
+  padding: 24px;
   box-sizing: border-box;
   pointer-events: none;
-  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: contain;
+
+  .generate-placement(
+    topRight,
+    top,
+    right,
+    column,
+    ~'center bottom',
+    inset(50% -50% -50% -50%),
+    @notificationMotionOffset
+  );
+  .generate-placement(
+    bottomRight,
+    bottom,
+    right,
+    column-reverse,
+    ~'center top',
+    inset(-50% -50% 50% -50%),
+    @notificationMotionOffset
+  );
+  .generate-placement(
+    topLeft,
+    top,
+    left,
+    column,
+    ~'center bottom',
+    inset(50% -50% -50% -50%),
+    -@notificationMotionOffset
+  );
+  .generate-placement(
+    bottomLeft,
+    bottom,
+    left,
+    column-reverse,
+    ~'center top',
+    inset(-50% -50% 50% -50%),
+    -@notificationMotionOffset
+  );
+  .generate-center-placement(
+    top,
+    top,
+    column,
+    ~'center bottom',
+    inset(50% -50% -50% -50%),
+    -@notificationMotionOffset
+  );
+  .generate-center-placement(
+    bottom,
+    bottom,
+    column-reverse,
+    ~'center top',
+    inset(-50% -50% 50% -50%),
+    @notificationMotionOffset
+  );
 
   &-list {
     overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: contain;
     -ms-overflow-style: none;
     scrollbar-width: none;
 
@@ -29,104 +205,99 @@
     }
   }
 
-  // Position
-  &-top,
-  &-topLeft,
-  &-topRight {
-    top: 0;
+  &-list-content {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    pointer-events: none;
+    transition: transform @notificationMotionDuration @notificationMotionEase;
+    will-change: transform;
   }
 
-  &-bottom,
-  &-bottomRight,
-  &-bottomLeft {
-    bottom: 0;
-  }
-
-  &-bottomRight,
-  &-topRight {
-    right: 0;
-  }
-
-  // ========================= Notice =========================
   &-stack-expanded {
     pointer-events: auto;
+
+    .@{notificationPrefixCls}-list-content {
+      transition: none;
+    }
   }
 
   &-notice {
-    position: relative;
-    display: block;
+    position: absolute;
     box-sizing: border-box;
-    line-height: 1.5;
     width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #111;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.16);
+    color: #111;
+    font-size: 14px;
+    line-height: 1.5;
+    pointer-events: auto;
+    transform: scale(var(--notification-scale, 1));
+    transition:
+      transform @notificationMotionDuration @notificationMotionEase,
+      inset @notificationMotionDuration @notificationMotionEase,
+      clip-path @notificationMotionDuration @notificationMotionEase,
+      opacity @notificationMotionDuration @notificationMotionEase;
 
-    &-wrapper {
-      pointer-events: auto;
-      position: relative;
-      display: block;
-      box-sizing: border-box;
-      border-radius: 3px 3px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      margin: 0 0 16px;
-      border: 1px solid #999;
-      border: 0px solid rgba(0, 0, 0, 0);
-      background: #fff;
-      width: 300px;
-    }
-
-    // Section
     &-section {
-      padding: 7px 20px 7px 10px;
+      padding-right: 36px;
+      white-space: pre-wrap;
     }
 
-    &-closable &-section {
-      padding-right: 20px;
+    &:not(&-closable) &-section {
+      padding-right: 0;
     }
 
     &-close {
       position: absolute;
-      top: 3px;
-      right: 5px;
-      color: #000;
-      font-weight: 700;
-      font-size: 16px;
+      top: 12px;
+      right: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #111;
+      border-radius: 999px;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
       line-height: 1;
-      text-decoration: none;
-      text-shadow: 0 1px 0 #fff;
-      outline: none;
       cursor: pointer;
-      opacity: 0.2;
-      filter: alpha(opacity=20);
-      border: 0;
-      background-color: #fff;
-
-      &-x:after {
-        content: '×';
-      }
+      transition:
+        transform @notificationMotionDuration @notificationMotionEase,
+        box-shadow @notificationMotionDuration @notificationMotionEase,
+        background-color @notificationMotionDuration @notificationMotionEase;
 
       &:hover {
-        text-decoration: none;
-        opacity: 1;
-        filter: alpha(opacity=100);
+        background: #f4f9ff;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
       }
     }
 
-    // Progress
     &-progress {
       position: absolute;
-      left: 3px;
-      right: 3px;
-      border-radius: 1px;
+      right: 16px;
+      bottom: 8px;
+      left: 16px;
+      display: block;
+      inline-size: auto;
+      block-size: 2px;
       overflow: hidden;
+      border: 0;
+      border-radius: 1px;
       appearance: none;
       -webkit-appearance: none;
-      display: block;
-      inline-size: 100%;
-      block-size: 2px;
-      border: 0;
 
       &,
       &::-webkit-progress-bar {
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: rgba(0, 0, 0, 0.08);
       }
 
       &::-moz-progress-bar {
@@ -139,148 +310,25 @@
     }
   }
 
-  &-list-content {
-    position: relative;
-  }
-
-  &-fade {
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-
-  &-fade-appear-prepare {
-    pointer-events: none;
-    opacity: 0 !important;
-  }
-
-  &-fade-appear-start {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  &-fade-appear-active {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  // .fade-effect() {
-  //   animation-duration: 0.3s;
-  //   animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
-  //   animation-fill-mode: both;
-  // }
-
-  // &-fade-appear,
-  // &-fade-enter {
-  //   opacity: 0;
-  //   animation-play-state: paused;
-  //   .fade-effect();
-  // }
-
-  // &-fade-leave {
-  //   .fade-effect();
-  //   animation-play-state: paused;
-  // }
-
-  // &-fade-appear&-fade-appear-active,
-  // &-fade-enter&-fade-enter-active {
-  //   animation-name: rcNotificationFadeIn;
-  //   animation-play-state: running;
-  // }
-
-  // &-fade-leave&-fade-leave-active {
-  //   animation-name: rcDialogFadeOut;
-  //   animation-play-state: running;
-  // }
-
-  // @keyframes rcNotificationFadeIn {
-  //   0% {
-  //     opacity: 0;
-  //   }
-  //   100% {
-  //     opacity: 1;
-  //   }
-  // }
-
-  // @keyframes rcDialogFadeOut {
-  //   0% {
-  //     opacity: 1;
-  //   }
-  //   100% {
-  //     opacity: 0;
-  //   }
-  // }
-
-  // ========================= Stack =========================
   &-stack {
-    & > .@{notificationPrefixCls}-notice {
-      &-wrapper {
-        transition: all 0.3s;
-        position: absolute;
-        top: 12px;
-        opacity: 1;
-
-        &:not(:nth-last-child(-n + 3)) {
-          opacity: 0;
-          right: 34px;
-          width: 252px;
-          overflow: hidden;
-          color: transparent;
-          pointer-events: none;
-        }
-
-        &:nth-last-child(1) {
-          right: 10px;
-        }
-
-        &:nth-last-child(2) {
-          right: 18px;
-          width: 284px;
-          color: transparent;
-          overflow: hidden;
-        }
-
-        &:nth-last-child(3) {
-          right: 26px;
-          width: 268px;
-          color: transparent;
-          overflow: hidden;
-        }
-      }
+    .@{notificationPrefixCls}-notice {
+      clip-path: inset(-50% -50% -50% -50%);
     }
 
-    &&-expanded {
-      & > .@{notificationPrefixCls}-notice {
-        &-wrapper {
-          &:not(:nth-last-child(-n + 1)) {
-            opacity: 1;
-            width: 300px;
-            right: 10px;
-            overflow: unset;
-            color: inherit;
-            pointer-events: auto;
-          }
-
-          &::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: -16px;
-            width: 100%;
-            height: calc(100% + 32px);
-            background: transparent;
-            pointer-events: auto;
-            color: rgb(0,0,0);
-          }
-        }
+    &:not(.@{notificationPrefixCls}-stack-expanded) {
+      .@{notificationPrefixCls}-notice {
+        --notification-scale: ~'calc(1 - min(var(--notification-index, 0), 2) * 0.06)';
       }
-    }
 
-    &.@{notificationPrefixCls}-bottomRight {
-      & > .@{notificationPrefixCls}-notice-wrapper {
-        top: unset;
-        bottom: 12px;
+      .@{notificationPrefixCls}-notice:not(.@{notificationPrefixCls}-notice-stack-in-threshold) {
+        opacity: 0;
+        pointer-events: none;
       }
     }
   }
+}
+
+.@{notificationPrefixCls}-fade {
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }

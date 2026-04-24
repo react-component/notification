@@ -1,10 +1,10 @@
 import React from 'react';
 import type { CSSMotionProps } from '@rc-component/motion';
-import '../../assets/geek.less';
+import '../../assets/index.less';
 import NotificationList, { type NotificationListConfig } from '../../src/NotificationList';
 
 const motion: CSSMotionProps = {
-  motionName: 'notification-fade',
+  motionName: 'rc-notification-fade',
   motionAppear: true,
   motionEnter: true,
   motionLeave: true,
@@ -94,8 +94,6 @@ const Demo = () => {
 
       <NotificationList
         configList={configList}
-        prefixCls="notification"
-        classNames={{ root: 'notification-notice' }}
         motion={motion}
         placement="topRight"
         stack={stack ? { threshold: 3, offset: 20 } : undefined}

@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import React from 'react';
 import type { CSSMotionProps } from '@rc-component/motion';
-import '../../assets/geek.less';
+import '../../assets/index.less';
 import { useNotification } from '../../src';
 
 const Context = React.createContext({ name: 'light' });
 
 const motion: CSSMotionProps = {
-  motionName: 'notification-fade',
+  motionName: 'rc-notification-fade',
   motionAppear: true,
   motionEnter: true,
   motionLeave: true,
@@ -26,7 +26,6 @@ const Demo = () => {
     motion,
     stack: { threshold: 3, offset: 20 },
     closable: true,
-    prefixCls: 'notification',
   });
 
   return (

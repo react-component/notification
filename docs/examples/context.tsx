@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import React from 'react';
 import type { CSSMotionProps } from '@rc-component/motion';
-import '../../assets/geek.less';
+import '../../assets/index.less';
 import { useNotification } from '../../src';
 
 const motion: CSSMotionProps = {
-  motionName: 'notification-fade',
+  motionName: 'rc-notification-fade',
   motionAppear: true,
   motionEnter: true,
   motionLeave: true,
@@ -24,7 +24,6 @@ const NOTICE = {
 const Demo = () => {
   const [{ open }, holder] = useNotification({
     motion,
-    prefixCls: 'notification',
   });
 
   return (
