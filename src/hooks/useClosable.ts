@@ -18,6 +18,7 @@ export type ParsedClosableConfig = ClosableConfig &
 export default function useClosable(
   closable?: ClosableType,
 ): [boolean, ParsedClosableConfig, ReturnType<typeof pickAttrs>] {
+  // Convert boolean shorthand into the object shape used by render logic.
   const closableObj = React.useMemo(() => {
     if (closable === false) {
       return {
@@ -33,6 +34,7 @@ export default function useClosable(
     return {};
   }, [closable]);
 
+  // Fill defaults so callers can read closeIcon and disabled without extra guards.
   const closableConfig = React.useMemo<ParsedClosableConfig>(
     () => ({
       ...closableObj,
@@ -42,6 +44,7 @@ export default function useClosable(
     [closableObj],
   );
 
+  // Forward aria-* props from the closable config to the close button.
   const closableAriaProps = React.useMemo(() => pickAttrs(closableConfig, true), [closableConfig]);
 
   return [!!closable, closableConfig, closableAriaProps];

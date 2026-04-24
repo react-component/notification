@@ -12,28 +12,20 @@ export type NodeSizeMap = Record<string, NodeSize>;
  */
 export default function useSizes() {
   const [sizeMap, setSizeMap] = React.useState<NodeSizeMap>({});
-  const cleanUpMapRef = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const setNodeSize = React.useCallback((key: string, node: HTMLDivElement | null) => {
     if (!node) {
-      cleanUpMapRef.current[key] = setTimeout(() => {
-        delete cleanUpMapRef.current[key];
+      setSizeMap((prevSizeMap) => {
+        if (!(key in prevSizeMap)) {
+          return prevSizeMap;
+        }
 
-        setSizeMap((prevSizeMap) => {
-          if (!(key in prevSizeMap)) {
-            return prevSizeMap;
-          }
-
-          const nextSizeMap = { ...prevSizeMap };
-          delete nextSizeMap[key];
-          return nextSizeMap;
-        });
+        const nextSizeMap = { ...prevSizeMap };
+        delete nextSizeMap[key];
+        return nextSizeMap;
       });
       return;
     }
-
-    clearTimeout(cleanUpMapRef.current[key]);
-    delete cleanUpMapRef.current[key];
 
     const nextSize = {
       width: node.offsetWidth,
@@ -52,15 +44,6 @@ export default function useSizes() {
       };
     });
   }, []);
-
-  React.useEffect(
-    () => () => {
-      Object.values(cleanUpMapRef.current).forEach((timer) => {
-        clearTimeout(timer);
-      });
-    },
-    [],
-  );
 
   return [sizeMap, setNodeSize] as const;
 }

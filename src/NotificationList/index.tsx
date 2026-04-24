@@ -1,6 +1,6 @@
 import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
-import { composeRef } from '@rc-component/util/lib/ref';
+import { useComposeRef } from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import useListPosition from '../hooks/useListPosition';
@@ -39,6 +39,116 @@ export interface NotificationListProps {
   onNoticeClose?: (key: React.Key) => void;
   onAllRemoved?: (placement: Placement) => void;
 }
+
+interface NotificationListItemProps {
+  config: NotificationListConfig;
+  components?: ComponentsType;
+  contextClassNames?: NotificationClassNames;
+  classNames?: NotificationClassNames;
+  styles?: NotificationStyles;
+  motionClassName?: string;
+  motionStyle?: React.CSSProperties;
+  nodeRef: React.Ref<HTMLDivElement>;
+  prefixCls: string;
+  offset?: number;
+  notificationIndex: number;
+  stackInThreshold: boolean;
+  listHovering: boolean;
+  stackEnabled: boolean;
+  pauseOnHover?: boolean;
+  setNodeSize: (key: string, node: HTMLDivElement | null) => void;
+  onNoticeClose?: (key: React.Key) => void;
+}
+
+const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
+  const {
+    config,
+    components,
+    contextClassNames,
+    classNames,
+    styles,
+    motionClassName,
+    motionStyle,
+    nodeRef,
+    prefixCls,
+    offset,
+    notificationIndex,
+    stackInThreshold,
+    listHovering,
+    stackEnabled,
+    pauseOnHover,
+    setNodeSize,
+    onNoticeClose,
+  } = props;
+  const { key, placement: itemPlacement, ...notificationConfig } = config;
+  const strKey = String(key);
+
+  const setItemRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      setNodeSize(strKey, node);
+    },
+    [setNodeSize, strKey],
+  );
+  const ref = useComposeRef(nodeRef, setItemRef);
+
+  return (
+    <Notification
+      {...notificationConfig}
+      ref={ref}
+      prefixCls={prefixCls}
+      offset={offset}
+      notificationIndex={notificationIndex}
+      stackInThreshold={stackInThreshold}
+      className={clsx(contextClassNames?.notice, config.className)}
+      style={config.style}
+      classNames={{
+        wrapper: clsx(classNames?.wrapper, config.classNames?.wrapper),
+        root: clsx(classNames?.root, config.classNames?.root, motionClassName),
+        icon: clsx(classNames?.icon, config.classNames?.icon),
+        section: clsx(classNames?.section, config.classNames?.section),
+        close: clsx(classNames?.close, config.classNames?.close),
+        progress: clsx(classNames?.progress, config.classNames?.progress),
+      }}
+      styles={{
+        wrapper: {
+          ...styles?.wrapper,
+          ...config.styles?.wrapper,
+        },
+        root: {
+          ...styles?.root,
+          ...config.styles?.root,
+          ...motionStyle,
+        },
+        icon: {
+          ...styles?.icon,
+          ...config.styles?.icon,
+        },
+        section: {
+          ...styles?.section,
+          ...config.styles?.section,
+        },
+        close: {
+          ...styles?.close,
+          ...config.styles?.close,
+        },
+        progress: {
+          ...styles?.progress,
+          ...config.styles?.progress,
+        },
+      }}
+      components={{
+        ...components,
+        ...config.components,
+      }}
+      hovering={stackEnabled && listHovering}
+      pauseOnHover={config.pauseOnHover ?? pauseOnHover}
+      onClose={() => {
+        config.onClose?.();
+        onNoticeClose?.(key);
+      }}
+    />
+  );
+};
 
 const NotificationList: React.FC<NotificationListProps> = (props) => {
   const {
@@ -148,71 +258,31 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
           }}
         >
           {({ config, className: motionClassName, style: motionStyle, index = 0 }, nodeRef) => {
-            const { key, placement: itemPlacement, ...notificationConfig } = config;
+            const { key } = config;
             const strKey = String(key);
             const notificationIndex = keyList.length - index - 1;
             const stackInThreshold = stackEnabled && notificationIndex < threshold;
 
-            const setItemRef = (node: HTMLDivElement | null) => {
-              setNodeSize(strKey, node);
-            };
-
             return (
-              <Notification
+              <NotificationListItem
                 key={key}
-                {...notificationConfig}
-                ref={composeRef(nodeRef, setItemRef)}
+                config={config}
+                components={components}
+                contextClassNames={contextClassNames}
+                classNames={classNames}
+                styles={styles}
+                motionClassName={motionClassName}
+                motionStyle={motionStyle}
+                nodeRef={nodeRef}
                 prefixCls={prefixCls}
                 offset={notificationPosition.get(strKey)}
                 notificationIndex={notificationIndex}
                 stackInThreshold={stackInThreshold}
-                className={clsx(contextClassNames?.notice, config.className)}
-                style={config.style}
-                classNames={{
-                  wrapper: clsx(classNames?.wrapper, config.classNames?.wrapper),
-                  root: clsx(classNames?.root, config.classNames?.root, motionClassName),
-                  icon: clsx(classNames?.icon, config.classNames?.icon),
-                  section: clsx(classNames?.section, config.classNames?.section),
-                  close: clsx(classNames?.close, config.classNames?.close),
-                  progress: clsx(classNames?.progress, config.classNames?.progress),
-                }}
-                styles={{
-                  wrapper: {
-                    ...styles?.wrapper,
-                    ...config.styles?.wrapper,
-                  },
-                  root: {
-                    ...styles?.root,
-                    ...config.styles?.root,
-                    ...motionStyle,
-                  },
-                  icon: {
-                    ...styles?.icon,
-                    ...config.styles?.icon,
-                  },
-                  section: {
-                    ...styles?.section,
-                    ...config.styles?.section,
-                  },
-                  close: {
-                    ...styles?.close,
-                    ...config.styles?.close,
-                  },
-                  progress: {
-                    ...styles?.progress,
-                    ...config.styles?.progress,
-                  },
-                }}
-                components={{
-                  ...components,
-                  ...config.components,
-                }}
-                hovering={stackEnabled && listHovering}
-                pauseOnHover={config.pauseOnHover ?? pauseOnHover}
-                onClose={() => {
-                  config.onClose?.();
-                  onNoticeClose?.(key);
-                }}
+                listHovering={listHovering}
+                stackEnabled={stackEnabled}
+                pauseOnHover={pauseOnHover}
+                setNodeSize={setNodeSize}
+                onNoticeClose={onNoticeClose}
               />
             );
           }}
