@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import type { NotificationAPI, NotificationConfig, NotificationProgressProps } from '../src';
-import { useNotification } from '../src';
+import { Notification, useNotification } from '../src';
 
 require('../assets/index.less');
 
@@ -616,6 +616,22 @@ describe('Notification.Basic', () => {
       content: 'little',
     });
     expect(document.querySelector('.rc-notification-notice')).toHaveClass('bamboo');
+  });
+
+  it('should support zero offset', () => {
+    const { container, rerender } = render(
+      <Notification prefixCls="rc-notification" description="little" offset={10} />,
+    );
+
+    expect(container.querySelector('.rc-notification-notice')).toHaveStyle({
+      '--notification-y': '10px',
+    });
+
+    rerender(<Notification prefixCls="rc-notification" description="little" offset={0} />);
+
+    expect(container.querySelector('.rc-notification-notice')).toHaveStyle({
+      '--notification-y': '0px',
+    });
   });
 
   it('should not render section for single content node', () => {

@@ -152,7 +152,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   // ======================== Position ========================
   const offsetRef = React.useRef(offset);
-  if (offset) {
+  if (offset !== undefined) {
     offsetRef.current = offset;
   }
 
@@ -209,7 +209,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     ...style,
   };
 
-  if (mergedOffset) {
+  if (mergedOffset !== undefined) {
     mergedStyle['--notification-y'] = `${mergedOffset}px`;
   }
 
