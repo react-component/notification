@@ -42,33 +42,17 @@ export interface NotificationListProps {
 
 const noticeSlotKeys = ['wrapper', 'root', 'icon', 'section', 'close', 'progress'] as const;
 
-function fillClassNames(
-  classNames?: NotificationClassNames,
-  configClassNames?: NotificationClassNames,
-  extraClassNames?: NotificationClassNames,
-): NotificationClassNames {
+function fillClassNames(classNamesList: NotificationClassNames[]): NotificationClassNames {
   return noticeSlotKeys.reduce<NotificationClassNames>((mergedClassNames, key) => {
-    mergedClassNames[key] = clsx(
-      classNames?.[key],
-      configClassNames?.[key],
-      extraClassNames?.[key],
-    );
+    mergedClassNames[key] = clsx(...classNamesList.map((classNames) => classNames[key]));
 
     return mergedClassNames;
   }, {});
 }
 
-function fillStyles(
-  styles?: NotificationStyles,
-  configStyles?: NotificationStyles,
-  extraStyles?: NotificationStyles,
-): NotificationStyles {
+function fillStyles(stylesList: NotificationStyles[]): NotificationStyles {
   return noticeSlotKeys.reduce<NotificationStyles>((mergedStyles, key) => {
-    mergedStyles[key] = {
-      ...styles?.[key],
-      ...configStyles?.[key],
-      ...extraStyles?.[key],
-    };
+    mergedStyles[key] = Object.assign({}, ...stylesList.map((styles) => styles[key]));
 
     return mergedStyles;
   }, {});
@@ -135,12 +119,20 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
       stackInThreshold={stackInThreshold}
       className={clsx(contextClassNames?.notice, config.className)}
       style={config.style}
-      classNames={fillClassNames(classNames, config.classNames, {
-        root: motionClassName,
-      })}
-      styles={fillStyles(styles, config.styles, {
-        root: motionStyle,
-      })}
+      classNames={fillClassNames([
+        classNames || {},
+        config.classNames || {},
+        {
+          root: motionClassName,
+        },
+      ])}
+      styles={fillStyles([
+        styles || {},
+        config.styles || {},
+        {
+          root: motionStyle,
+        },
+      ])}
       components={{
         ...components,
         ...config.components,
