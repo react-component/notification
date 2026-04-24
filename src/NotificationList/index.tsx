@@ -12,7 +12,7 @@ import Notification, {
   type NotificationProps,
   type NotificationStyles,
 } from '../Notification';
-import { NotificationContext } from '../NotificationProvider';
+import { NotificationContext, type NotificationContextProps } from '../NotificationProvider';
 import Content from './Content';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
@@ -43,7 +43,7 @@ export interface NotificationListProps {
 interface NotificationListItemProps {
   config: NotificationListConfig;
   components?: ComponentsType;
-  contextClassNames?: NotificationClassNames;
+  contextClassNames?: NotificationContextProps['classNames'];
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
   motionClassName?: string;
