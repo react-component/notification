@@ -618,6 +618,43 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.rc-notification-notice')).toHaveClass('bamboo');
   });
 
+  it('should not render section for single content node', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        description: 'little',
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice-section')).toBeFalsy();
+    expect(document.querySelector('.rc-notification-notice-description')).toBeTruthy();
+  });
+
+  it('should render section when title and description both exist', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        title: 'bamboo',
+        description: 'little',
+        styles: {
+          section: {
+            content: 'light',
+          },
+        },
+        classNames: {
+          section: 'section-class',
+        },
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice-section')).toHaveStyle({
+      content: 'light',
+    });
+    expect(document.querySelector('.rc-notification-notice-section')).toHaveClass('section-class');
+  });
+
   it('should open styles and classNames work', () => {
     const { instance } = renderDemo();
 

@@ -170,23 +170,22 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       <div className={`${noticePrefixCls}-description`}>{description}</div>
     ) : null;
 
-  let contentNode: React.ReactNode =
-    titleNode !== null || descNode !== null ? (
-      <>
-        {titleNode}
-        {descNode}
-      </>
-    ) : null;
+  const hasTitle = titleNode !== null;
+  const hasDescription = descNode !== null;
+  let contentNode: React.ReactNode = null;
 
-  if (contentNode) {
+  if (hasTitle && hasDescription) {
     contentNode = (
       <div
         className={clsx(`${noticePrefixCls}-section`, classNames?.section)}
         style={styles?.section}
       >
-        {contentNode}
+        {titleNode}
+        {descNode}
       </div>
     );
+  } else {
+    contentNode = titleNode || descNode;
   }
 
   if (icon !== undefined && icon !== null) {
