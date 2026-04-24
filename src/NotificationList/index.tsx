@@ -6,13 +6,13 @@ import * as React from 'react';
 import useListPosition from '../hooks/useListPosition';
 import useStack from '../hooks/useStack';
 import type { StackConfig } from '../interface';
-import { NotificationContext } from '../legacy/NotificationProvider';
 import Notification, {
   type ComponentsType,
   type NotificationClassNames,
   type NotificationProps,
   type NotificationStyles,
 } from '../Notification';
+import { NotificationContext } from '../NotificationProvider';
 import Content from './Content';
 
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
