@@ -11,6 +11,9 @@ export interface NotificationClassNames {
   root?: string;
   icon?: string;
   section?: string;
+  title?: string;
+  description?: string;
+  actions?: string;
   close?: string;
   progress?: string;
 }
@@ -20,6 +23,9 @@ export interface NotificationStyles {
   root?: React.CSSProperties;
   icon?: React.CSSProperties;
   section?: React.CSSProperties;
+  title?: React.CSSProperties;
+  description?: React.CSSProperties;
+  actions?: React.CSSProperties;
   close?: React.CSSProperties;
   progress?: React.CSSProperties;
 }
@@ -42,6 +48,7 @@ export interface NotificationProps {
   description?: React.ReactNode;
   icon?: React.ReactNode;
   actions?: React.ReactNode;
+  role?: string;
   closable?: ClosableType;
   offset?: number;
   notificationIndex?: number;
@@ -78,6 +85,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     description,
     icon,
     actions,
+    role,
     closable,
     offset,
     notificationIndex,
@@ -167,12 +175,19 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   // ======================== Content =========================
   const titleNode =
     title !== undefined && title !== null ? (
-      <div className={`${noticePrefixCls}-title`}>{title}</div>
+      <div className={clsx(`${noticePrefixCls}-title`, classNames?.title)} style={styles?.title}>
+        {title}
+      </div>
     ) : null;
 
   const descNode =
     description !== undefined && description !== null ? (
-      <div className={`${noticePrefixCls}-description`}>{description}</div>
+      <div
+        className={clsx(`${noticePrefixCls}-description`, classNames?.description)}
+        style={styles?.description}
+      >
+        {description}
+      </div>
     ) : null;
 
   const hasTitle = titleNode !== null;
@@ -204,6 +219,15 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     );
   }
 
+  const actionsNode = actions ? (
+    <div
+      className={clsx(`${noticePrefixCls}-actions`, classNames?.actions)}
+      style={styles?.actions}
+    >
+      {actions}
+    </div>
+  ) : null;
+
   // ========================= Render =========================
   const mergedStyle: React.CSSProperties & {
     '--notification-index'?: number;
@@ -218,10 +242,13 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     mergedStyle['--notification-y'] = `${mergedOffset}px`;
   }
 
+  const mergedRole = role ?? rootProps?.role ?? 'alert';
+
   return (
     <div
       {...rootProps}
       ref={ref}
+      role={mergedRole}
       data-notification-index={mergedNotificationIndex}
       // Styles
       className={clsx(noticePrefixCls, className, classNames?.root, {
@@ -235,6 +262,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
       onMouseLeave={onInternalMouseLeave}
     >
       {contentNode}
+      {actionsNode}
 
       {mergedClosable && (
         <button
@@ -247,8 +275,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
           {closableConfig.closeIcon}
         </button>
       )}
-
-      {actions && <div className="actions">{actions}</div>}
 
       {showProgress && typeof duration === 'number' && duration > 0 && (
         <Progress

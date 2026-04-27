@@ -584,6 +584,46 @@ describe('Notification.Basic', () => {
     expect(notice[0].getAttribute('role')).toBe('alert');
   });
 
+  it('sets role attribute from notification config', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        title: 'bamboo',
+        description: <span className="test-role-description">simple show</span>,
+        icon: <span className="test-role-icon" />,
+        actions: <button type="button">light</button>,
+        role: 'status',
+        closable: true,
+        showProgress: true,
+        duration: 3,
+      });
+    });
+
+    const notice = document.querySelector('.rc-notification-notice');
+
+    expect(notice).toHaveAttribute('role', 'status');
+    expect(notice.querySelector('.rc-notification-notice-content')).toBeFalsy();
+    expect(notice.querySelector('.rc-notification-notice-title')).toBeTruthy();
+    expect(notice.querySelector('.rc-notification-notice-description')).toBeTruthy();
+    expect(notice.querySelector('.rc-notification-notice-icon')).toBeTruthy();
+    expect(notice.querySelector('.rc-notification-notice-actions')).toBeTruthy();
+    expect(notice.querySelector('.rc-notification-notice-close')).toBeTruthy();
+    expect(notice.querySelector('.rc-notification-notice-progress')).toBeTruthy();
+  });
+
+  it('sets default role attribute', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        description: <span className="test-default-role">simple show</span>,
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice')).toHaveAttribute('role', 'alert');
+  });
+
   it('should style work', () => {
     const { instance } = renderDemo({
       style: () => ({
@@ -692,6 +732,94 @@ describe('Notification.Basic', () => {
       content: 'little',
     });
     expect(document.querySelector('.bamboo')).toHaveClass('bamboo');
+  });
+
+  it('should support semantic content styles and classNames', () => {
+    const { instance } = renderDemo({
+      classNames: {
+        title: 'global-title',
+        description: 'global-description',
+        actions: 'global-actions',
+        icon: 'global-icon',
+      },
+      styles: {
+        title: {
+          content: 'global-title',
+        },
+        description: {
+          content: 'global-description',
+        },
+        actions: {
+          content: 'global-actions',
+        },
+        icon: {
+          content: 'global-icon',
+        },
+      },
+    });
+
+    act(() => {
+      instance.open({
+        title: 'bamboo',
+        description: 'little',
+        icon: <span />,
+        actions: <button type="button">light</button>,
+        classNames: {
+          title: 'notice-title',
+          description: 'notice-description',
+          actions: 'notice-actions',
+          icon: 'notice-icon',
+        },
+        styles: {
+          title: {
+            marginTop: 1,
+          },
+          description: {
+            marginRight: 2,
+          },
+          actions: {
+            marginBottom: 3,
+          },
+          icon: {
+            marginLeft: 4,
+          },
+        },
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice-title')).toHaveClass(
+      'global-title',
+      'notice-title',
+    );
+    expect(document.querySelector('.rc-notification-notice-title')).toHaveStyle({
+      content: 'global-title',
+      marginTop: '1px',
+    });
+    expect(document.querySelector('.rc-notification-notice-description')).toHaveClass(
+      'global-description',
+      'notice-description',
+    );
+    expect(document.querySelector('.rc-notification-notice-description')).toHaveStyle({
+      content: 'global-description',
+      marginRight: '2px',
+    });
+    expect(document.querySelector('.rc-notification-notice-actions')).toHaveClass(
+      'global-actions',
+      'notice-actions',
+    );
+    expect(document.querySelector('.rc-notification-notice-actions')).toHaveStyle({
+      content: 'global-actions',
+      marginBottom: '3px',
+    });
+    expect(document.querySelector('.actions')).toBeFalsy();
+    expect(document.querySelector('.rc-notification-notice-icon')).toHaveClass(
+      'global-icon',
+      'notice-icon',
+    );
+    expect(document.querySelector('.rc-notification-notice-icon')).toHaveStyle({
+      content: 'global-icon',
+      marginLeft: '4px',
+    });
   });
 
   it('should className work', () => {

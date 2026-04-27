@@ -47,7 +47,17 @@ export interface NotificationListProps {
   onAllRemoved?: (placement: Placement) => void;
 }
 
-const noticeSlotKeys = ['wrapper', 'root', 'icon', 'section', 'close', 'progress'] as const;
+const noticeSlotKeys: (keyof NoticeClassNames)[] = [
+  'wrapper',
+  'root',
+  'icon',
+  'section',
+  'title',
+  'description',
+  'actions',
+  'close',
+  'progress',
+];
 
 function fillClassNames(
   classNamesList: (NotificationClassNames | undefined)[],
