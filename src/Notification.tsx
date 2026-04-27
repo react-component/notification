@@ -156,8 +156,13 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     offsetRef.current = offset;
   }
 
+  const notificationIndexRef = React.useRef(notificationIndex);
+  if (notificationIndex !== undefined) {
+    notificationIndexRef.current = notificationIndex;
+  }
+
   const mergedOffset = offset ?? offsetRef.current;
-  const mergedNotificationIndex = notificationIndex ?? 0;
+  const mergedNotificationIndex = notificationIndex ?? notificationIndexRef.current ?? 0;
 
   // ======================== Content =========================
   const titleNode =

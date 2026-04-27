@@ -67,18 +67,29 @@ function fillStyles(stylesList: (NotificationStyles | undefined)[]): Notificatio
   }, {});
 }
 
+function getIndex(keys: { key: React.Key }[], key: React.Key): number | undefined {
+  const strKey = String(key);
+  const index = keys.findIndex((item) => item.key === strKey);
+
+  if (index === -1) {
+    return undefined;
+  }
+
+  return keys.length - index - 1;
+}
+
 interface NotificationListItemProps {
   config: NotificationListConfig;
   components?: ComponentsType;
   contextClassNames?: NotificationContextProps['classNames'];
   classNames?: NotificationClassNames;
   styles?: NotificationStyles;
-  motionClassName?: string;
-  motionStyle?: React.CSSProperties;
+  className?: string;
+  style?: React.CSSProperties;
   nodeRef: React.Ref<HTMLDivElement>;
   prefixCls: string;
   offset?: number;
-  notificationIndex: number;
+  notificationIndex?: number;
   stackInThreshold: boolean;
   listHovering: boolean;
   stackEnabled: boolean;
@@ -94,8 +105,8 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
     contextClassNames,
     classNames,
     styles,
-    motionClassName,
-    motionStyle,
+    className,
+    style,
     nodeRef,
     listHovering,
     stackEnabled,
@@ -120,22 +131,10 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
       {...notificationConfig}
       {...restProps}
       ref={ref}
-      className={clsx(contextClassNames?.notice, config.className)}
-      style={config.style}
-      classNames={fillClassNames([
-        classNames,
-        config.classNames,
-        {
-          root: motionClassName,
-        },
-      ])}
-      styles={fillStyles([
-        styles,
-        config.styles,
-        {
-          root: motionStyle,
-        },
-      ])}
+      className={clsx(contextClassNames?.notice, config.className, className)}
+      style={{ ...style, ...config.style }}
+      classNames={fillClassNames([classNames, config.classNames])}
+      styles={fillStyles([styles, config.styles])}
       components={{
         ...components,
         ...config.components,
@@ -175,10 +174,6 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         config,
         key: String(config.key),
       })),
-    [configList],
-  );
-  const keyList = React.useMemo(
-    () => configList.map((config) => String(config.key)).reverse(),
     [configList],
   );
 
@@ -269,11 +264,12 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
             }
           }}
         >
-          {({ config, className: motionClassName, style: motionStyle, index = 0 }, nodeRef) => {
+          {({ config, className: motionClassName, style: motionStyle }, nodeRef) => {
             const { key } = config;
             const strKey = String(key);
-            const notificationIndex = keyList.length - index - 1;
-            const stackInThreshold = stackEnabled && notificationIndex < threshold;
+            const notificationIndex = getIndex(keys, key);
+            const stackInThreshold =
+              stackEnabled && notificationIndex !== undefined && notificationIndex < threshold;
 
             return (
               <NotificationListItem
@@ -283,8 +279,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 contextClassNames={contextClassNames}
                 classNames={classNames}
                 styles={styles}
-                motionClassName={motionClassName}
-                motionStyle={motionStyle}
+                className={motionClassName}
+                style={motionStyle}
                 nodeRef={nodeRef}
                 prefixCls={prefixCls}
                 offset={notificationPosition.get(strKey)}
