@@ -10,7 +10,6 @@ export default function useNoticeTimer(
   duration: number | false | null,
   onClose: VoidFunction,
   onUpdate: (ptg: number) => void,
-  trackProgress = true,
 ) {
   const mergedDuration = typeof duration === 'number' ? duration : 0;
   const durationMs = Math.max(mergedDuration, 0) * 1000;
@@ -18,14 +17,18 @@ export default function useNoticeTimer(
   const onEventUpdate = useEvent(onUpdate);
 
   const [walking, setWalking] = React.useState(durationMs > 0);
-  const startTimestampRef = React.useRef<number | null>(null);
   const passTimeRef = React.useRef(0);
+  const lastRafTimeRef = React.useRef<number | null>(null);
 
   function syncPassTime() {
     const now = Date.now();
-    const passedTime = now - (startTimestampRef.current || now);
-    startTimestampRef.current = now;
-    passTimeRef.current += passedTime;
+    const lastRafTime = lastRafTimeRef.current;
+
+    if (lastRafTime !== null) {
+      passTimeRef.current += now - lastRafTime;
+    }
+
+    lastRafTimeRef.current = now;
   }
 
   const onPause = React.useCallback(() => {
@@ -35,62 +38,43 @@ export default function useNoticeTimer(
 
   const onResume = React.useCallback(() => {
     if (durationMs > 0) {
+      lastRafTimeRef.current = Date.now();
       setWalking(true);
     } else {
       onEventUpdate(0);
     }
-  }, [durationMs, onEventUpdate]);
+  }, [durationMs]);
 
+  // Reset when durationMs changed.
   React.useEffect(() => {
-    if (durationMs <= 0) {
-      startTimestampRef.current = null;
-      onEventUpdate(0);
-      return;
-    }
+    passTimeRef.current = 0;
+    setWalking(durationMs > 0);
+  }, [durationMs]);
 
-    syncPassTime();
-    onEventUpdate(Math.min(passTimeRef.current / durationMs, 1));
-
+  // Trigger update when walking changed.
+  React.useEffect(() => {
     if (!walking) {
-      startTimestampRef.current = null;
       return;
-    }
-
-    if (passTimeRef.current >= durationMs) {
-      onEventUpdate(1);
-      onEventClose();
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      passTimeRef.current = durationMs;
-      onEventUpdate(1);
-      onEventClose();
-    }, durationMs - passTimeRef.current);
-
-    if (!trackProgress) {
-      return () => {
-        window.clearTimeout(timeout);
-      };
     }
 
     let rafId: number | null = null;
 
     function step() {
       syncPassTime();
-      onEventUpdate(Math.min(passTimeRef.current / durationMs, 1));
 
-      if (passTimeRef.current < durationMs) {
+      if (passTimeRef.current >= durationMs) {
+        onEventUpdate(1);
+        onEventClose();
+      } else {
+        onEventUpdate(Math.min(passTimeRef.current / durationMs, 1));
         rafId = raf(step);
       }
     }
 
-    startTimestampRef.current = Date.now();
-    rafId = raf(step);
+    step();
 
     return () => {
-      window.clearTimeout(timeout);
-      raf.cancel(rafId);
+      raf.cancel(rafId!);
     };
   }, [durationMs, walking]);
 

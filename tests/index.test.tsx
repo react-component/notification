@@ -32,6 +32,15 @@ describe('Notification.Basic', () => {
     return { ...renderResult, instance };
   }
 
+  function step(time: number, slice = 16) {
+    let current = 0;
+
+    while (current < time) {
+      vi.advanceTimersByTime(slice);
+      current += slice;
+    }
+  }
+
   it('works', () => {
     const { instance, unmount } = renderDemo();
 
@@ -285,26 +294,27 @@ describe('Notification.Basic', () => {
 
     // Wait for 500ms
     act(() => {
-      vi.advanceTimersByTime(500);
+      step(500);
     });
     expect(document.querySelector('.test')).toBeTruthy();
 
     // Mouse in should not remove
     fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
     act(() => {
-      vi.advanceTimersByTime(1000);
+      // Elapsed time should not advance while hovering.
+      step(1000);
     });
     expect(document.querySelector('.test')).toBeTruthy();
 
     // Mouse out should not remove until 500ms later
     fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
     act(() => {
-      vi.advanceTimersByTime(450);
+      step(450);
     });
     expect(document.querySelector('.test')).toBeTruthy();
 
     act(() => {
-      vi.advanceTimersByTime(100);
+      step(100);
     });
     expect(document.querySelector('.test')).toBeFalsy();
   });
@@ -351,27 +361,27 @@ describe('Notification.Basic', () => {
 
       // Wait for 500ms
       act(() => {
-        vi.advanceTimersByTime(500);
+        step(500);
       });
       expect(document.querySelector('.test')).toBeTruthy();
 
       // Mouse in should not remove
       fireEvent.mouseEnter(document.querySelector('.rc-notification-notice'));
       act(() => {
-        vi.advanceTimersByTime(200);
+        step(200);
       });
       expect(document.querySelector('.test')).toBeTruthy();
 
       // Mouse out should not remove until 500ms later
       fireEvent.mouseLeave(document.querySelector('.rc-notification-notice'));
       act(() => {
-        vi.advanceTimersByTime(200);
+        step(200);
       });
       expect(document.querySelector('.test')).toBeTruthy();
 
       //
       act(() => {
-        vi.advanceTimersByTime(100);
+        step(100);
       });
       expect(document.querySelector('.test')).toBeFalsy();
     });
@@ -1139,13 +1149,13 @@ describe('Notification.Basic', () => {
       expect(document.querySelector('.rc-notification-notice-progress')).toBeTruthy();
 
       act(() => {
-        vi.advanceTimersByTime(500);
+        step(500);
       });
 
       expect(document.querySelector('.rc-notification-notice-progress')).toBeTruthy();
 
       act(() => {
-        vi.advanceTimersByTime(500);
+        step(500);
       });
 
       expect(document.querySelector('.rc-notification-notice-progress')).toBeFalsy();
@@ -1210,7 +1220,7 @@ describe('Notification.Basic', () => {
       expect(document.querySelectorAll('.rc-notification-notice').length).toBe(2);
 
       act(() => {
-        vi.advanceTimersByTime(5000);
+        step(5000);
       });
 
       expect(document.querySelectorAll('.rc-notification-notice').length).toBe(1);

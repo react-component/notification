@@ -30,6 +30,15 @@ describe('Notification.Hooks', () => {
     return { ...renderResult, instance };
   }
 
+  function step(time: number, slice = 16) {
+    let current = 0;
+
+    while (current < time) {
+      vi.advanceTimersByTime(slice);
+      current += slice;
+    }
+  }
+
   it('works', async () => {
     const Context = React.createContext({ name: 'light' });
 
@@ -102,7 +111,7 @@ describe('Notification.Hooks', () => {
     expect(document.querySelector('.context-content').textContent).toEqual('light');
 
     act(() => {
-      vi.runAllTimers();
+      step(500);
     });
     expect(document.querySelector('.context-content').textContent).toEqual('bamboo');
 
