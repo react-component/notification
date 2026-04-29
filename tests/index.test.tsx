@@ -866,6 +866,48 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.rc-notification-list-content')).toHaveClass('bamboo');
   });
 
+  it('should expose top notice size on listContent', () => {
+    const offsetHeightSpy = vi
+      .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+      .mockImplementation(function offsetHeight(this: HTMLElement) {
+        if (this.classList.contains('rc-notification-notice')) {
+          return this.textContent === 'second' ? 18 : 10;
+        }
+
+        return 0;
+      });
+    const offsetWidthSpy = vi
+      .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
+      .mockImplementation(function offsetWidth(this: HTMLElement) {
+        if (this.classList.contains('rc-notification-notice')) {
+          return this.textContent === 'second' ? 28 : 20;
+        }
+
+        return 0;
+      });
+
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        description: 'first',
+        duration: false,
+      });
+      instance.open({
+        description: 'second',
+        duration: false,
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-list-content')).toHaveStyle({
+      '--top-notificiation-height': '18px',
+      '--top-notificiation-width': '28px',
+    });
+
+    offsetHeightSpy.mockRestore();
+    offsetWidthSpy.mockRestore();
+  });
+
   it('placement', () => {
     const { instance } = renderDemo();
 

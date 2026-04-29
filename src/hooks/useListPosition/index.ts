@@ -12,11 +12,13 @@ export default function useListPosition(
 ) {
   const [sizeMap, setNodeSize] = useSizes();
 
-  const [notificationPosition, totalHeight] = React.useMemo(() => {
+  const [notificationPosition, totalHeight, topNoticeHeight, topNoticeWidth] = React.useMemo(() => {
     let offsetY = 0;
     let nextTotalHeight = 0;
     const stackThreshold = stack?.threshold ?? 0;
     const nextNotificationPosition = new Map<string, number>();
+    let nextTopNoticeHeight: number | undefined;
+    let nextTopNoticeWidth: number | undefined;
 
     configList
       .slice()
@@ -29,6 +31,11 @@ export default function useListPosition(
 
         nextNotificationPosition.set(key, y);
 
+        if (index === 0) {
+          nextTopNoticeHeight = height;
+          nextTopNoticeWidth = sizeMap[key]?.width ?? 0;
+        }
+
         if (!stack || index < stackThreshold) {
           nextTotalHeight = Math.max(nextTotalHeight, y + height);
         }
@@ -40,8 +47,13 @@ export default function useListPosition(
         }
       });
 
-    return [nextNotificationPosition, nextTotalHeight] as const;
+    return [
+      nextNotificationPosition,
+      nextTotalHeight,
+      nextTopNoticeHeight,
+      nextTopNoticeWidth,
+    ] as const;
   }, [configList, gap, sizeMap, stack]);
 
-  return [notificationPosition, setNodeSize, totalHeight] as const;
+  return [notificationPosition, setNodeSize, totalHeight, topNoticeHeight, topNoticeWidth] as const;
 }

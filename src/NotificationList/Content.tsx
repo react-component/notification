@@ -4,10 +4,20 @@ import * as React from 'react';
 export interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
   listPrefixCls: string;
   height: number;
+  topNoticeHeight?: number;
+  topNoticeWidth?: number;
 }
 
 const Content = React.forwardRef<HTMLDivElement, ContentProps>((props, ref) => {
-  const { listPrefixCls, height, className, style, ...restProps } = props;
+  const {
+    listPrefixCls,
+    height,
+    topNoticeHeight = 0,
+    topNoticeWidth = 0,
+    className,
+    style,
+    ...restProps
+  } = props;
 
   const contentPrefixCls = `${listPrefixCls}-content`;
 
@@ -18,15 +28,23 @@ const Content = React.forwardRef<HTMLDivElement, ContentProps>((props, ref) => {
 
   prevHeightRef.current = height;
 
+  // ========================= Style ==========================
+  const contentStyle: React.CSSProperties & {
+    '--top-notificiation-height': string;
+    '--top-notificiation-width': string;
+  } = {
+    ...style,
+    height,
+    '--top-notificiation-height': `${topNoticeHeight}px`,
+    '--top-notificiation-width': `${topNoticeWidth}px`,
+  };
+
   // ========================= Render =========================
   return (
     <div
       {...restProps}
       className={clsx(contentPrefixCls, `${contentPrefixCls}-${heightStatus}`, className)}
-      style={{
-        ...style,
-        height,
-      }}
+      style={contentStyle}
       ref={ref}
     />
   );

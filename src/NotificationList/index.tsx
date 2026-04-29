@@ -210,11 +210,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   // ====================== List Measure ======================
   const [gap, setGap] = React.useState(0);
   const contentRef = React.useRef<HTMLDivElement>(null);
-  const [notificationPosition, setNodeSize, totalHeight] = useListPosition(
-    configList,
-    stackPosition,
-    gap,
-  );
+  const [notificationPosition, setNodeSize, totalHeight, topNoticeHeight, topNoticeWidth] =
+    useListPosition(configList, stackPosition, gap);
   const hasConfigList = !!configList.length;
 
   React.useEffect(() => {
@@ -259,6 +256,8 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       <Content
         listPrefixCls={listPrefixCls}
         height={totalHeight}
+        topNoticeHeight={topNoticeHeight}
+        topNoticeWidth={topNoticeWidth}
         className={classNames?.listContent}
         style={styles?.listContent}
         ref={contentRef}
