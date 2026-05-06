@@ -844,12 +844,16 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.bamboo-topRight')).toBeTruthy();
   });
 
-  it('should listContent styles and classNames work', () => {
+  it('should list and listContent styles and classNames work', () => {
     const { instance } = renderDemo({
       classNames: {
+        list: 'root-list',
         listContent: 'bamboo',
       },
       styles: {
+        list: {
+          content: 'root-list',
+        },
         listContent: {
           content: 'little',
         },
@@ -860,6 +864,10 @@ describe('Notification.Basic', () => {
       instance.open({});
     });
 
+    expect(document.querySelector('.rc-notification-list')).toHaveStyle({
+      content: 'root-list',
+    });
+    expect(document.querySelector('.rc-notification-list')).toHaveClass('root-list');
     expect(document.querySelector('.rc-notification-list-content')).toHaveStyle({
       content: 'little',
     });
