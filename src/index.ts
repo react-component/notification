@@ -3,10 +3,11 @@ import type { NotificationAPI, NotificationConfig } from './hooks/useNotificatio
 import NotificationProvider from './NotificationProvider';
 import Progress from './Progress';
 import Notification from './Notification';
+import NotificationList from './NotificationList';
 import type { ComponentsType, NotificationProps } from './Notification';
 import type { NotificationProgressProps } from './Progress';
 
-export { useNotification, NotificationProvider, Progress, Notification };
+export { useNotification, NotificationProvider, Progress, Notification, NotificationList };
 export type {
   NotificationAPI,
   NotificationConfig,
