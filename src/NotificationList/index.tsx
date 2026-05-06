@@ -24,10 +24,12 @@ export interface NotificationListConfig extends Omit<NotificationProps, 'prefixC
 }
 
 export interface NotificationClassNames extends NoticeClassNames {
+  list?: string;
   listContent?: string;
 }
 
 export interface NotificationStyles extends NoticeStyles {
+  list?: React.CSSProperties;
   listContent?: React.CSSProperties;
 }
 
@@ -239,6 +241,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         `${prefixCls}-${placement}`,
         contextClassNames?.list,
         className,
+        classNames?.list,
         {
           [`${prefixCls}-stack`]: stackEnabled,
           [`${prefixCls}-stack-expanded`]: expanded,
@@ -251,7 +254,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
       onMouseLeave={() => {
         setListHovering(false);
       }}
-      style={style}
+      style={{ ...styles?.list, ...style }}
     >
       <Content
         listPrefixCls={listPrefixCls}
