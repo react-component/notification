@@ -210,7 +210,10 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   if (icon !== undefined && icon !== null) {
     contentNode = (
-      <div className={classNames?.wrapper} style={styles?.wrapper}>
+      <div
+        className={clsx(`${noticePrefixCls}-wrapper`, classNames?.wrapper)}
+        style={styles?.wrapper}
+      >
         <div className={clsx(`${noticePrefixCls}-icon`, classNames?.icon)} style={styles?.icon}>
           {icon}
         </div>
