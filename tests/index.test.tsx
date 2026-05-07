@@ -738,10 +738,33 @@ describe('Notification.Basic', () => {
       });
     });
 
-    expect(document.querySelector('.bamboo')).toHaveStyle({
+    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveStyle({
       content: 'little',
     });
-    expect(document.querySelector('.bamboo')).toHaveClass('bamboo');
+    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
+  });
+
+  it('should keep default classNames for semantic nodes', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        title: 'bamboo',
+        description: 'little',
+        icon: <span />,
+        actions: <button type="button">light</button>,
+        closable: true,
+        showProgress: true,
+      });
+    });
+
+    expect(document.querySelector('.rc-notification-notice')).toBeTruthy();
+
+    ['wrapper', 'icon', 'section', 'title', 'description', 'actions', 'close', 'progress'].forEach(
+      (slot) => {
+        expect(document.querySelector(`.rc-notification-notice-${slot}`)).toBeTruthy();
+      },
+    );
   });
 
   it('should support semantic content styles and classNames', () => {
