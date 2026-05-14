@@ -5,6 +5,8 @@ import Progress from './Progress';
 import Notification from './Notification';
 import NotificationList from './NotificationList';
 import type { ComponentsType, NotificationProps } from './Notification';
+import type { NotificationListConfig } from './NotificationList';
+import type { StackConfig } from './hooks/useStack';
 import type { NotificationProgressProps } from './Progress';
 
 export { useNotification, NotificationProvider, Progress, Notification, NotificationList };
@@ -13,5 +15,7 @@ export type {
   NotificationConfig,
   ComponentsType,
   NotificationProps,
+  NotificationListConfig,
   NotificationProgressProps,
+  StackConfig,
 };
