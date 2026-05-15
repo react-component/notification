@@ -1,4 +1,4 @@
-import pickAttrs from '@rc-component/util/lib/pickAttrs';
+import { pickAttrs } from '@rc-component/util';
 import * as React from 'react';
 
 export type ClosableConfig = {

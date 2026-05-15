@@ -1,6 +1,6 @@
 import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
-import { useComposeRef } from '@rc-component/util/lib/ref';
+import { useComposeRef } from '@rc-component/util';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import useListPosition from '../hooks/useListPosition';
