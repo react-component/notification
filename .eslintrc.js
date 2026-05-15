@@ -2,13 +2,13 @@ const base = require('@umijs/fabric/dist/eslint');
 
 const restrictedPackageDirectoryImports = [
   '@rc-component/*/es',
-  '@rc-component/*/es/*',
+  '@rc-component/*/es/**',
   '@rc-component/*/lib',
-  '@rc-component/*/lib/*',
+  '@rc-component/*/lib/**',
   'rc-*/es',
-  'rc-*/es/*',
+  'rc-*/es/**',
   'rc-*/lib',
-  'rc-*/lib/*',
+  'rc-*/lib/**',
 ];
 
 module.exports = {
