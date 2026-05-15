@@ -1,6 +1,5 @@
 import * as React from 'react';
-import raf from '@rc-component/util/es/raf';
-import useEvent from '@rc-component/util/es/hooks/useEvent';
+import { raf, useEvent } from '@rc-component/util';
 
 /**
  * Runs the notice auto-close timer and reports progress updates.
