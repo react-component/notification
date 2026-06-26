@@ -84,7 +84,7 @@ const Demo = () => {
   return (
     <>
       {holder}
-      <button type="button" onClick={() => api.open({ key: Date.now(), title: 'Queued' })}>
+      <button type="button" onClick={() => api.open({ title: 'Queued' })}>
         Add
       </button>
     </>
