@@ -48,7 +48,6 @@
     "test:watch": "vitest",
     "tsc": "tsc --noEmit",
     "coverage": "vitest run --coverage",
-    "now-build": "npm run docs:build",
     "prepare": "husky install"
   },
   "dependencies": {
