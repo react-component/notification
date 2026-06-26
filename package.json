@@ -36,15 +36,19 @@
   "typings": "es/index.d.ts",
   "scripts": {
     "start": "dumi dev",
-    "build": "dumi build",
-    "docs:deploy": "gh-pages -d .doc",
+    "build": "npm run docs:build",
+    "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d docs-dist",
     "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "GH_PAGES=1 npm run docs:build && npm run docs:deploy",
     "prepublishOnly": "npm run compile && rc-np",
     "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
+    "prettier": "prettier --write --ignore-unknown .",
     "test": "vitest --watch=false",
     "test:watch": "vitest",
+    "tsc": "tsc --noEmit",
     "coverage": "vitest run --coverage",
-    "now-build": "npm run build",
+    "now-build": "npm run docs:build",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -85,8 +89,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,md,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write --ignore-unknown"
     ]
   }
 }

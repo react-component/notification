@@ -10,8 +10,11 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
-      "rc-notification": ["src/index.tsx"]
+      "@rc-component/notification": ["src/index.ts"],
+      "rc-notification": ["src/index.ts"]
     },
     "types": ["vitest/globals"]
-  }
+  },
+  "include": ["src", "docs", ".dumirc.ts", ".fatherrc.ts", "vitest.config.ts", "vitest-setup.ts"],
+  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist", ".dumi"]
 }
