@@ -81,6 +81,21 @@ describe('Notification.Basic', () => {
     expect(document.querySelector('.test-icon').textContent).toEqual('test-close-icon');
   });
 
+  it('works with disabled close button', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        description: <p className="test">1</p>,
+        closable: false,
+        duration: 0,
+      });
+    });
+
+    expect(document.querySelector('.test')).toBeTruthy();
+    expect(document.querySelector('.rc-notification-notice-close')).toBeFalsy();
+  });
+
   it('works with multi instance', () => {
     const { instance } = renderDemo();
 
