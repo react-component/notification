@@ -1,11 +1,11 @@
 <div align="center">
   <h1>@rc-component/notification</h1>
-  <p><sub>Part of the Ant Design ecosystem.</sub></p>
+  <p><sub>Ant Design 生态的一部分。</sub></p>
   <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
-  <p>🔔 Hook-based React notification primitives for stacked, animated, and accessible notices.</p>
+  <p>🔔 React 通知组件，支持堆叠、位置、动画和全局调用。</p>
 </div>
 
-<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+<p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
 
 <div align="center">
@@ -20,22 +20,22 @@
 </div>
 
 
-## Highlights
+## 特性
 
 - `useNotification` hook returning an API and React holder element.
 - Top, bottom, left, and right placements with max-count limiting.
 - Closable notices, duration timers, progress display, hover pause, and stacked layout.
 - Custom motion, semantic `classNames` / `styles`, progress component override, and provider-level classes.
 - TypeScript definitions for notification config, API, list config, and progress props.
-- Used by Ant Design as the shared notification foundation.
+- 被 Ant Design 用作共享的 notification 基础能力。
 
-## Install
+## 安装
 
 ```bash
 npm install @rc-component/notification
 ```
 
-## Usage
+## 使用
 
 ```tsx | pure
 import { useNotification } from '@rc-component/notification';
@@ -93,16 +93,16 @@ export default () => (
 );
 ```
 
-## Examples
+## 示例
 
-Run the examples locally:
+本地运行示例：
 
 ```bash
 npm install
 npm start
 ```
 
-Then open the dumi dev server in your browser.
+然后在浏览器中打开 dumi 开发服务地址。
 
 ## API
 
@@ -112,7 +112,7 @@ Then open the dumi dev server in your browser.
 const [api, holder] = useNotification(config);
 ```
 
-| Property            | Type                                                         | Default               | Description                                                 |
+| 参数            | 类型                                                         | 默认值               | 说明                                                 |
 | ------------------- | ------------------------------------------------------------ | --------------------- | ----------------------------------------------------------- |
 | className           | `(placement: Placement) => string`                           | -                     | Class name for each placement container.                    |
 | classNames          | `NotificationClassNames`                                     | -                     | Semantic class names for notice and list slots.             |
@@ -134,7 +134,7 @@ const [api, holder] = useNotification(config);
 
 ### NotificationAPI
 
-| Method    | Type                                                | Description              |
+| Method    | 类型                                                | 说明              |
 | --------- | --------------------------------------------------- | ------------------------ |
 | `open`    | `(config: Partial<NotificationListConfig>) => void` | Open or update a notice. |
 | `close`   | `(key: React.Key) => void`                          | Close a notice by key.   |
@@ -142,7 +142,7 @@ const [api, holder] = useNotification(config);
 
 ### NotificationListConfig
 
-| Property     | Type                                                         | Default    | Description                                                  |
+| 参数     | 类型                                                         | 默认值    | 说明                                                  |
 | ------------ | ------------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
 | actions      | `ReactNode`                                                  | -          | Extra action content.                                        |
 | className    | `string`                                                     | -          | Class name for the notice.                                   |
@@ -178,7 +178,7 @@ interface StackConfig {
 }
 ```
 
-## Development
+## 本地开发
 
 ```bash
 npm install
@@ -190,7 +190,7 @@ npm run compile
 npm run build
 ```
 
-## Release
+## 发布
 
 ```bash
 npm run prepublishOnly
@@ -198,7 +198,7 @@ npm run prepublishOnly
 
 The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
 
-## License
+## 许可证
 
 @rc-component/notification is released under the [MIT](./LICENSE.md) license.
 
