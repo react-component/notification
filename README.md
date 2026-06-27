@@ -1,7 +1,7 @@
 <div align="center">
   <h1>@rc-component/notification</h1>
   <p><sub>Part of the Ant Design ecosystem.</sub></p>
-  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/bmw-prod/ae669a89-0c24-40ff-a91d-2b83497170f6.svg" />
+  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
   <p>🔔 Hook-based React notification primitives for stacked, animated, and accessible notices.</p>
 </div>
 
