@@ -29,6 +29,7 @@
   "include": [
     "src",
     "docs",
+    "tests",
     ".dumirc.ts",
     ".fatherrc.ts",
     "vitest.config.ts",

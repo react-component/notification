@@ -113,21 +113,21 @@ const [api, holder] = useNotification(config);
 
 | 参数            | 类型                                                         | 默认值               | 说明                                                 |
 | ------------------- | ------------------------------------------------------------ | --------------------- | ----------------------------------------------------------- |
-| className           | `(placement: Placement) => string`                           | -                     | 每个放置容器的className称。                    |
-| classNames          | `NotificationClassNames`                                     | -                     | 通知和列表槽的语义className称。             |
+| className           | `(placement: Placement) => string`                           | -                     | 每个放置容器的类名。                    |
+| classNames          | `NotificationClassNames`                                     | -                     | 通知和列表槽的语义类名。             |
 | closable            | `boolean \| { closeIcon?: ReactNode; onClose?: () => void }` | -                     | 打开通知的共享可关闭配置。                  |
-| components          | `{ progress?: ComponentType<NotificationProgressProps> }`    | -                     | Component overrides.                                        |
+| components          | `{ progress?: ComponentType<NotificationProgressProps> }`    | -                     | 组件覆盖。                                        |
 | duration            | `number \| false \| null`                                    | `4.5`                 | 自动关闭延迟以秒为单位。使用 `false` 或 `0` 禁用。 |
 | getContainer        | `() => HTMLElement \| ShadowRoot`                            | `() => document.body` | 通知门户容器。                              |
 | maxCount            | `number`                                                     | -                     | 保留的最大通知数。最旧的通知被删除。        |
-| 运动              | `CSSMotionProps \| (placement) => CSSMotionProps`            | -                     | 用于通知转换的运动配置。                       |
+| motion              | `CSSMotionProps \| (placement) => CSSMotionProps`            | -                     | 通知过渡动画配置。                       |
 | pauseOnHover        | `boolean`                                                    | `true`                | 悬停时暂停自动关闭计时器。                      |
 | placement           | `Placement`                                                  | `topRight`            | 打开通知的默认位置。                       |
-| prefixCls           | `string`                                                     | `rc-notification`     | className前缀。                                          |
+| prefixCls           | `string`                                                     | `rc-notification`     | 类名前缀。                                          |
 | renderNotifications | `(node, info) => ReactElement`                               | -                     | 自定义呈现的通知树。                   |
 | showProgress        | `boolean`                                                    | `false`               | 显示打开通知的自动关闭进度。                |
 | stack               | `boolean \| StackConfig`                                     | `false`               | 启用堆叠通知布局。                         |
-| 风格               | `(placement: Placement) => CSSProperties`                    | -                     | 每个放置容器的内联样式。                  |
+| style               | `(placement: Placement) => CSSProperties`                    | -                     | 每个放置容器的内联样式。                  |
 | styles              | `NotificationStyles`                                         | -                     | 通知和列表槽的语义样式。                  |
 | onAllRemoved        | `() => void`                                                 | -                     | 删除所有通知后触发。                    |
 
@@ -144,21 +144,21 @@ const [api, holder] = useNotification(config);
 | 参数     | 类型                                                         | 默认值    | 说明                                                  |
 | ------------ | ------------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
 | actions      | `ReactNode`                                                  | -          | 额外的动作内容。                                        |
-| className    | `string`                                                     | -          | 通知的className称。                                   |
-| classNames   | `NotificationClassNames`                                     | -          | 通知槽的语义className称。                       |
+| className    | `string`                                                     | -          | 通知的类名。                                   |
+| classNames   | `NotificationClassNames`                                     | -          | 通知槽的语义类名。                       |
 | closable     | `boolean \| { closeIcon?: ReactNode; onClose?: () => void }` | -          | 是否可以关闭通知。                            |
 | components   | `{ progress?: ComponentType<NotificationProgressProps> }`    | -          | 组件覆盖此通知。                         |
 | description  | `ReactNode`                                                  | -          | 注意说明内容。                                  |
 | duration     | `number \| false \| null`                                    | `4.5`      | 自动关闭延迟以秒为单位。                                 |
-| icon         | `ReactNode`                                                  | -          | Notice icon.                                                 |
+| icon         | `ReactNode`                                                  | -          | 通知图标。                                                 |
 | key          | `React.Key`                                                  | -          | 独特的通知键。使用相同的密钥打开会更新它。     |
 | offset       | `number`                                                     | -          | 堆叠定位使用的偏移量。                          |
 | pauseOnHover | `boolean`                                                    | `true`     | 悬停时暂停此通知。                            |
-| placement    | `Placement`                                                  | `topRight` | Notice placement.                                            |
+| placement    | `Placement`                                                  | `topRight` | 通知位置。                                            |
 | props        | `HTMLAttributes<HTMLDivElement> & Record<string, any>`       | -          | 额外的 props 传递到通知根。                       |
 | role         | `string`                                                     | -          | ARIA 的作用为通知。                                    |
 | showProgress | `boolean`                                                    | `false`    | 显示自动关闭进度。                                    |
-| 风格        | `CSSProperties`                                              | -          | 通知的内联样式。                                 |
+| style        | `CSSProperties`                                              | -          | 通知的内联样式。                                 |
 | styles       | `NotificationStyles`                                         | -          | 通知槽的语义样式。                            |
 | title        | `ReactNode`                                                  | -          | 注意标题内容。                                        |
 | onClick      | `MouseEventHandler<HTMLDivElement>`                          | -          | 单击通知时触发。                        |
