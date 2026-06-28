@@ -199,7 +199,7 @@ The release flow is handled by `@rc-component/np` through the `rc-np` command af
 
 ## License
 
-@rc-component/notification is released under the [MIT](./LICENSE.md) license.
+@rc-component/notification is released under the [MIT](./LICENSE) license.
 
 [npm-image]: https://img.shields.io/npm/v/@rc-component/notification.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@rc-component/notification
