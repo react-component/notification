@@ -48,7 +48,7 @@
     "test:watch": "vitest",
     "tsc": "tsc --noEmit",
     "coverage": "vitest run --coverage",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@rc-component/motion": "^1.1.4",
@@ -88,9 +88,7 @@
     "react-dom": ">=18.0.0"
   },
   "lint-staged": {
-    "**/*.{js,jsx,tsx,ts,md,json}": [
-      "prettier --write --ignore-unknown"
-    ]
+    "*": "prettier --write --ignore-unknown"
   },
   "publishConfig": {
     "access": "public"
