@@ -33,7 +33,6 @@
   "license": "MIT",
   "main": "lib/index",
   "module": "es/index",
-  "typings": "es/index.d.ts",
   "scripts": {
     "start": "dumi dev",
     "build": "npm run docs:build",
@@ -92,5 +91,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "types": "./es/index.d.ts"
 }
