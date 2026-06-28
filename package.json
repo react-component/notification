@@ -11,7 +11,7 @@
     "react-notification",
     "notification"
   ],
-  "homepage": "http://github.com/react-component/notification",
+  "homepage": "https://react-component.github.io/notification",
   "maintainers": [
     "yiminghe@gmail.com",
     "skyking_H@hotmail.com",
@@ -25,10 +25,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/notification.git"
+    "url": "https://github.com/react-component/notification.git"
   },
   "bugs": {
-    "url": "http://github.com/react-component/notification/issues"
+    "url": "https://github.com/react-component/notification/issues"
   },
   "license": "MIT",
   "main": "lib/index",
@@ -91,5 +91,8 @@
     "**/*.{js,jsx,tsx,ts,md,json}": [
       "prettier --write --ignore-unknown"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
