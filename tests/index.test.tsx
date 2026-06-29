@@ -41,6 +41,10 @@ describe('Notification.Basic', () => {
     }
   }
 
+  function expectContentStyle(selector: string, content: string) {
+    expect((document.querySelector(selector) as HTMLElement).style.content).toBe(`"${content}"`);
+  }
+
   it('works', () => {
     const { instance, unmount } = renderDemo();
 
@@ -75,6 +79,21 @@ describe('Notification.Basic', () => {
 
     expect(document.querySelectorAll('.test')).toHaveLength(1);
     expect(document.querySelector('.test-icon').textContent).toEqual('test-close-icon');
+  });
+
+  it('works with disabled close button', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        description: <p className="test">1</p>,
+        closable: false,
+        duration: 0,
+      });
+    });
+
+    expect(document.querySelector('.test')).toBeTruthy();
+    expect(document.querySelector('.rc-notification-notice-close')).toBeFalsy();
   });
 
   it('works with multi instance', () => {
@@ -637,7 +656,7 @@ describe('Notification.Basic', () => {
   it('should style work', () => {
     const { instance } = renderDemo({
       style: () => ({
-        content: 'little',
+        content: '"little"',
       }),
     });
 
@@ -645,9 +664,7 @@ describe('Notification.Basic', () => {
       instance.open({});
     });
 
-    expect(document.querySelector('.rc-notification')).toHaveStyle({
-      content: 'little',
-    });
+    expectContentStyle('.rc-notification', 'little');
   });
 
   it('should open style and className work', () => {
@@ -656,15 +673,13 @@ describe('Notification.Basic', () => {
     act(() => {
       instance.open({
         style: {
-          content: 'little',
+          content: '"little"',
         },
         className: 'bamboo',
       });
     });
 
-    expect(document.querySelector('.rc-notification-notice')).toHaveStyle({
-      content: 'little',
-    });
+    expectContentStyle('.rc-notification-notice', 'little');
     expect(document.querySelector('.rc-notification-notice')).toHaveClass('bamboo');
   });
 
@@ -706,7 +721,7 @@ describe('Notification.Basic', () => {
         description: 'little',
         styles: {
           section: {
-            content: 'light',
+            content: '"light"',
           },
         },
         classNames: {
@@ -715,9 +730,7 @@ describe('Notification.Basic', () => {
       });
     });
 
-    expect(document.querySelector('.rc-notification-notice-section')).toHaveStyle({
-      content: 'light',
-    });
+    expectContentStyle('.rc-notification-notice-section', 'light');
     expect(document.querySelector('.rc-notification-notice-section')).toHaveClass('section-class');
   });
 
@@ -729,7 +742,7 @@ describe('Notification.Basic', () => {
         icon: <span />,
         styles: {
           wrapper: {
-            content: 'little',
+            content: '"little"',
           },
         },
         classNames: {
@@ -738,9 +751,7 @@ describe('Notification.Basic', () => {
       });
     });
 
-    expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveStyle({
-      content: 'little',
-    });
+    expectContentStyle('.rc-notification-notice-wrapper', 'little');
     expect(document.querySelector('.rc-notification-notice-wrapper')).toHaveClass('bamboo');
   });
 
@@ -777,16 +788,16 @@ describe('Notification.Basic', () => {
       },
       styles: {
         title: {
-          content: 'global-title',
+          content: '"global-title"',
         },
         description: {
-          content: 'global-description',
+          content: '"global-description"',
         },
         actions: {
-          content: 'global-actions',
+          content: '"global-actions"',
         },
         icon: {
-          content: 'global-icon',
+          content: '"global-icon"',
         },
       },
     });
@@ -824,24 +835,24 @@ describe('Notification.Basic', () => {
       'global-title',
       'notice-title',
     );
+    expectContentStyle('.rc-notification-notice-title', 'global-title');
     expect(document.querySelector('.rc-notification-notice-title')).toHaveStyle({
-      content: 'global-title',
       marginTop: '1px',
     });
     expect(document.querySelector('.rc-notification-notice-description')).toHaveClass(
       'global-description',
       'notice-description',
     );
+    expectContentStyle('.rc-notification-notice-description', 'global-description');
     expect(document.querySelector('.rc-notification-notice-description')).toHaveStyle({
-      content: 'global-description',
       marginRight: '2px',
     });
     expect(document.querySelector('.rc-notification-notice-actions')).toHaveClass(
       'global-actions',
       'notice-actions',
     );
+    expectContentStyle('.rc-notification-notice-actions', 'global-actions');
     expect(document.querySelector('.rc-notification-notice-actions')).toHaveStyle({
-      content: 'global-actions',
       marginBottom: '3px',
     });
     expect(document.querySelector('.actions')).toBeFalsy();
@@ -849,8 +860,8 @@ describe('Notification.Basic', () => {
       'global-icon',
       'notice-icon',
     );
+    expectContentStyle('.rc-notification-notice-icon', 'global-icon');
     expect(document.querySelector('.rc-notification-notice-icon')).toHaveStyle({
-      content: 'global-icon',
       marginLeft: '4px',
     });
   });
@@ -875,10 +886,10 @@ describe('Notification.Basic', () => {
       },
       styles: {
         list: {
-          content: 'root-list',
+          content: '"root-list"',
         },
         listContent: {
-          content: 'little',
+          content: '"little"',
         },
       },
     });
@@ -887,13 +898,9 @@ describe('Notification.Basic', () => {
       instance.open({});
     });
 
-    expect(document.querySelector('.rc-notification-list')).toHaveStyle({
-      content: 'root-list',
-    });
+    expectContentStyle('.rc-notification-list', 'root-list');
     expect(document.querySelector('.rc-notification-list')).toHaveClass('root-list');
-    expect(document.querySelector('.rc-notification-list-content')).toHaveStyle({
-      content: 'little',
-    });
+    expectContentStyle('.rc-notification-list-content', 'little');
     expect(document.querySelector('.rc-notification-list-content')).toHaveClass('bamboo');
   });
 

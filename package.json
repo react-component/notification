@@ -11,7 +11,7 @@
     "react-notification",
     "notification"
   ],
-  "homepage": "http://github.com/react-component/notification",
+  "homepage": "https://react-component.github.io/notification",
   "maintainers": [
     "yiminghe@gmail.com",
     "skyking_H@hotmail.com",
@@ -25,27 +25,29 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/notification.git"
+    "url": "https://github.com/react-component/notification.git"
   },
   "bugs": {
-    "url": "http://github.com/react-component/notification/issues"
+    "url": "https://github.com/react-component/notification/issues"
   },
   "license": "MIT",
   "main": "lib/index",
   "module": "es/index",
-  "typings": "es/index.d.ts",
   "scripts": {
     "start": "dumi dev",
-    "build": "dumi build",
-    "docs:deploy": "gh-pages -d .doc",
+    "build": "npm run docs:build",
+    "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d docs-dist",
     "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "cross-env GH_PAGES=1 npm run docs:build && npm run docs:deploy",
     "prepublishOnly": "npm run compile && rc-np",
     "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
+    "prettier": "prettier --write --ignore-unknown .",
     "test": "vitest --watch=false",
     "test:watch": "vitest",
+    "tsc": "tsc --noEmit",
     "coverage": "vitest run --coverage",
-    "now-build": "npm run build",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@rc-component/motion": "^1.1.4",
@@ -53,40 +55,42 @@
     "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@rc-component/father-plugin": "^2.0.4",
-    "@rc-component/np": "^1.0.3",
-    "@testing-library/jest-dom": "^6.0.0",
+    "@rc-component/father-plugin": "^2.2.0",
+    "@rc-component/np": "^1.0.4",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^15.0.7",
-    "@types/node": "^24.5.2",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/node": "^26.0.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "@types/testing-library__jest-dom": "^6.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.7",
-    "@typescript-eslint/parser": "^5.59.7",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "@umijs/fabric": "^4.0.1",
-    "@vitest/coverage-v8": "^0.34.2",
-    "dumi": "^2.1.0",
+    "@vitest/coverage-v8": "^4.1.9",
+    "cross-env": "^10.1.0",
+    "dumi": "^2.4.35",
     "eslint": "^8.57.1",
-    "father": "^4.0.0",
-    "gh-pages": "^3.1.0",
-    "husky": "^8.0.3",
-    "jsdom": "^24.0.0",
-    "less": "^4.2.0",
-    "lint-staged": "^14.0.1",
-    "prettier": "^3.0.2",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "typescript": "^5.4.5",
-    "vitest": "^0.34.2"
+    "father": "^4.6.23",
+    "gh-pages": "^6.3.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
+    "less": "^4.6.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.9"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
   "lint-staged": {
-    "**/*.{js,jsx,tsx,ts,md,json}": [
-      "prettier --write",
-      "git add"
-    ]
-  }
+    "*": "prettier --write --ignore-unknown"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "./es/index.d.ts"
 }

@@ -8,10 +8,39 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"],
-      "rc-notification": ["src/index.tsx"]
+      "@/*": [
+        "src/*"
+      ],
+      "@@/*": [
+        ".dumi/tmp/*"
+      ],
+      "@rc-component/notification": [
+        "src/index.ts"
+      ],
+      "rc-notification": [
+        "src/index.ts"
+      ]
     },
-    "types": ["vitest/globals"]
-  }
+    "types": [
+      "vitest/globals"
+    ],
+    "ignoreDeprecations": "5.0"
+  },
+  "include": [
+    "src",
+    "docs",
+    "tests",
+    ".dumirc.ts",
+    ".fatherrc.ts",
+    "vitest.config.ts",
+    "vitest-setup.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "es",
+    "dist",
+    "docs-dist",
+    ".dumi"
+  ]
 }

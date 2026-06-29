@@ -28,6 +28,7 @@ build
 lib
 es
 coverage
+docs-dist/
 yarn.lock
 package-lock.json
 pnpm-lock.yaml
@@ -43,5 +44,6 @@ pnpm-lock.yaml
 .dumi/tmp-production
 
 bun.lockb
+.vercel
 
 .claude/skills/tmp-*
