@@ -8,25 +8,23 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@@/*": [
-        ".dumi/tmp/*"
-      ],
-      "@rc-component/notification": [
-        "src/index.ts"
-      ],
-      "rc-notification": [
-        "src/index.ts"
-      ]
+      "@/*": ["src/*"],
+      "@@/*": [".dumi/tmp/*"],
+      "@rc-component/notification": ["src/index.ts"],
+      "rc-notification": ["src/index.ts"]
     },
-    "types": [
-      "vitest/globals"
-    ],
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "6.0",
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "strictFunctionTypes": false,
+    "strict": false,
+    "noImplicitThis": false,
+    "strictBindCallApply": false
   },
   "include": [
+    "react-compat.d.ts",
+    "global.d.ts",
     "src",
     "docs",
     "tests",
@@ -35,12 +33,5 @@
     "vitest.config.ts",
     "vitest-setup.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "es",
-    "dist",
-    "docs-dist",
-    ".dumi"
-  ]
+  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist", ".dumi"]
 }
