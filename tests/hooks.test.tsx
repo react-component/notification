@@ -1,6 +1,5 @@
-import { fireEvent } from '@testing-library/dom';
 import React, { ReactElement } from 'react';
-import { render, act } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { useNotification } from '../src';
 import type { NotificationAPI, NotificationConfig } from '../src';
 import NotificationProvider from '../src/NotificationProvider';
