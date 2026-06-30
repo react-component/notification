@@ -1,5 +1,6 @@
+import { fireEvent } from '@testing-library/dom';
 import { useNotification } from '../src';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 require('../assets/index.less');
