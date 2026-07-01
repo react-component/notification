@@ -12,13 +12,7 @@
       "@rc-component/notification": ["./src/index.ts"],
       "rc-notification": ["./src/index.ts"]
     },
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "strictPropertyInitialization": false,
-    "strictFunctionTypes": false,
     "strict": false,
-    "noImplicitThis": false,
-    "strictBindCallApply": false,
     "module": "ESNext"
   },
   "include": [
