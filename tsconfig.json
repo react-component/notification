@@ -22,7 +22,6 @@
     "module": "ESNext"
   },
   "include": [
-    "react-compat.d.ts",
     "global.d.ts",
     "src",
     "docs",
