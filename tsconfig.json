@@ -1,32 +1,22 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@@/*": [
-        ".dumi/tmp/*"
-      ],
-      "@rc-component/notification": [
-        "src/index.ts"
-      ],
-      "rc-notification": [
-        "src/index.ts"
-      ]
+      "@/*": ["./src/*"],
+      "@@/*": ["./.dumi/tmp/*"],
+      "@rc-component/notification": ["./src/index.ts"],
+      "rc-notification": ["./src/index.ts"]
     },
-    "types": [
-      "vitest/globals"
-    ],
-    "ignoreDeprecations": "5.0"
+    "strict": false,
+    "module": "ESNext"
   },
   "include": [
+    "global.d.ts",
     "src",
     "docs",
     "tests",
@@ -35,12 +25,5 @@
     "vitest.config.ts",
     "vitest-setup.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "es",
-    "dist",
-    "docs-dist",
-    ".dumi"
-  ]
+  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist", ".dumi"]
 }
