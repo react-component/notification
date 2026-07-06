@@ -192,7 +192,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
   const hasTitle = titleNode !== null;
   const hasDescription = descNode !== null;
-  let contentNode: React.ReactNode = null;
+  let contentNode: React.ReactNode;
 
   if (hasTitle && hasDescription) {
     contentNode = (
