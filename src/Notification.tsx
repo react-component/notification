@@ -269,6 +269,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
 
       {mergedClosable && (
         <button
+          type="button"
           className={clsx(`${noticePrefixCls}-close`, classNames?.close)}
           aria-label="Close"
           {...closeBtnAriaProps}
