@@ -1333,5 +1333,9 @@ describe('Notification.Basic', () => {
       'aria-label',
       'xxx',
     );
+    expect(document.querySelector('button.rc-notification-notice-close')).toHaveAttribute(
+      'type',
+      'button',
+    );
   });
 });
