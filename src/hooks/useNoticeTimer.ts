@@ -7,6 +7,7 @@ import { raf, useEvent } from '@rc-component/util';
  */
 export default function useNoticeTimer(
   duration: number | false | null,
+  times: number | undefined,
   onClose: VoidFunction,
   onUpdate: (ptg: number) => void,
 ) {
@@ -16,6 +17,8 @@ export default function useNoticeTimer(
   const onEventUpdate = useEvent(onUpdate);
 
   const [walking, setWalking] = React.useState(durationMs > 0);
+  const walkingRef = React.useRef(walking);
+  walkingRef.current = walking;
   const passTimeRef = React.useRef(0);
   const lastRafTimeRef = React.useRef<number | null>(null);
 
@@ -42,13 +45,21 @@ export default function useNoticeTimer(
     } else {
       onEventUpdate(0);
     }
-  }, [durationMs]);
+  }, [durationMs, onEventUpdate]);
 
   // Reset when durationMs changed.
   React.useEffect(() => {
     passTimeRef.current = 0;
+    lastRafTimeRef.current = null;
     setWalking(durationMs > 0);
   }, [durationMs]);
+
+  // Restart the timer when an existing notice is updated with the same key.
+  React.useEffect(() => {
+    passTimeRef.current = 0;
+    lastRafTimeRef.current = walkingRef.current ? Date.now() : null;
+    onEventUpdate(0);
+  }, [times, onEventUpdate]);
 
   // Trigger update when walking changed.
   React.useEffect(() => {
@@ -75,7 +86,7 @@ export default function useNoticeTimer(
     return () => {
       raf.cancel(rafId!);
     };
-  }, [durationMs, walking]);
+  }, [durationMs, times, walking, onEventClose, onEventUpdate]);
 
   return [onResume, onPause] as const;
 }
