@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { clsx } from 'clsx';
 import useNoticeTimer from './hooks/useNoticeTimer';
-import { useEvent } from '@rc-component/util';
+import { isNonNullable, isReactRenderable, useEvent } from '@rc-component/util';
 import useClosable, { type ClosableType } from './hooks/useClosable';
 import DefaultProgress from './Progress';
 import type { NotificationProgressProps } from './Progress';
@@ -173,22 +173,20 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   const mergedNotificationIndex = notificationIndex ?? notificationIndexRef.current ?? 0;
 
   // ======================== Content =========================
-  const titleNode =
-    title !== undefined && title !== null ? (
-      <div className={clsx(`${noticePrefixCls}-title`, classNames?.title)} style={styles?.title}>
-        {title}
-      </div>
-    ) : null;
+  const titleNode = isNonNullable(title) ? (
+    <div className={clsx(`${noticePrefixCls}-title`, classNames?.title)} style={styles?.title}>
+      {title}
+    </div>
+  ) : null;
 
-  const descNode =
-    description !== undefined && description !== null ? (
-      <div
-        className={clsx(`${noticePrefixCls}-description`, classNames?.description)}
-        style={styles?.description}
-      >
-        {description}
-      </div>
-    ) : null;
+  const descNode = isNonNullable(description) ? (
+    <div
+      className={clsx(`${noticePrefixCls}-description`, classNames?.description)}
+      style={styles?.description}
+    >
+      {description}
+    </div>
+  ) : null;
 
   const hasTitle = titleNode !== null;
   const hasDescription = descNode !== null;
@@ -208,7 +206,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     contentNode = titleNode || descNode;
   }
 
-  if (icon !== undefined && icon !== null) {
+  if (isNonNullable(icon)) {
     contentNode = (
       <div
         className={clsx(`${noticePrefixCls}-wrapper`, classNames?.wrapper)}
@@ -222,7 +220,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     );
   }
 
-  const actionsNode = actions ? (
+  const actionsNode = isReactRenderable(actions) ? (
     <div
       className={clsx(`${noticePrefixCls}-actions`, classNames?.actions)}
       style={styles?.actions}
