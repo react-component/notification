@@ -63,6 +63,7 @@ export interface NotificationProps {
   pauseOnHover?: boolean;
 
   // Function
+  onHover?: (hovering: boolean) => void;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
@@ -99,6 +100,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     pauseOnHover = true,
 
     // Function
+    onHover,
     onClick,
     onMouseEnter,
     onMouseLeave,
@@ -136,7 +138,18 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }, [forcedHovering, hovering, onPause, onResume, pauseOnHover]);
 
   // ========================= Hover ==========================
+  const hoveringRef = React.useRef(false);
+  const onInternalHover = useEvent((nextHovering: boolean) => {
+    if (nextHovering || hoveringRef.current) {
+      onHover?.(nextHovering);
+    }
+    hoveringRef.current = nextHovering;
+  });
+
+  React.useEffect(() => () => onInternalHover(false), [onInternalHover]);
+
   function onInternalMouseEnter(event: React.MouseEvent<HTMLDivElement>) {
+    onInternalHover(true);
     setHovering(true);
     if (pauseOnHover) {
       onPause();
@@ -145,6 +158,8 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   function onInternalMouseLeave(event: React.MouseEvent<HTMLDivElement>) {
+    // Normal exits are handled by the list, including movement through its gaps.
+    hoveringRef.current = false;
     setHovering(false);
     if (pauseOnHover && !forcedHovering) {
       onResume();
