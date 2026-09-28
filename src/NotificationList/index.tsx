@@ -1,6 +1,6 @@
 import { CSSMotionList } from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
-import { useComposeRef } from '@rc-component/util';
+import { useComposeRef, useEvent } from '@rc-component/util';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import useListPosition from '../hooks/useListPosition';
@@ -108,6 +108,7 @@ interface NotificationListItemProps {
   pauseOnHover?: boolean;
   setNodeSize: (key: string, node: HTMLDivElement | null) => void;
   onNoticeClose?: (key: React.Key) => void;
+  onHover: (key: string, hovering: boolean) => void;
 }
 
 const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
@@ -125,6 +126,7 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
     pauseOnHover,
     setNodeSize,
     onNoticeClose,
+    onHover,
     ...restProps
   } = props;
   const { key, placement: itemPlacement, ...notificationConfig } = config;
@@ -137,6 +139,15 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
     [setNodeSize, strKey],
   );
   const ref = useComposeRef(nodeRef, setItemRef);
+  const hoveringRef = React.useRef(false);
+  const onInternalHover = useEvent((hovering: boolean) => {
+    if (hovering || hoveringRef.current) {
+      onHover(strKey, hovering);
+    }
+    hoveringRef.current = hovering;
+  });
+
+  React.useEffect(() => () => onInternalHover(false), [onInternalHover]);
 
   return (
     <Notification
@@ -153,6 +164,15 @@ const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
       }}
       hovering={stackEnabled && listHovering}
       pauseOnHover={config.pauseOnHover ?? pauseOnHover}
+      onMouseEnter={(event) => {
+        onInternalHover(true);
+        config.onMouseEnter?.(event);
+      }}
+      onMouseLeave={(event) => {
+        // The list handles normal exits, including movement through its gaps.
+        hoveringRef.current = false;
+        config.onMouseLeave?.(event);
+      }}
       onClose={() => {
         config.onClose?.();
         onNoticeClose?.(key);
@@ -195,6 +215,16 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   // ====================== Stack State =======================
   const [stackEnabled, { offset, threshold }] = useStack(stackConfig);
   const [listHovering, setListHovering] = React.useState(false);
+  const hoveringKeyRef = React.useRef<string | undefined>(undefined);
+  const onNoticeHover = useEvent((key: string, hovering: boolean) => {
+    if (hovering) {
+      hoveringKeyRef.current = key;
+      setListHovering(true);
+    } else if (hoveringKeyRef.current === key) {
+      hoveringKeyRef.current = undefined;
+      setListHovering(false);
+    }
+  });
   const expanded = stackEnabled && (listHovering || keys.length <= threshold);
 
   // ====================== Stack Layout ======================
@@ -252,6 +282,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         setListHovering(true);
       }}
       onMouseLeave={() => {
+        hoveringKeyRef.current = undefined;
         setListHovering(false);
       }}
       style={{ ...styles?.list, ...style }}
@@ -303,6 +334,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 pauseOnHover={pauseOnHover}
                 setNodeSize={setNodeSize}
                 onNoticeClose={onNoticeClose}
+                onHover={onNoticeHover}
               />
             );
           }}
