@@ -195,7 +195,26 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
   // ====================== Stack State =======================
   const [stackEnabled, { offset, threshold }] = useStack(stackConfig);
   const [listHovering, setListHovering] = React.useState(false);
+  const listRef = React.useRef<HTMLDivElement>(null);
   const expanded = stackEnabled && (listHovering || keys.length <= threshold);
+
+  React.useEffect(() => {
+    const listNode = listRef.current;
+    if (!listHovering || !listNode) {
+      return;
+    }
+
+    // Removing a hovered notice can prevent React's mouseleave from firing.
+    const onMouseMove = (event: MouseEvent) => {
+      // Closed shadow roots hide the list from the document event's path.
+      if (!event.composedPath().includes(listNode) && !listNode.matches(':hover')) {
+        setListHovering(false);
+      }
+    };
+    const { ownerDocument } = listNode;
+    ownerDocument.addEventListener('mousemove', onMouseMove, true);
+    return () => ownerDocument.removeEventListener('mousemove', onMouseMove, true);
+  }, [listHovering]);
 
   // ====================== Stack Layout ======================
   const stackPosition = React.useMemo<StackConfig | undefined>(() => {
@@ -235,6 +254,7 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
 
   return (
     <div
+      ref={listRef}
       className={clsx(
         prefixCls,
         listPrefixCls,
