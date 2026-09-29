@@ -17,7 +17,7 @@ import Content from './Content';
 export type Placement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
 export type { StackConfig } from '../hooks/useStack';
 
-export interface NotificationListConfig extends Omit<NotificationProps, 'prefixCls'> {
+export interface NotificationListConfig extends Omit<NotificationProps, 'prefixCls' | 'onDestroy'> {
   key: React.Key;
   placement?: Placement;
   times?: number;
@@ -108,6 +108,7 @@ interface NotificationListItemProps {
   pauseOnHover?: boolean;
   setNodeSize: (key: string, node: HTMLDivElement | null) => void;
   onNoticeClose?: (key: React.Key) => void;
+  onDestroy: (hovering: boolean) => void;
 }
 
 const NotificationListItem: React.FC<NotificationListItemProps> = (props) => {
@@ -303,6 +304,11 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
                 pauseOnHover={pauseOnHover}
                 setNodeSize={setNodeSize}
                 onNoticeClose={onNoticeClose}
+                onDestroy={(hovering) => {
+                  if (hovering) {
+                    setListHovering(false);
+                  }
+                }}
               />
             );
           }}
