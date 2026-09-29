@@ -65,8 +65,7 @@ export interface NotificationProps {
   // Function
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
-  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
-  onDestroy?: (hovering: boolean) => void;
+  onMouseLeave?: (event?: React.MouseEvent<HTMLDivElement>) => void;
   /** @deprecated Please use `closable.onClose` instead. */
   onClose?: () => void;
 }
@@ -103,7 +102,6 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     onClick,
     onMouseEnter,
     onMouseLeave,
-    onDestroy,
     onClose,
   } = props;
 
@@ -146,7 +144,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     onMouseEnter?.(event);
   }
 
-  function onInternalMouseLeave(event: React.MouseEvent<HTMLDivElement>) {
+  function onInternalMouseLeave(event?: React.MouseEvent<HTMLDivElement>) {
     setHovering(false);
     if (pauseOnHover && !forcedHovering) {
       onResume();
@@ -161,7 +159,9 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   const destroy = useEvent(() => {
-    onDestroy?.(hovering);
+    if (hovering) {
+      onInternalMouseLeave();
+    }
   });
 
   React.useEffect(() => destroy, [destroy]);
