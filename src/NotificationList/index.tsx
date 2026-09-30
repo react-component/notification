@@ -248,12 +248,6 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
           [`${listPrefixCls}-hovered`]: listHovering,
         },
       )}
-      onMouseEnter={() => {
-        setListHovering(true);
-      }}
-      onMouseLeave={() => {
-        setListHovering(false);
-      }}
       style={{ ...styles?.list, ...style }}
     >
       <Content
@@ -264,6 +258,12 @@ const NotificationList: React.FC<NotificationListProps> = (props) => {
         className={classNames?.listContent}
         style={styles?.listContent}
         ref={contentRef}
+        onMouseEnter={() => {
+          setListHovering(true);
+        }}
+        onMouseLeave={() => {
+          setListHovering(false);
+        }}
       >
         <CSSMotionList
           component={false}
