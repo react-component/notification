@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { clsx } from 'clsx';
 import useNoticeTimer from './hooks/useNoticeTimer';
-import { isNonNullable, isReactRenderable, useEvent } from '@rc-component/util';
+import { isNonNullable, isReactRenderable, useEvent, useLayoutEffect } from '@rc-component/util';
 import useClosable, { type ClosableType } from './hooks/useClosable';
 import DefaultProgress from './Progress';
 import type { NotificationProgressProps } from './Progress';
@@ -106,6 +106,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   } = props;
 
   const [percent, setPercent] = React.useState(0);
+  const percentRef = React.useRef(0);
   const noticePrefixCls = `${prefixCls}-notice`;
 
   // ========================= Close ==========================
@@ -118,7 +119,19 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   // ======================== Duration ========================
   const [hovering, setHovering] = React.useState(false);
 
-  const [onResume, onPause] = useNoticeTimer(duration, onInternalClose, setPercent);
+  const [onResume, onPause] = useNoticeTimer(duration, onInternalClose, (nextPercent) => {
+    percentRef.current = nextPercent;
+    if (showProgress) {
+      setPercent(nextPercent);
+    }
+  });
+
+  // Progress can be enabled while paused, when no timer tick will update state.
+  useLayoutEffect(() => {
+    if (showProgress) {
+      setPercent(percentRef.current);
+    }
+  }, [showProgress]);
 
   const validPercent = 100 - Math.min(Math.max(percent * 100, 0), 100);
   const Progress = components?.progress || DefaultProgress;
