@@ -2,7 +2,7 @@ import { useNotification } from '../src';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-require('../assets/index.less');
+import '../assets/index.less';
 
 describe('stack', () => {
   it('support stack', () => {
@@ -41,6 +41,9 @@ describe('stack', () => {
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
 
     fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
+    expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
+
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list-content'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
   });
 
@@ -74,14 +77,14 @@ describe('stack', () => {
     expect(document.querySelector('.rc-notification-stack')).toBeTruthy();
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
 
-    fireEvent.mouseEnter(document.querySelector('.rc-notification-list'));
+    fireEvent.mouseEnter(document.querySelector('.rc-notification-list-content'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
 
     fireEvent.click(document.querySelector('.rc-notification-notice-close'));
     expect(document.querySelectorAll('.rc-notification-notice')).toHaveLength(4);
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeTruthy();
 
-    fireEvent.mouseLeave(document.querySelector('.rc-notification-list'));
+    fireEvent.mouseLeave(document.querySelector('.rc-notification-list-content'));
     expect(document.querySelector('.rc-notification-stack-expanded')).toBeFalsy();
   });
 });
