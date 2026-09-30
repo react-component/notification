@@ -32,6 +32,7 @@ export default function useNoticeTimer(
 
   const onPause = React.useCallback(() => {
     syncPassTime();
+    lastRafTimeRef.current = null;
     setWalking(false);
   }, []);
 
