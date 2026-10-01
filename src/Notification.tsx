@@ -95,6 +95,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
     // Behavior
     duration = 4.5,
     showProgress,
+    times,
     hovering: forcedHovering,
     pauseOnHover = true,
 
@@ -118,7 +119,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   // ======================== Duration ========================
   const [hovering, setHovering] = React.useState(false);
 
-  const [onResume, onPause] = useNoticeTimer(duration, onInternalClose, setPercent);
+  const [onResume, onPause] = useNoticeTimer(duration, times, onInternalClose, setPercent);
 
   const validPercent = 100 - Math.min(Math.max(percent * 100, 0), 100);
   const Progress = components?.progress || DefaultProgress;

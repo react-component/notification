@@ -64,6 +64,42 @@ describe('Notification.Basic', () => {
     unmount();
   });
 
+  it('resets duration when updating a notification with the same key', () => {
+    const { instance } = renderDemo();
+
+    act(() => {
+      instance.open({
+        key: 'update',
+        description: <p className="test">first</p>,
+        duration: 1,
+      });
+    });
+
+    act(() => {
+      step(800);
+    });
+
+    act(() => {
+      instance.open({
+        key: 'update',
+        description: <p className="test">second</p>,
+        duration: 1,
+      });
+    });
+
+    act(() => {
+      step(300);
+    });
+
+    expect(document.querySelector('.test')).toHaveTextContent('second');
+
+    act(() => {
+      step(700);
+    });
+
+    expect(document.querySelector('.test')).toBeFalsy();
+  });
+
   it('works with custom close icon', () => {
     const { instance } = renderDemo();
 
