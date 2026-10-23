@@ -1213,6 +1213,32 @@ describe('Notification.Basic', () => {
     ).toEqual('close');
   });
 
+  it('Support disabled in closable', () => {
+    let closeCount = 0;
+    const { instance } = renderDemo({
+      closable: {
+        disabled: true,
+        closeIcon: 'CloseBtn',
+      },
+    });
+
+    act(() => {
+      instance.open({
+        description: <p className="test">1</p>,
+        duration: 0,
+        onClose: () => {
+          closeCount += 1;
+        },
+      });
+    });
+
+    const closeBtn = document.querySelector('.rc-notification-notice-close') as HTMLButtonElement;
+    expect(closeBtn.disabled).toBe(true);
+
+    fireEvent.click(closeBtn);
+    expect(closeCount).toEqual(0);
+  });
+
   describe('showProgress', () => {
     it('show with progress', () => {
       const { instance } = renderDemo({
