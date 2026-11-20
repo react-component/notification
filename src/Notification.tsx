@@ -153,6 +153,9 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
   }
 
   function onInternalCloseClick(event: React.MouseEvent<HTMLButtonElement>) {
+    if (closableConfig.disabled) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     onInternalClose();
@@ -278,6 +281,7 @@ const Notification = React.forwardRef<HTMLDivElement, NotificationProps>((props,
           type="button"
           className={clsx(`${noticePrefixCls}-close`, classNames?.close)}
           aria-label="Close"
+          disabled={closableConfig.disabled}
           {...closeBtnAriaProps}
           style={styles?.close}
           onClick={onInternalCloseClick}
