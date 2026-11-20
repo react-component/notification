@@ -2,6 +2,7 @@ import { pickAttrs } from '@rc-component/util';
 import * as React from 'react';
 
 export type ClosableConfig = {
+  [key: `data-${string}`]: unknown;
   closeIcon?: React.ReactNode;
   disabled?: boolean;
   onClose?: VoidFunction;
@@ -13,7 +14,7 @@ export type ParsedClosableConfig = ClosableConfig &
   Required<Pick<ClosableConfig, 'closeIcon' | 'disabled'>>;
 
 /**
- * Normalizes the closable option into a boolean flag, config, and aria props.
+ * Normalizes the closable option into a boolean flag, config, and aria/data props.
  */
 export default function useClosable(
   closable?: ClosableType,
@@ -44,8 +45,11 @@ export default function useClosable(
     [closableObj],
   );
 
-  // Forward aria-* props from the closable config to the close button.
-  const closableAriaProps = React.useMemo(() => pickAttrs(closableConfig, true), [closableConfig]);
+  // Forward aria-* and data-* props from the closable config to the close button.
+  const closableAriaProps = React.useMemo(
+    () => pickAttrs(closableConfig, { aria: true, data: true }),
+    [closableConfig],
+  );
 
   return [!!closable, closableConfig, closableAriaProps];
 }
